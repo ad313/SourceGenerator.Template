@@ -1,0 +1,203 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SourceGenerator.Template</name>
+    </assembly>
+    <members>
+        <member name="T:SourceGenerator.Analyzers.MetaData.AssemblyMetaData">
+            <summary>
+            扫描接口、类元数据
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.AssemblyMetaData.AssemblyName">
+            <summary>
+            宿主程序集名称
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.AssemblyMetaData.InterfaceMetaDataList">
+            <summary>
+            Interface 元数据
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.AssemblyMetaData.ClassMetaDataList">
+            <summary>
+            类元数据
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.AttributeMetaData.Name">
+            <summary>
+            Attribute名称
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.AttributeMetaData.ParamDictionary">
+            <summary>
+            参数值
+            </summary>
+        </member>
+        <member name="T:SourceGenerator.Analyzers.MetaData.ClassMetaData">
+            <summary>
+            类元数据
+            </summary>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.#ctor(System.String,System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.AttributeMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.PropertyMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.MethodMetaData},System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.KeyValueModel},System.Collections.Generic.List{System.String},System.String,System.String)">
+            <summary>Initializes a new instance of the <see cref="T:System.Object"></see> class.</summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.ClassMetaData.BaseClasses">
+            <summary>
+            继承的类
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.ClassMetaData.BaseClassMetaDataList">
+            <summary>
+            继承的类
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.ClassMetaData.Constructor">
+            <summary>
+            构造函数参数
+            </summary>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.Append(SourceGenerator.Analyzers.MetaData.ClassMetaData)">
+            <summary>
+            合并
+            </summary>
+            <param name="other"></param>
+        </member>
+        <member name="T:SourceGenerator.Analyzers.MetaData.InterfaceMetaData">
+            <summary>
+            接口元数据
+            </summary>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.#ctor(System.String,System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.AttributeMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.PropertyMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.MethodMetaData},System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String},System.String,System.String)">
+            <summary>Initializes a new instance of the <see cref="T:System.Object"></see> class.</summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.Namespace">
+            <summary>
+            命名空间
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.PropertyMeta">
+            <summary>
+            属性集合
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.MethodMetaData">
+            <summary>
+            方法集合
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.BaseInterfaces">
+            <summary>
+            继承的接口
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.BaseInterfaceMetaDataList">
+            <summary>
+            继承的接口
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.Usings">
+            <summary>
+            引用
+            </summary>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.Append(SourceGenerator.Analyzers.MetaData.InterfaceMetaData)">
+            <summary>
+            合并
+            </summary>
+            <param name="other"></param>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.GetHashCode">
+            <summary>
+            获取哈希
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.MetaDataBase.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.MetaDataBase.AccessModifier">
+            <summary>
+            访问修饰符 public private 等
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.MetaDataBase.ExtModifier">
+            <summary>
+            扩展修饰符 partial,virtual string,int 等
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.MetaDataBase.AttributeMetaData">
+            <summary>
+            Attribute 参数
+            </summary>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.MetaDataBase.GetKey(System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.KeyValueModel})">
+            <summary>
+            方法唯一标识符，区分方法重载
+            </summary>
+            <param name="name"></param>
+            <param name="param"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.MetaDataBase.Append(SourceGenerator.Analyzers.MetaData.MetaDataBase)">
+            <summary>
+            合并
+            </summary>
+            <param name="other"></param>
+        </member>
+        <member name="T:SourceGenerator.Analyzers.MetaData.MethodMetaData">
+            <summary>
+            方法元数据
+            </summary>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.MethodMetaData.#ctor(System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.AttributeMetaData},System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.KeyValueModel},System.String,System.String,System.String)">
+            <summary>
+            初始化
+            </summary>
+            <param name="name">名称</param>
+            <param name="attributeMetaData">attribute</param>
+            <param name="returnValue">返回值</param>
+            <param name="param">输入参数</param>
+            <param name="perfix">方法修饰符</param>
+            <param name="accessModifier"></param>
+            <param name="extModifier"></param>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.MethodMetaData.Key">
+            <summary>
+            方法唯一标识符，区分方法重载
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.MethodMetaData.ReturnValue">
+            <summary>
+            返回值
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.MethodMetaData.HasReturnValue">
+            <summary>
+            是否有返回值
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.MethodMetaData.IsTask">
+            <summary>
+            是否是异步
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.MethodMetaData.CanOverride">
+            <summary>
+            能否被重写
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.MethodMetaData.Param">
+            <summary>
+            输入参数
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.PropertyMetaData.Description">
+            <summary>
+            属性描述
+            </summary>
+        </member>
+    </members>
+</doc>

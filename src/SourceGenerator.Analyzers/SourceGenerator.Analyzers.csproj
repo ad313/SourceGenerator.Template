@@ -1,0 +1,78 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<LangVersion>9.0</LangVersion>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<EnforceExtendedAnalyzerRules>false</EnforceExtendedAnalyzerRules>
+		<DefineConstants>$(DefineConstants);SCRIBAN_PUBLIC</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<NoWarn>1701;1702;1591</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<NoWarn>1701;1702;1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Include="..\Shared\*.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="Templates\ClassToProtoExtend.txt" />
+		<None Remove="Templates\ClassToProtoExtend_Main.txt" />
+		<None Remove="Templates\QuartzToolExtend.txt" />
+		<None Remove="Templates\QuartzToolExtend_Main.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Templates\BizEnumExtend.txt" />
+		<EmbeddedResource Include="Templates\BizEnumExtend_Main.txt" />
+		<EmbeddedResource Include="Templates\ClassToProtoExtend.txt" />
+		<EmbeddedResource Include="Templates\ClassToProtoExtend_Main.txt" />
+		<EmbeddedResource Include="Templates\QuartzToolExtend.txt" />
+		<EmbeddedResource Include="Templates\QuartzToolExtend_Main.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.1" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Configuration)'=='Release'">
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Configuration)'=='Debug'">
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" GeneratePathProperty="true" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="MetaData\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="..\Shared\AssemblyMetaData.cs" Link="MetaData\AssemblyMetaData.cs" />
+	  <Compile Update="..\Shared\AttributeMetaData.cs" Link="MetaData\AttributeMetaData.cs" />
+	  <Compile Update="..\Shared\ClassMetaData.cs" Link="MetaData\ClassMetaData.cs" />
+	  <Compile Update="..\Shared\InterfaceMetaData.cs" Link="MetaData\InterfaceMetaData.cs" />
+	  <Compile Update="..\Shared\MetaDataBase.cs" Link="MetaData\MetaDataBase.cs" />
+	  <Compile Update="..\Shared\MethodMetaData.cs" Link="MetaData\MethodMetaData.cs" />
+	  <Compile Update="..\Shared\PropertyMetaData.cs" Link="MetaData\PropertyMetaData.cs" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+	</PropertyGroup>
+
+	<Target Name="GetDependencyTargetPaths" Condition="'$(Configuration)'=='Debug'">
+		<ItemGroup>
+			<TargetPathWithTargetPlatformMoniker Include="$(PKGNewtonsoft_Json)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />
+		</ItemGroup>
+	</Target>
+</Project>
