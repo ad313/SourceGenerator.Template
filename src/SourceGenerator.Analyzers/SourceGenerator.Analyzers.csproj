@@ -20,22 +20,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Remove="Templates\ClassToProtoExtend.txt" />
-		<None Remove="Templates\ClassToProtoExtend_Main.txt" />
-		<None Remove="Templates\QuartzToolExtend.txt" />
-		<None Remove="Templates\QuartzToolExtend_Main.txt" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Include="Templates\BizEnumExtend.txt" />
-		<EmbeddedResource Include="Templates\BizEnumExtend_Main.txt" />
-		<EmbeddedResource Include="Templates\ClassToProtoExtend.txt" />
-		<EmbeddedResource Include="Templates\ClassToProtoExtend_Main.txt" />
-		<EmbeddedResource Include="Templates\QuartzToolExtend.txt" />
-		<EmbeddedResource Include="Templates\QuartzToolExtend_Main.txt" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.1" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
 			<PrivateAssets>all</PrivateAssets>

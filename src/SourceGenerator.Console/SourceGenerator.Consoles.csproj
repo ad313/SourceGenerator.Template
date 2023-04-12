@@ -9,6 +9,10 @@
     <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
 
+  <!--<ItemGroup>
+    <PackageReference Include="SourceGenerator.Template" Version="0.0.1" />
+  </ItemGroup>-->
+
   <ItemGroup>
     <ProjectReference Include="..\SourceGenerator.Analyzers\SourceGenerator.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
   </ItemGroup>

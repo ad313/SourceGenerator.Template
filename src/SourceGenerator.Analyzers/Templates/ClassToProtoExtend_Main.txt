@@ -1,5 +1,0 @@
-﻿{{ for class in meta_data.class_meta_data_list }}  
-{{ if has_attribute class.attribute_meta_data 'ClassToProtoAttribute'}}
-{{render class template_data 'ClassToProtoExtend.txt' ''}}
-{{ end }}
-{{ end }}

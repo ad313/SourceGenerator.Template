@@ -46,7 +46,7 @@ namespace SourceGenerator.Analyzers
                 this._classSyntaxList.Add(classSyntax);
             }
         }
-        
+
         /// <summary>
         /// 获取所有接口和类
         /// </summary>
@@ -75,14 +75,14 @@ namespace SourceGenerator.Analyzers
             {
                 interfaceMetaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => interfaceMetaData.HasInterface(d.Key)).ToList();
             }
-            
+
             //处理类
             foreach (var classDeclaration in _classSyntaxList)
             {
                 var classMetaData = GetClassMetaData(classDeclaration);
                 if (classMetaData == null)
                     continue;
-                
+
                 var exists = result.ClassMetaDataList.FirstOrDefault(d => d.Equals(classMetaData));
                 if (exists != null)
                 {
@@ -125,13 +125,13 @@ namespace SourceGenerator.Analyzers
                     : classDeclaration.Parent?.Parent;
                 var usingDirectiveSyntax = parent == null ? new SyntaxList<UsingDirectiveSyntax>() : ((CompilationUnitSyntax)parent).Usings;
                 var usingList = usingDirectiveSyntax.Select(d => d.ToString()).ToList();
-                
+
                 return new InterfaceMetaData(namespaceName,
-                    className, 
+                    className,
                     classDeclaration.GetAttributeMetaData(),
-                    props, 
+                    props,
                     methods,
-                    interfaces, 
+                    interfaces,
                     usingList,
                     classDeclaration.Modifiers.ToString(), null);
             }
@@ -200,7 +200,7 @@ namespace SourceGenerator.Analyzers
             var returnValue = methodDeclarationSyntax.ReturnType.ToString();
 
             return new MethodMetaData(methodDeclarationSyntax.Identifier.Text,
-                methodDeclarationSyntax.GetAttributeMetaData(), returnValue, param, methodDeclarationSyntax.Modifiers.ToString(), methodDeclarationSyntax.Modifiers.ToString(),null);
+                methodDeclarationSyntax.GetAttributeMetaData(), returnValue, param, methodDeclarationSyntax.Modifiers.ToString(), methodDeclarationSyntax.Modifiers.ToString(), null);
         }
 
         /// <summary>
