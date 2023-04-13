@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
 using SourceGenerator.Analyzers.MetaData;
 using SourceGenerator.Analyzers.Renders;
@@ -62,16 +61,7 @@ namespace SourceGenerator.Analyzers
             var watch = Stopwatch.StartNew();
             watch.Start();
 
-            var syntaxNodes = compilation.SyntaxTrees.SelectMany(d => d.GetRoot(context.CancellationToken).DescendantNodes()).ToList();
-            var classDeclarationSyntax = syntaxNodes.OfType<ClassDeclarationSyntax>().ToList();
-            var structDeclarationSyntax = syntaxNodes.OfType<StructDeclarationSyntax>().ToList();
-            var interfaceDeclarationSyntax = syntaxNodes.OfType<InterfaceDeclarationSyntax>().ToList();
-            var recordDeclarationSyntax = syntaxNodes.OfType<RecordDeclarationSyntax>().ToList();
-
-            if (!classDeclarationSyntax.Any() && !interfaceDeclarationSyntax.Any()) return;
-            if (context.CancellationToken.IsCancellationRequested) return;
-            
-            var receiver = new SyntaxReceiver(classDeclarationSyntax, interfaceDeclarationSyntax);
+            var receiver = new SyntaxReceiver(compilation, context.CancellationToken);
             AssemblyMetaData meta = null;
 
             #region 1、获取元数据

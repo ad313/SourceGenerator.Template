@@ -44,7 +44,7 @@ namespace SourceGenerator.Analyzers.MetaData
         /// </summary>
         public List<KeyValueModel> Constructor { get; set; }
 
-        public bool HasClass(string key)
+        public new bool Has(string key)
         {
             var newUsing = new string[Usings.Count];
             Array.Copy(Usings.ToArray(), newUsing, Usings.Count);
@@ -54,15 +54,15 @@ namespace SourceGenerator.Analyzers.MetaData
         }
 
         /// <summary>
-        /// 合并
+        /// 合并分部
         /// </summary>
         /// <param name="other"></param>
-        public void Append(ClassMetaData other)
+        public void MergePartial(ClassMetaData other)
         {
             if (other == null)
                 return;
 
-            base.Append(other);
+            base.MergePartial(other);
 
             if (BaseClasses != null && other.BaseClasses != null)
             {
@@ -72,6 +72,84 @@ namespace SourceGenerator.Analyzers.MetaData
 
             if (BaseClassMetaDataList != null && other.BaseClassMetaDataList != null)
                 BaseClassMetaDataList.AddRange(other.BaseClassMetaDataList);
+        }
+
+        /// <summary>
+        /// 合并所有父级数据
+        /// </summary>
+        public override void MergeAllParent()
+        {
+            MergeParentItem(this, BaseClassMetaDataList.FirstOrDefault());
+        }
+
+        /// <summary>
+        /// 合并所有父级数据
+        /// </summary>
+        private void MergeParentItem(ClassMetaData source, ClassMetaData parent)
+        {
+            if (parent == null)
+                return;
+
+            if (parent.BaseClassMetaDataList != null && parent.BaseClassMetaDataList.Any())
+            {
+                MergeParentItem(parent, parent.BaseClassMetaDataList.First());
+            }
+            
+            if (parent.Usings != null)
+            {
+                source.Usings.AddRange(parent.Usings);
+                source.Usings = source.Usings.Distinct().ToList();
+            }
+
+            if (parent.PropertyMeta != null)
+            {
+                foreach (var metaData in parent.PropertyMeta)
+                {
+                    var exists = source.PropertyMeta.FirstOrDefault(d => d.Name == metaData.Name);
+                    if (exists == null)
+                    {
+                        source.PropertyMeta.Add(metaData);
+                    }
+                    else
+                    {
+                        if (metaData.AttributeMetaData != null)
+                        {
+                            foreach (var attributeMetaData in metaData.AttributeMetaData)
+                            {
+                                if (exists.AttributeMetaData.All(d => d.Name != attributeMetaData.Name))
+                                {
+                                    exists.AttributeMetaData.Add(attributeMetaData);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (parent.MethodMetaData != null)
+            {
+                foreach (var metaData in parent.MethodMetaData)
+                {
+                    var exists = source.MethodMetaData.FirstOrDefault(d => d.Key == metaData.Key);
+                    if (exists == null)
+                    {
+                        source.MethodMetaData.Add(metaData);
+                    }
+                    else
+                    {
+                        if (metaData.AttributeMetaData != null)
+                        {
+                            foreach (var attributeMetaData in metaData.AttributeMetaData)
+                            {
+                                if (exists.AttributeMetaData.All(d => d.Name != attributeMetaData.Name))
+                                {
+                                    exists.AttributeMetaData.Add(attributeMetaData);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

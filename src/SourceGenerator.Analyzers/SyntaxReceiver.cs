@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 
 namespace SourceGenerator.Analyzers
 {
@@ -16,18 +17,35 @@ namespace SourceGenerator.Analyzers
     sealed class SyntaxReceiver : ISyntaxReceiver
     {
         /// <summary>
-        /// 类列表
+        /// Struct
+        /// </summary>
+        private readonly List<StructDeclarationSyntax> _structSyntaxList;
+        /// <summary>
+        /// Class
         /// </summary>
         private readonly List<ClassDeclarationSyntax> _classSyntaxList;
         /// <summary>
-        /// 接口列表
+        /// Interface
         /// </summary>
         private readonly List<InterfaceDeclarationSyntax> _interfaceSyntaxList;
+        /// <summary>
+        /// Record
+        /// </summary>
+        private readonly List<RecordDeclarationSyntax> _recordSyntaxList;
 
         public SyntaxReceiver(List<ClassDeclarationSyntax> classSyntaxList, List<InterfaceDeclarationSyntax> interfaceSyntaxList)
         {
             _classSyntaxList = classSyntaxList;
             _interfaceSyntaxList = interfaceSyntaxList;
+        }
+
+        public SyntaxReceiver(Compilation compilation, CancellationToken token)
+        {
+            var syntaxNodes = compilation.SyntaxTrees.SelectMany(d => d.GetRoot(token).DescendantNodes()).ToList();
+            _classSyntaxList = syntaxNodes.OfType<ClassDeclarationSyntax>().ToList();
+            _structSyntaxList = syntaxNodes.OfType<StructDeclarationSyntax>().ToList();
+            _interfaceSyntaxList = syntaxNodes.OfType<InterfaceDeclarationSyntax>().ToList();
+            _recordSyntaxList = syntaxNodes.OfType<RecordDeclarationSyntax>().ToList();
         }
 
         /// <summary>
@@ -54,121 +72,118 @@ namespace SourceGenerator.Analyzers
         /// <returns></returns>
         public AssemblyMetaData GetMetaData(Compilation compilation)
         {
-            var result = new AssemblyMetaData(new List<InterfaceMetaData>(), new List<ClassMetaData>());
+            var result = new AssemblyMetaData(new List<InterfaceMetaData>(), new List<ClassMetaData>(), new List<StructMetaData>());
 
-            //处理接口
-            foreach (var interfaceDeclaration in _interfaceSyntaxList)
+            #region 处理接口
+
+            //Debugger.Launch();
+            foreach (var declaration in _interfaceSyntaxList)
             {
-                var interfaceMetaData = GetInterfaceMetaData(interfaceDeclaration);
-                var exists = result.InterfaceMetaDataList.FirstOrDefault(d => d.Equals(interfaceMetaData));
+                var metaData = GetMetaData<InterfaceDeclarationSyntax, InterfaceMetaData>(declaration);
+                var exists = result.InterfaceMetaDataList.FirstOrDefault(d => d.Equals(metaData));
                 if (exists != null)
                 {
-                    exists.Append(interfaceMetaData);
+                    exists.MergePartial(metaData);
                 }
                 else
                 {
-                    result.InterfaceMetaDataList.Add(interfaceMetaData);
+                    result.InterfaceMetaDataList.Add(metaData);
                 }
             }
 
-            foreach (var interfaceMetaData in result.InterfaceMetaDataList)
+            foreach (var metaData in result.InterfaceMetaDataList)
             {
-                interfaceMetaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => interfaceMetaData.HasInterface(d.Key)).ToList();
+                metaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => metaData.Has(d.Key)).ToList();
             }
 
-            //处理类
-            foreach (var classDeclaration in _classSyntaxList)
+            #endregion
+            
+            #region 处理类
+
+            foreach (var declaration in _classSyntaxList)
             {
-                var classMetaData = GetClassMetaData(classDeclaration);
-                if (classMetaData == null)
+                var metaData = GetMetaData<ClassDeclarationSyntax, ClassMetaData>(declaration);
+                if (metaData == null)
                     continue;
 
-                var exists = result.ClassMetaDataList.FirstOrDefault(d => d.Equals(classMetaData));
+                var exists = result.ClassMetaDataList.FirstOrDefault(d => d.Equals(metaData));
                 if (exists != null)
                 {
-                    exists.Append(classMetaData);
+                    exists.MergePartial(metaData);
                 }
                 else
                 {
-                    result.ClassMetaDataList.Add(classMetaData);
+                    result.ClassMetaDataList.Add(metaData);
                 }
             }
 
-            foreach (var classMetaData in result.ClassMetaDataList)
+            foreach (var metaData in result.ClassMetaDataList)
             {
-                classMetaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => classMetaData.HasInterface(d.Key)).ToList();
-                classMetaData.BaseClassMetaDataList = result.ClassMetaDataList.Where(d => classMetaData.HasClass(d.Key)).ToList();
+                metaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => ((InterfaceMetaData)metaData).Has(d.Key)).ToList();
+                metaData.BaseClassMetaDataList = result.ClassMetaDataList.Where(d => metaData.Has(d.Key)).ToList();
             }
-            //Debugger.Launch();
-            return result;
-        }
 
-        private InterfaceMetaData GetInterfaceMetaData(InterfaceDeclarationSyntax classDeclaration)
+            #endregion
+
+            #region 处理 Struct
+
+            foreach (var declaration in _structSyntaxList)
+            {
+                var metaData = GetMetaData<StructDeclarationSyntax, StructMetaData>(declaration);
+                if (metaData == null)
+                    continue;
+
+                var exists = result.StructMetaDataList.FirstOrDefault(d => d.Equals(metaData));
+                if (exists != null)
+                {
+                    exists.MergePartial(metaData);
+                }
+                else
+                {
+                    result.StructMetaDataList.Add(metaData);
+                }
+            }
+
+            foreach (var metaData in result.StructMetaDataList)
+            {
+                metaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => metaData.Has(d.Key)).ToList();
+            }
+
+            #endregion
+            
+            return result.FormatData();
+        }
+        
+
+        private TOut GetMetaData<TIn, TOut>(TIn declaration) where TIn : TypeDeclarationSyntax where TOut : InterfaceMetaData
         {
             try
             {
-                var namespaceName = classDeclaration.FindParent<NamespaceDeclarationSyntax>()?.Name.ToString();
-                var className = classDeclaration.Identifier.Text;
-                var properties = classDeclaration.DescendantNodes().OfType<PropertyDeclarationSyntax>().ToList();
-                var methodSyntax = classDeclaration.DescendantNodes().OfType<MethodDeclarationSyntax>().ToList();
-
-                //属性集合
-                var props = properties.Select(d => new PropertyMetaData(d.Identifier.Text, d.GetAttributeMetaData(), GetPropertyDescription(d), d.Modifiers.ToString(), d.Type?.ToString())).ToList();
-                //方法集合
-                var methods = methodSyntax.Select(GetMethodMetaData).ToList();
-                //实现的接口集合
-                var interfaces = classDeclaration.BaseList?.ToString().Split(':').Last().Trim().Split(',').Where(d => d.Trim().Split('.').Last().StartsWith("I")).Select(d => d.Trim()).ToList() ?? new List<string>();
-                //using 引用
-                //特殊处理 class中嵌套class
-                var parent = classDeclaration.Parent is ClassDeclarationSyntax
-                    ? classDeclaration.Parent?.Parent?.Parent
-                    : classDeclaration.Parent?.Parent;
-                var usingDirectiveSyntax = parent == null ? new SyntaxList<UsingDirectiveSyntax>() : ((CompilationUnitSyntax)parent).Usings;
-                var usingList = usingDirectiveSyntax.Select(d => d.ToString()).ToList();
-
-                return new InterfaceMetaData(namespaceName,
-                    className,
-                    classDeclaration.GetAttributeMetaData(),
-                    props,
-                    methods,
-                    interfaces,
-                    usingList,
-                    classDeclaration.Modifiers.ToString(), null);
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"class 报错：{classDeclaration.Identifier.Text}", e);
-            }
-        }
-
-        private ClassMetaData GetClassMetaData(ClassDeclarationSyntax classDeclaration)
-        {
-            try
-            {
-                var namespaceName = classDeclaration.FindParent<NamespaceDeclarationSyntax>()?.Name.ToString();
-                var className = classDeclaration.Identifier.Text;
-                var properties = classDeclaration.DescendantNodes().OfType<PropertyDeclarationSyntax>().ToList();
-                var methodSyntax = classDeclaration.DescendantNodes().OfType<MethodDeclarationSyntax>().ToList();
+                var namespaceName = declaration.FindParent<NamespaceDeclarationSyntax>()?.Name.ToString();
+                var className = declaration.Identifier.Text;
+                var properties = declaration.DescendantNodes().OfType<PropertyDeclarationSyntax>().ToList();
+                var methodSyntax = declaration.DescendantNodes().OfType<MethodDeclarationSyntax>().ToList();
 
                 //属性集合
                 var props = properties.Select(d => new PropertyMetaData(d.Identifier.Text, d.GetAttributeMetaData(), GetPropertyDescription(d), d.Modifiers.ToString(), d.Type?.ToString())).ToList();
                 //方法集合
                 var methods = methodSyntax.Select(GetMethodMetaData).ToList();
                 //实现的接口集合、继承的类
-                var array = classDeclaration.BaseList?.ToString().Split(':').Last().Trim().Split(',').Select(d => d.Trim()).ToList() ?? new List<string>();
+                var array = declaration.BaseList?.ToString().Split(':').Last().Trim().Split(',').Select(d => d.Trim()).ToList() ?? new List<string>();
                 var interfaces = array.Where(d => d.Split('.').Last().StartsWith("I")).ToList();
                 var classes = array.Where(d => !d.Split('.').Last().StartsWith("I")).ToList();
+
                 //using 引用
                 //特殊处理 class中嵌套class
-                var parent = classDeclaration.Parent is ClassDeclarationSyntax
-                    ? classDeclaration.Parent?.Parent?.Parent
-                    : classDeclaration.Parent?.Parent;
+                var parent = declaration.Parent is ClassDeclarationSyntax
+                    ? declaration.Parent?.Parent?.Parent
+                    : declaration.Parent?.Parent;
                 var usingDirectiveSyntax = parent == null ? new SyntaxList<UsingDirectiveSyntax>() : ((CompilationUnitSyntax)parent).Usings;
-                var usingList = usingDirectiveSyntax.Select(d => d.ToString()).ToList();
+                var usingList = usingDirectiveSyntax.Select(d => d.ToString().Replace("using", "").Replace(";", "").Trim()).ToList();
 
                 //构造函数
                 var constructorDictionary = new List<KeyValueModel>();
-                foreach (var memberDeclarationSyntax in classDeclaration.Members)
+                foreach (var memberDeclarationSyntax in declaration.Members)
                 {
                     if (memberDeclarationSyntax.Kind().ToString() == "ConstructorDeclaration")
                     {
@@ -177,11 +192,50 @@ namespace SourceGenerator.Analyzers
                     }
                 }
 
-                return new ClassMetaData(namespaceName, className, classDeclaration.GetAttributeMetaData(), props, methods, interfaces, classes, constructorDictionary, usingList, classDeclaration.Modifiers.ToString());
+                if (typeof(TOut) == typeof(StructMetaData))
+                {
+                    return new StructMetaData(namespaceName,
+                        className,
+                        declaration.GetAttributeMetaData(),
+                        props,
+                        methods,
+                        interfaces,
+                        constructorDictionary,
+                        usingList,
+                        declaration.Modifiers.ToString()) as TOut;
+                }
+
+                if (typeof(TOut) == typeof(ClassMetaData))
+                {
+                    return new ClassMetaData(namespaceName,
+                        className,
+                        declaration.GetAttributeMetaData(),
+                        props,
+                        methods,
+                        interfaces,
+                        classes,
+                        constructorDictionary,
+                        usingList,
+                        declaration.Modifiers.ToString()) as TOut;
+                }
+
+                if (typeof(TOut) == typeof(InterfaceMetaData))
+                {
+                    return new InterfaceMetaData(namespaceName,
+                        className,
+                        declaration.GetAttributeMetaData(),
+                        props,
+                        methods,
+                        interfaces,
+                        usingList,
+                        declaration.Modifiers.ToString(), null) as TOut;
+                }
+
+                return default;
             }
             catch (Exception e)
             {
-                throw new Exception($"class 报错：{classDeclaration.Identifier.Text}", e);
+                throw new Exception($"class 报错：{declaration.Identifier.Text}", e);
             }
         }
 

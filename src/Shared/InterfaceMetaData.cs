@@ -61,10 +61,15 @@ namespace SourceGenerator.Analyzers.MetaData
         public List<string> Usings { get; set; }
 
         /// <summary>
+        /// 是否是最底层的叶子节点
+        /// </summary>
+        public bool IsLeaf { get; set; }
+
+        /// <summary>
         /// 合并
         /// </summary>
         /// <param name="other"></param>
-        public void Append(InterfaceMetaData other)
+        public void MergePartial(InterfaceMetaData other)
         {
             if (other == null)
                 return;
@@ -93,13 +98,97 @@ namespace SourceGenerator.Analyzers.MetaData
             }
         }
 
-        public bool HasInterface(string key)
+        public bool Has(string key)
         {
             var newUsing = new string[Usings.Count];
             Array.Copy(Usings.ToArray(), newUsing, Usings.Count);
             newUsing = newUsing.Append(Namespace).ToArray();
 
             return BaseInterfaces.Contains(key) || BaseInterfaces.SelectMany(t => newUsing.Select(u => $"{u.Replace("using ", "").Replace(";", "")}.{t.Split('.').Last()}")).Contains(key);
+        }
+
+        /// <summary>
+        /// 合并所有父级数据
+        /// </summary>
+        public virtual void MergeAllParent()
+        {
+            foreach (var parent in BaseInterfaceMetaDataList)
+            {
+                MergeParentItem(this, parent);
+            }
+        }
+
+        /// <summary>
+        /// 合并所有父级数据
+        /// </summary>
+        protected void MergeParentItem(InterfaceMetaData source, InterfaceMetaData parent)
+        {
+            if (parent == null)
+                return;
+
+            if (parent.BaseInterfaceMetaDataList != null && parent.BaseInterfaceMetaDataList.Any())
+            {
+                foreach (var interfaceMetaData in parent.BaseInterfaceMetaDataList)
+                {
+                    MergeParentItem(parent, interfaceMetaData);
+                }
+            }
+
+            if (parent.Usings != null)
+            {
+                source.Usings.AddRange(parent.Usings);
+                source.Usings = source.Usings.Distinct().ToList();
+            }
+
+            if (parent.PropertyMeta != null)
+            {
+                foreach (var metaData in parent.PropertyMeta)
+                {
+                    var exists = source.PropertyMeta.FirstOrDefault(d => d.Name == metaData.Name);
+                    if (exists == null)
+                    {
+                        source.PropertyMeta.Add(metaData);
+                    }
+                    else
+                    {
+                        if (metaData.AttributeMetaData != null)
+                        {
+                            foreach (var attributeMetaData in metaData.AttributeMetaData)
+                            {
+                                if (exists.AttributeMetaData.All(d => d.Name != attributeMetaData.Name))
+                                {
+                                    exists.AttributeMetaData.Add(attributeMetaData);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (parent.MethodMetaData != null)
+            {
+                foreach (var metaData in parent.MethodMetaData)
+                {
+                    var exists = source.MethodMetaData.FirstOrDefault(d => d.Key == metaData.Key);
+                    if (exists == null)
+                    {
+                        source.MethodMetaData.Add(metaData);
+                    }
+                    else
+                    {
+                        if (metaData.AttributeMetaData != null)
+                        {
+                            foreach (var attributeMetaData in metaData.AttributeMetaData)
+                            {
+                                if (exists.AttributeMetaData.All(d => d.Name != attributeMetaData.Name))
+                                {
+                                    exists.AttributeMetaData.Add(attributeMetaData);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public bool Equals(InterfaceMetaData other)

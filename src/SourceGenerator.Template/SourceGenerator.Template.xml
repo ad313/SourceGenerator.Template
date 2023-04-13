@@ -24,6 +24,16 @@
             类元数据
             </summary>
         </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.AssemblyMetaData.StructMetaDataList">
+            <summary>
+            Struct 元数据
+            </summary>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.AssemblyMetaData.FormatData">
+            <summary>
+            处理数据，类和接口有继承的情况，处理标记数据
+            </summary>
+        </member>
         <member name="P:SourceGenerator.Analyzers.MetaData.AttributeMetaData.Name">
             <summary>
             Attribute名称
@@ -57,11 +67,21 @@
             构造函数参数
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.Append(SourceGenerator.Analyzers.MetaData.ClassMetaData)">
+        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.MergePartial(SourceGenerator.Analyzers.MetaData.ClassMetaData)">
             <summary>
-            合并
+            合并分部
             </summary>
             <param name="other"></param>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.MergeAllParent">
+            <summary>
+            合并所有父级数据
+            </summary>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.MergeParentItem(SourceGenerator.Analyzers.MetaData.ClassMetaData,SourceGenerator.Analyzers.MetaData.ClassMetaData)">
+            <summary>
+            合并所有父级数据
+            </summary>
         </member>
         <member name="T:SourceGenerator.Analyzers.MetaData.InterfaceMetaData">
             <summary>
@@ -101,11 +121,26 @@
             引用
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.Append(SourceGenerator.Analyzers.MetaData.InterfaceMetaData)">
+        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.IsLeaf">
+            <summary>
+            是否是最底层的叶子节点
+            </summary>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.MergePartial(SourceGenerator.Analyzers.MetaData.InterfaceMetaData)">
             <summary>
             合并
             </summary>
             <param name="other"></param>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.MergeAllParent">
+            <summary>
+            合并所有父级数据
+            </summary>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.MergeParentItem(SourceGenerator.Analyzers.MetaData.InterfaceMetaData,SourceGenerator.Analyzers.MetaData.InterfaceMetaData)">
+            <summary>
+            合并所有父级数据
+            </summary>
         </member>
         <member name="M:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.GetHashCode">
             <summary>
@@ -198,6 +233,25 @@
             <summary>
             属性描述
             </summary>
+        </member>
+        <member name="T:SourceGenerator.Analyzers.MetaData.StructMetaData">
+            <summary>
+            类元数据
+            </summary>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.StructMetaData.#ctor(System.String,System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.AttributeMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.PropertyMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.MethodMetaData},System.Collections.Generic.List{System.String},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.KeyValueModel},System.Collections.Generic.List{System.String},System.String,System.String)">
+            <summary>Initializes a new instance of the <see cref="T:System.Object"></see> class.</summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.StructMetaData.Constructor">
+            <summary>
+            构造函数参数
+            </summary>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.StructMetaData.MergePartial(SourceGenerator.Analyzers.MetaData.StructMetaData)">
+            <summary>
+            合并
+            </summary>
+            <param name="other"></param>
         </member>
     </members>
 </doc>

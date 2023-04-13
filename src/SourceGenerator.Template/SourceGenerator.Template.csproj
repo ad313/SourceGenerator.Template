@@ -2,10 +2,10 @@
 	<PropertyGroup>
 		<TargetFrameworks>net5.0;net6.0;net7.0</TargetFrameworks>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Version>0.0.1</Version>
+		<Version>0.0.2</Version>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<DocumentationFile>SourceGenerator.Template.xml</DocumentationFile>
-		<Description>通过 SourceGenerator 扫描程序集，获取元数据，用过使用 Scriban 生成代码，自定义模板</Description>
+		<Description>通过 SourceGenerator 扫描程序集，获取元数据。使用 Scriban 模板引擎，自定义模板生成代码</Description>
 		<PackageProjectUrl>https://github.com/ad313/SourceGenerator.Template</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/ad313/SourceGenerator.Template</RepositoryUrl>
 		<Authors>ad313</Authors>
@@ -16,11 +16,10 @@
 
 	<ItemGroup>
 		<Compile Include="..\Shared\*.cs" />
-	</ItemGroup>
-	<ItemGroup>
 		<Compile Update="..\Shared\AssemblyMetaData.cs" Link="MetaData\AssemblyMetaData.cs" />
 		<Compile Update="..\Shared\AttributeMetaData.cs" Link="MetaData\AttributeMetaData.cs" />
 		<Compile Update="..\Shared\ClassMetaData.cs" Link="MetaData\ClassMetaData.cs" />
+		<Compile Update="..\Shared\StructMetaData.cs" Link="MetaData\StructMetaData.cs" />
 		<Compile Update="..\Shared\InterfaceMetaData.cs" Link="MetaData\InterfaceMetaData.cs" />
 		<Compile Update="..\Shared\MetaDataBase.cs" Link="MetaData\MetaDataBase.cs" />
 		<Compile Update="..\Shared\MethodMetaData.cs" Link="MetaData\MethodMetaData.cs" />
@@ -32,7 +31,7 @@
 	</ItemGroup>
 
 	<!--nuget analyzers -->
-	<ItemGroup>
+	<!--<ItemGroup>
 		<None Include="NugetPackage\tools\*.*" PackagePath="tools" Pack="true" />
 		<None Include="NugetPackage\analyzers\dotnet\cs\**" PackagePath="analyzers\dotnet\cs" Pack="true" />
 	</ItemGroup>
@@ -41,5 +40,5 @@
 	</ItemGroup>
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="dotnet publish ../SourceGenerator.Analyzers/SourceGenerator.Analyzers.csproj -c Release -o NugetPackage/analyzers/dotnet/cs" />
-	</Target>
+	</Target>-->
 </Project>
