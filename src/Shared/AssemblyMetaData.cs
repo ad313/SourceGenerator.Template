@@ -28,11 +28,17 @@ namespace SourceGenerator.Analyzers.MetaData
         /// </summary>
         public List<StructMetaData> StructMetaDataList { get; private set; }
 
-        public AssemblyMetaData(List<InterfaceMetaData> interfaceMetaDataList, List<ClassMetaData> classMetaDataList, List<StructMetaData> structMetaDataList)
+        /// <summary>
+        /// enum 元数据
+        /// </summary>
+        public List<EnumMetaData> EnumMetaDataList { get; private set; }
+
+        public AssemblyMetaData(List<InterfaceMetaData> interfaceMetaDataList, List<ClassMetaData> classMetaDataList, List<StructMetaData> structMetaDataList, List<EnumMetaData> enumMetaDataList)
         {
             InterfaceMetaDataList = interfaceMetaDataList;
             ClassMetaDataList = classMetaDataList;
             StructMetaDataList = structMetaDataList;
+            EnumMetaDataList = enumMetaDataList;
         }
 
         /// <summary>

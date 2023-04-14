@@ -3,7 +3,7 @@
 namespace SourceGenerator.Analyzers.MetaData
 {
     /// <summary>
-    /// 类元数据
+    /// 结构体元数据
     /// </summary>
     public class StructMetaData : InterfaceMetaData
     {

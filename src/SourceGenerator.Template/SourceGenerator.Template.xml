@@ -38,6 +38,11 @@
             Struct 元数据
             </summary>
         </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.AssemblyMetaData.EnumMetaDataList">
+            <summary>
+            enum 元数据
+            </summary>
+        </member>
         <member name="M:SourceGenerator.Analyzers.MetaData.AssemblyMetaData.FormatData">
             <summary>
             处理数据，类和接口有继承的情况，处理标记数据
@@ -91,6 +96,53 @@
             <summary>
             合并所有父级数据
             </summary>
+        </member>
+        <member name="T:SourceGenerator.Analyzers.MetaData.EnumMetaData">
+            <summary>
+            枚举元数据
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.EnumMetaData.Namespace">
+            <summary>
+            命名空间
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.EnumMetaData.MemberMeta">
+            <summary>
+            成员集合
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.EnumMetaData.UsingList">
+            <summary>
+            引用
+            </summary>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.EnumMetaData.GetHashCode">
+            <summary>
+            获取哈希
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:SourceGenerator.Analyzers.MetaData.EnumMemberMetaData">
+            <summary>
+            枚举成员元数据
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.EnumMemberMetaData.EnumName">
+            <summary>
+            枚举名称
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.EnumMemberMetaData.Value">
+            <summary>
+            枚举值
+            </summary>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.EnumMemberMetaData.GetHashCode">
+            <summary>
+            获取哈希
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:SourceGenerator.Analyzers.MetaData.InterfaceMetaData">
             <summary>
@@ -245,7 +297,7 @@
         </member>
         <member name="T:SourceGenerator.Analyzers.MetaData.StructMetaData">
             <summary>
-            类元数据
+            结构体元数据
             </summary>
         </member>
         <member name="M:SourceGenerator.Analyzers.MetaData.StructMetaData.#ctor(System.String,System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.AttributeMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.PropertyMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.MethodMetaData},System.Collections.Generic.List{System.String},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.KeyValueModel},System.Collections.Generic.List{System.String},System.String,System.String)">

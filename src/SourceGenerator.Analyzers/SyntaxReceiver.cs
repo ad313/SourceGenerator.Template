@@ -5,7 +5,6 @@ using SourceGenerator.Analyzers.Extend;
 using SourceGenerator.Analyzers.MetaData;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 
@@ -29,6 +28,10 @@ namespace SourceGenerator.Analyzers
         /// </summary>
         private readonly List<InterfaceDeclarationSyntax> _interfaceSyntaxList;
         /// <summary>
+        /// enum
+        /// </summary>
+        private readonly List<EnumDeclarationSyntax> _enumSyntaxList;
+        /// <summary>
         /// Record
         /// </summary>
         private readonly List<RecordDeclarationSyntax> _recordSyntaxList;
@@ -45,6 +48,7 @@ namespace SourceGenerator.Analyzers
             _classSyntaxList = syntaxNodes.OfType<ClassDeclarationSyntax>().ToList();
             _structSyntaxList = syntaxNodes.OfType<StructDeclarationSyntax>().ToList();
             _interfaceSyntaxList = syntaxNodes.OfType<InterfaceDeclarationSyntax>().ToList();
+            _enumSyntaxList = syntaxNodes.OfType<EnumDeclarationSyntax>().ToList();
             _recordSyntaxList = syntaxNodes.OfType<RecordDeclarationSyntax>().ToList();
         }
 
@@ -72,7 +76,7 @@ namespace SourceGenerator.Analyzers
         /// <returns></returns>
         public AssemblyMetaData GetMetaData(Compilation compilation)
         {
-            var result = new AssemblyMetaData(new List<InterfaceMetaData>(), new List<ClassMetaData>(), new List<StructMetaData>());
+            var result = new AssemblyMetaData(new List<InterfaceMetaData>(), new List<ClassMetaData>(), new List<StructMetaData>(), new List<EnumMetaData>());
 
             #region 处理接口
 
@@ -150,20 +154,34 @@ namespace SourceGenerator.Analyzers
             }
 
             #endregion
+
+            #region 处理 enum
             
+            foreach (var declaration in _enumSyntaxList)
+            {
+                var metaData = GetMetaData<EnumDeclarationSyntax, EnumMetaData>(declaration);
+                if (metaData == null)
+                    continue;
+
+                result.EnumMetaDataList.Add(metaData);
+            }
+            
+            #endregion
+
             return result.FormatData();
         }
         
-
-        private TOut GetMetaData<TIn, TOut>(TIn declaration) where TIn : TypeDeclarationSyntax where TOut : InterfaceMetaData
+        private TOut GetMetaData<TIn, TOut>(TIn declaration) where TIn : BaseTypeDeclarationSyntax where TOut : MetaDataBase
         {
             try
             {
-                var namespaceName = declaration.FindParent<NamespaceDeclarationSyntax>()?.Name.ToString();
+                var namespaceName = declaration.FindParent<NamespaceDeclarationSyntax>()?.Name.ToString() ??
+                                    declaration.FindParent<FileScopedNamespaceDeclarationSyntax>()?.Name.ToString();
                 var className = declaration.Identifier.Text;
                 var properties = declaration.DescendantNodes().OfType<PropertyDeclarationSyntax>().ToList();
                 var methodSyntax = declaration.DescendantNodes().OfType<MethodDeclarationSyntax>().ToList();
 
+                var enumMembers = new List<EnumMemberMetaData>();
                 //属性集合
                 var props = properties.Select(d => new PropertyMetaData(d.Identifier.Text, d.GetAttributeMetaData(), GetPropertyDescription(d), d.Modifiers.ToString(), d.Type?.ToString())).ToList();
                 //方法集合
@@ -183,13 +201,25 @@ namespace SourceGenerator.Analyzers
 
                 //构造函数
                 var constructorDictionary = new List<KeyValueModel>();
-                foreach (var memberDeclarationSyntax in declaration.Members)
+                if (declaration is TypeDeclarationSyntax typeDeclarationSyntax)
                 {
-                    if (memberDeclarationSyntax.Kind().ToString() == "ConstructorDeclaration")
+                    foreach (var memberDeclarationSyntax in typeDeclarationSyntax.Members)
                     {
-                        constructorDictionary = memberDeclarationSyntax.DescendantNodes().OfType<ParameterSyntax>().Select(d => new KeyValueModel(d.Type?.ToString(), d.Identifier.Text)).ToList();
-                        break;
+                        if (memberDeclarationSyntax.Kind().ToString() == "ConstructorDeclaration")
+                        {
+                            constructorDictionary = memberDeclarationSyntax.DescendantNodes().OfType<ParameterSyntax>().Select(d => new KeyValueModel(d.Type?.ToString(), d.Identifier.Text)).ToList();
+                            break;
+                        }
                     }
+                }
+                else if (declaration is BaseTypeDeclarationSyntax baseTypeDeclarationSyntax)
+                {
+                    //枚举
+                    var membersSyntax = declaration.DescendantNodes().OfType<EnumMemberDeclarationSyntax>().ToList();
+                    enumMembers = membersSyntax.Select(d =>
+                        new EnumMemberMetaData(baseTypeDeclarationSyntax.Identifier.Text, d.Identifier.Text,
+                            string.IsNullOrWhiteSpace(d.EqualsValue?.Value.ToString()) ? null : Convert.ToInt32(d.EqualsValue.Value.ToString())
+                            , d.GetAttributeMetaData())).ToList();
                 }
 
                 if (typeof(TOut) == typeof(StructMetaData))
@@ -227,6 +257,16 @@ namespace SourceGenerator.Analyzers
                         props,
                         methods,
                         interfaces,
+                        usingList,
+                        declaration.Modifiers.ToString(), null) as TOut;
+                }
+
+                if (typeof(TOut) == typeof(EnumMetaData))
+                {
+                    return new EnumMetaData(namespaceName,
+                        className,
+                        declaration.GetAttributeMetaData(),
+                        enumMembers,
                         usingList,
                         declaration.Modifiers.ToString(), null) as TOut;
                 }
