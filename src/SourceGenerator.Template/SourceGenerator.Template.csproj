@@ -15,6 +15,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Compile Include="..\Shared\*.cs" />
 		<Compile Update="..\Shared\AssemblyMetaData.cs" Link="MetaData\AssemblyMetaData.cs" />
 		<Compile Update="..\Shared\AttributeMetaData.cs" Link="MetaData\AttributeMetaData.cs" />
@@ -24,10 +28,6 @@
 		<Compile Update="..\Shared\MetaDataBase.cs" Link="MetaData\MetaDataBase.cs" />
 		<Compile Update="..\Shared\MethodMetaData.cs" Link="MetaData\MethodMetaData.cs" />
 		<Compile Update="..\Shared\PropertyMetaData.cs" Link="MetaData\PropertyMetaData.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="MetaData\" />
 	</ItemGroup>
 
 	<!--nuget analyzers -->

@@ -4,6 +4,15 @@
         <name>SourceGenerator.Template</name>
     </assembly>
     <members>
+        <member name="M:SourceGenerator.Template.MetaDataHelper.LoadJson(System.String)">
+            <summary>
+            读取json，转换元数据
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
+            <exception cref="T:System.IO.FileNotFoundException"></exception>
+            <exception cref="T:System.Exception"></exception>
+        </member>
         <member name="T:SourceGenerator.Analyzers.MetaData.AssemblyMetaData">
             <summary>
             扫描接口、类元数据
@@ -116,7 +125,7 @@
             继承的接口
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.Usings">
+        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.UsingList">
             <summary>
             引用
             </summary>

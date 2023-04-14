@@ -16,10 +16,10 @@ namespace SourceGenerator.Analyzers.MetaData
             List<MethodMetaData> methodMetaData,
             List<string> baseInterfaces,
             List<KeyValueModel> constructor,
-            List<string> usings,
+            List<string> usingList,
             string accessModifier,
             string extModifier = null)
-            : base(@namespace, name, attributeMetaData, propertyMeta, methodMetaData, baseInterfaces, usings, accessModifier, extModifier)
+            : base(@namespace, name, attributeMetaData, propertyMeta, methodMetaData, baseInterfaces, usingList, accessModifier, extModifier)
         {
             Constructor = constructor;
         }

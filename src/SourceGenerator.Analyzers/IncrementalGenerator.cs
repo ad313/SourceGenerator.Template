@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using SourceGenerator.Analyzers.MetaData;
 using SourceGenerator.Analyzers.Renders;
 using System;
@@ -23,18 +24,21 @@ namespace SourceGenerator.Analyzers
         /// <summary>
         /// 初始化
         /// </summary>
-        /// <param name="context"></param>
-        public void Initialize(IncrementalGeneratorInitializationContext context)
+        /// <param name="initializationContextContext"></param>
+        public void Initialize(IncrementalGeneratorInitializationContext initializationContextContext)
         {
             //Debugger.Launch();
 
-            var textFiles = context.AdditionalTextsProvider.Where(file => file.Path.EndsWith(".txt", StringComparison.OrdinalIgnoreCase)).Collect();
-            var compilations = context.CompilationProvider.Select((compilation, cancellationToken) => compilation);
+            var textFiles = initializationContextContext.AdditionalTextsProvider.Where(file => file.Path.EndsWith(".txt", StringComparison.OrdinalIgnoreCase)).Collect();
+            var compilations = initializationContextContext.CompilationProvider.Select((compilation, cancellationToken) => compilation);
 
-            context.RegisterSourceOutput(compilations.Combine(textFiles), (context, compilation) =>
+            initializationContextContext.RegisterSourceOutput(compilations.Combine(textFiles), (context, compilation) =>
             {
                 try
                 {
+                    if (context.CancellationToken.IsCancellationRequested) 
+                        return;
+
                     Context = context;
                     Execute(context, compilation.Left, compilation.Right);
                 }
@@ -80,14 +84,17 @@ namespace SourceGenerator.Analyzers
             }
             finally
             {
-                watch.Restart();
-                
                 //输出元数据json
-                context.AddSource("MetaJson", "//" + JsonConvert.SerializeObject(meta));
+                context.AddSource("MetaJson", "//" + JsonConvert.SerializeObject(meta, new JsonSerializerSettings()
+                {
+                    ContractResolver = new DefaultContractResolver() { NamingStrategy = new SnakeCaseNamingStrategy() }
+                }));
+
+                watch.Restart();
             }
 
             #endregion
-            
+
             #region 5、自定义模板生成代码
             try
             {
@@ -104,7 +111,7 @@ namespace SourceGenerator.Analyzers
             }
             finally
             {
-                watch.Restart();
+                watch.Stop();
             } 
             #endregion
         }

@@ -46,8 +46,8 @@ namespace SourceGenerator.Analyzers.MetaData
 
         public new bool Has(string key)
         {
-            var newUsing = new string[Usings.Count];
-            Array.Copy(Usings.ToArray(), newUsing, Usings.Count);
+            var newUsing = new string[UsingList.Count];
+            Array.Copy(UsingList.ToArray(), newUsing, UsingList.Count);
             newUsing = newUsing.Append(Namespace).ToArray();
 
             return BaseClasses.Contains(key) || BaseClasses.SelectMany(t => newUsing.Select(u => $"{u.Replace("using ", "").Replace(";", "")}.{t.Split('.').Last()}")).Contains(key);
@@ -95,10 +95,10 @@ namespace SourceGenerator.Analyzers.MetaData
                 MergeParentItem(parent, parent.BaseClassMetaDataList.First());
             }
             
-            if (parent.Usings != null)
+            if (parent.UsingList != null)
             {
-                source.Usings.AddRange(parent.Usings);
-                source.Usings = source.Usings.Distinct().ToList();
+                source.UsingList.AddRange(parent.UsingList);
+                source.UsingList = source.UsingList.Distinct().ToList();
             }
 
             if (parent.PropertyMeta != null)

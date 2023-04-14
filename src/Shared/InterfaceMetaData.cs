@@ -18,7 +18,7 @@ namespace SourceGenerator.Analyzers.MetaData
             List<PropertyMetaData> propertyMeta,
             List<MethodMetaData> methodMetaData,
             List<string> baseInterfaces,
-            List<string> usings,
+            List<string> usingList,
             string accessModifier,
             string extModifier) 
             : base(name, accessModifier, extModifier, attributeMetaData)
@@ -27,7 +27,7 @@ namespace SourceGenerator.Analyzers.MetaData
             PropertyMeta = propertyMeta;
             MethodMetaData = methodMetaData;
             BaseInterfaces = baseInterfaces;
-            Usings = usings;
+            UsingList = usingList;
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace SourceGenerator.Analyzers.MetaData
         /// <summary>
         /// 引用
         /// </summary>
-        public List<string> Usings { get; set; }
+        public List<string> UsingList { get; set; }
 
         /// <summary>
         /// 是否是最底层的叶子节点
@@ -91,17 +91,17 @@ namespace SourceGenerator.Analyzers.MetaData
             if (BaseInterfaceMetaDataList != null && other.BaseInterfaceMetaDataList != null)
                 BaseInterfaceMetaDataList.AddRange(other.BaseInterfaceMetaDataList);
 
-            if (Usings != null && other.Usings != null)
+            if (UsingList != null && other.UsingList != null)
             {
-                Usings.AddRange(other.Usings);
-                Usings = Usings.Distinct().ToList();
+                UsingList.AddRange(other.UsingList);
+                UsingList = UsingList.Distinct().ToList();
             }
         }
 
         public bool Has(string key)
         {
-            var newUsing = new string[Usings.Count];
-            Array.Copy(Usings.ToArray(), newUsing, Usings.Count);
+            var newUsing = new string[UsingList.Count];
+            Array.Copy(UsingList.ToArray(), newUsing, UsingList.Count);
             newUsing = newUsing.Append(Namespace).ToArray();
 
             return BaseInterfaces.Contains(key) || BaseInterfaces.SelectMany(t => newUsing.Select(u => $"{u.Replace("using ", "").Replace(";", "")}.{t.Split('.').Last()}")).Contains(key);
@@ -134,10 +134,10 @@ namespace SourceGenerator.Analyzers.MetaData
                 }
             }
 
-            if (parent.Usings != null)
+            if (parent.UsingList != null)
             {
-                source.Usings.AddRange(parent.Usings);
-                source.Usings = source.Usings.Distinct().ToList();
+                source.UsingList.AddRange(parent.UsingList);
+                source.UsingList = source.UsingList.Distinct().ToList();
             }
 
             if (parent.PropertyMeta != null)
