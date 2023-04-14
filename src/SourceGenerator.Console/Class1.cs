@@ -11,6 +11,9 @@ namespace SourceGenerator.Consoles
 
     public partial class Class2
     {
+        /// <summary>
+        /// aaaaaaaaa
+        /// </summary>
         public string a { get; set; }
     }
 

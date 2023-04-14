@@ -11,6 +11,7 @@
 		<Compile Update="..\Shared\AssemblyMetaData.cs" Link="MetaData\AssemblyMetaData.cs" />
 		<Compile Update="..\Shared\AttributeMetaData.cs" Link="MetaData\AttributeMetaData.cs" />
 		<Compile Update="..\Shared\ClassMetaData.cs" Link="MetaData\ClassMetaData.cs" />
+		<Compile Update="..\Shared\EnumMetaData.cs" Link="MetaData\EnumMetaData.cs" />
 		<Compile Update="..\Shared\StructMetaData.cs" Link="MetaData\StructMetaData.cs" />
 		<Compile Update="..\Shared\InterfaceMetaData.cs" Link="MetaData\InterfaceMetaData.cs" />
 		<Compile Update="..\Shared\MetaDataBase.cs" Link="MetaData\MetaDataBase.cs" />
