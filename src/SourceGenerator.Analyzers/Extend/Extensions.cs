@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceGenerator.Analyzers.MetaData;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SourceGenerator.Analyzers.Extend
 {
@@ -69,12 +69,9 @@ namespace SourceGenerator.Analyzers.Extend
                 var attribute = attributeListSyntax.Attributes.FirstOrDefault();
                 if (attribute == null)
                     continue;
-
-                //var attributeName = ((IdentifierNameSyntax)attribute.Name).Identifier.Text;
+                
                 var attributeName = attribute.Name.ToString();
-
                 var attributeMetaData = new AttributeMetaData(attributeName);
-
                 list.Add(attributeMetaData);
 
                 if (attribute.ArgumentList?.Arguments == null)
@@ -89,7 +86,7 @@ namespace SourceGenerator.Analyzers.Extend
                     {
                         var arr = argument.ToString().Split('=');
                         key = arr[0].Trim();
-                        value = arr[1].Trim();//.Trim('"');
+                        value = arr[1].Trim();
                     }
 
                     attributeMetaData.AddParam(key, value);
@@ -117,19 +114,19 @@ namespace SourceGenerator.Analyzers.Extend
             return attributeMetaData.FirstOrDefault(d => d.Name == attributeName)?.GetBoolParam(key);
         }
 
-        public static bool HasAopAttribute<T>(this T classDeclarationSyntax, List<string> aopAttributeList, string ignoreAttribute) where T : MemberDeclarationSyntax
-        {
-            foreach (var attribute in aopAttributeList)
-            {
-                if (classDeclarationSyntax.AttributeLists.HasAttribute(attribute))
-                    return true;
-            }
+        //public static bool HasAopAttribute<T>(this T classDeclarationSyntax, List<string> aopAttributeList, string ignoreAttribute) where T : MemberDeclarationSyntax
+        //{
+        //    foreach (var attribute in aopAttributeList)
+        //    {
+        //        if (classDeclarationSyntax.AttributeLists.HasAttribute(attribute))
+        //            return true;
+        //    }
 
-            if (classDeclarationSyntax.AttributeLists.HasAttribute(ignoreAttribute))
-                return true;
+        //    if (classDeclarationSyntax.AttributeLists.HasAttribute(ignoreAttribute))
+        //        return true;
 
-            return false;
-        }
+        //    return false;
+        //}
 
         public static bool HasIgnore(this List<AttributeMetaData> attributeMetaDatas, string ignoreAttribute)
         {

@@ -6,7 +6,7 @@ namespace SourceGenerator.Analyzers.MetaData
     /// <summary>
     /// 枚举元数据
     /// </summary>
-    public class EnumMetaData : MetaDataBase, IEquatable<EnumMetaData>
+    public sealed class EnumMetaData : MetaDataBase, IEquatable<EnumMetaData>
     {
         public string Key => $"{Namespace}.{Name}";
 

@@ -4,9 +4,9 @@ using System.Linq;
 namespace SourceGenerator.Analyzers.MetaData
 {
     /// <summary>
-    /// 扫描接口、类元数据
+    /// 元数据
     /// </summary>
-    public class AssemblyMetaData
+    public sealed class AssemblyMetaData
     {
         /// <summary>
         /// 宿主程序集名称
@@ -48,13 +48,13 @@ namespace SourceGenerator.Analyzers.MetaData
         {
             if (ClassMetaDataList != null)
             {
-                var bases = ClassMetaDataList.SelectMany(d => d.BaseClassMetaDataList).Select(d => d.Key).ToList();
+                var bases = ClassMetaDataList.Where(d => d.BaseClassMetaData != null).Select(d => d.BaseClassMetaData).Select(d => d.Key).ToList();
                 var leaf = ClassMetaDataList.Where(d => !bases.Contains(d.Key)).ToList();
                 leaf.ForEach(item => item.IsLeaf = true);
 
                 //foreach (var metaData in ClassMetaDataList.Where(d => d.IsLeaf))
                 //{
-                //    metaData.MergeAllParent();
+                //    metaData.MergeAllParents();
                 //}
             }
 
@@ -66,7 +66,7 @@ namespace SourceGenerator.Analyzers.MetaData
 
                 //foreach (var metaData in InterfaceMetaDataList.Where(d => d.IsLeaf))
                 //{
-                //    metaData.MergeAllParent();
+                //    metaData.MergeAllParents();
                 //}
             }
 

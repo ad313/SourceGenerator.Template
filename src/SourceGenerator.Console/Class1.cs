@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using SourceGenerator.Consoles.tmp;
 
 namespace SourceGenerator.Consoles
 {
@@ -9,6 +10,7 @@ namespace SourceGenerator.Consoles
 
     }
 
+    [ClassToProto]
     public partial class Class2
     {
         /// <summary>

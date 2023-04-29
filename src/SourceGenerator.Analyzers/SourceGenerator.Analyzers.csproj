@@ -8,9 +8,6 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Include="..\Shared\*.cs" />
-		<Compile Remove="Scriban\**" />
-		<EmbeddedResource Remove="Scriban\**" />
-		<None Remove="Scriban\**" />
 		<Compile Update="..\Shared\AssemblyMetaData.cs" Link="MetaData\AssemblyMetaData.cs" />
 		<Compile Update="..\Shared\AttributeMetaData.cs" Link="MetaData\AttributeMetaData.cs" />
 		<Compile Update="..\Shared\ClassMetaData.cs" Link="MetaData\ClassMetaData.cs" />

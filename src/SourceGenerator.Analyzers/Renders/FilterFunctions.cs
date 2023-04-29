@@ -10,10 +10,37 @@ using System.Text.RegularExpressions;
 
 namespace SourceGenerator.Analyzers.Renders
 {
-    // We simply inherit from ScriptObject
-    // All functions defined in the object will be imported
+    /// <summary>
+    /// Scriban 自定义函数
+    /// </summary>
     public class FilterFunctions : ScriptObject
     {
+        /// <summary>
+        /// 判断 class 是否有指定的特性
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="attributeName"></param>
+        /// <returns></returns>
+        public static bool HasAttribute(object obj, string attributeName)
+        {
+            if (obj is MetaDataBase data)
+            {
+                return data.AttributeMetaData.HasAttribute(attributeName);
+            }
+
+            return false;
+        }
+
+
+        public static ClassMetaData MergeParents(ClassMetaData classMetaData)
+        {
+            classMetaData.MergeAllParents();
+            return classMetaData;
+        }
+
+
+
+
         /// <summary>
         /// 通过空格分割字符串，返回特定 index 的数据
         /// </summary>
@@ -23,43 +50,41 @@ namespace SourceGenerator.Analyzers.Renders
         public static string SplitStringByWhitespace(string text, int index)
         {
             var arr = Regex.Split(text, "\\s+");
-            if (arr.Length >= index)
-                return arr[index];
-            return null;
+            return arr.Length >= index ? arr[index] : null;
         }
 
-        /// <summary>
-        /// 判断 class 是否有指定的特性
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="attributeName"></param>
-        /// <returns></returns>
-        public static bool ClassHasAttribute(ClassMetaData data, string attributeName)
-        {
-            return data.AttributeMetaData.HasAttribute(attributeName);
-        }
+        ///// <summary>
+        ///// 判断 class 是否有指定的特性
+        ///// </summary>
+        ///// <param name="data"></param>
+        ///// <param name="attributeName"></param>
+        ///// <returns></returns>
+        //public static bool ClassHasAttribute(ClassMetaData data, string attributeName)
+        //{
+        //    return data.AttributeMetaData.HasAttribute(attributeName);
+        //}
 
-        /// <summary>
-        /// 判断 attribute 是否有指定的特性
-        /// </summary>
-        /// <param name="attributeMetaDatas"></param>
-        /// <param name="attributeName"></param>
-        /// <returns></returns>
-        public static bool HasAttribute(List<AttributeMetaData> attributeMetaDatas, string attributeName)
-        {
-            return attributeMetaDatas.HasAttribute(attributeName);
-        }
+        ///// <summary>
+        ///// 判断 attribute 是否有指定的特性
+        ///// </summary>
+        ///// <param name="attributeMetaDataList"></param>
+        ///// <param name="attributeName"></param>
+        ///// <returns></returns>
+        //public static bool HasAttribute(List<AttributeMetaData> attributeMetaDataList, string attributeName)
+        //{
+        //    return attributeMetaDataList.HasAttribute(attributeName);
+        //}
 
         /// <summary>
         /// 获取特性 指定 key 的值
         /// </summary>
-        /// <param name="attributeMetaDatas"></param>
+        /// <param name="attributeMetaDataList"></param>
         /// <param name="attributeName"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static string GetAttributeParamValueByAttributeList(List<AttributeMetaData> attributeMetaDatas, string attributeName, string key)
+        public static string GetAttributeParamValueByAttributeList(List<AttributeMetaData> attributeMetaDataList, string attributeName, string key)
         {
-            var attr = attributeMetaDatas.FirstOrDefault(d => d.Name == attributeName || d.Name + "Attribute" == attributeName);
+            var attr = attributeMetaDataList.FirstOrDefault(d => d.Name == attributeName || d.Name + "Attribute" == attributeName);
             if (attr == null)
                 return null;
 
@@ -73,16 +98,16 @@ namespace SourceGenerator.Analyzers.Renders
 
         #region Property
 
-        /// <summary>
-        /// 判断属性是否有指定的特性
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="attributeName"></param>
-        /// <returns></returns>
-        public static bool PropertyHasAttribute(PropertyMetaData data, string attributeName)
-        {
-            return data.AttributeMetaData.HasAttribute(attributeName);
-        }
+        ///// <summary>
+        ///// 判断属性是否有指定的特性
+        ///// </summary>
+        ///// <param name="data"></param>
+        ///// <param name="attributeName"></param>
+        ///// <returns></returns>
+        //public static bool PropertyHasAttribute(PropertyMetaData data, string attributeName)
+        //{
+        //    return data.AttributeMetaData.HasAttribute(attributeName);
+        //}
 
         /// <summary>
         /// 属性列表过滤 特性名称
@@ -133,16 +158,16 @@ namespace SourceGenerator.Analyzers.Renders
 
         #region Method
 
-        /// <summary>
-        /// 判断方法是否有指定的特性
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="attributeName"></param>
-        /// <returns></returns>
-        public static bool MethodHasAttribute(MethodMetaData data, string attributeName)
-        {
-            return data.AttributeMetaData.HasAttribute(attributeName);
-        }
+        ///// <summary>
+        ///// 判断方法是否有指定的特性
+        ///// </summary>
+        ///// <param name="data"></param>
+        ///// <param name="attributeName"></param>
+        ///// <returns></returns>
+        //public static bool MethodHasAttribute(MethodMetaData data, string attributeName)
+        //{
+        //    return data.AttributeMetaData.HasAttribute(attributeName);
+        //}
 
         /// <summary>
         /// 方法列表过滤 特性名称
@@ -199,7 +224,7 @@ namespace SourceGenerator.Analyzers.Renders
             return str.Substring(0, 1).ToLower() + str.Substring(1);
         }
 
-        public static void Render(dynamic data, ExtendTemplateModel templateModel, string templateName, string fileName)
+        public static void Render(dynamic data, MapModel templateModel, string templateName, string fileName)
         {
             var templateString = templateModel?.GetTemplate(templateName);
             if (string.IsNullOrWhiteSpace(templateString))
@@ -221,7 +246,6 @@ namespace SourceGenerator.Analyzers.Renders
 
         public static void Json(dynamic data, string name)
         {
-            //IncrementalGenerator.Context.AddSource(string.IsNullOrWhiteSpace(name) ? Guid.NewGuid().ToString() : name, JsonSerializer.ToJson(data));
             IncrementalGenerator.Context.AddSource(string.IsNullOrWhiteSpace(name) ? Guid.NewGuid().ToString() : name, JsonConvert.SerializeObject(data));
         }
     }

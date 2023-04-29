@@ -6,7 +6,7 @@ namespace SourceGenerator.Analyzers.MetaData
     /// <summary>
     /// 方法元数据
     /// </summary>
-    public class MethodMetaData : MetaDataBase
+    public sealed class MethodMetaData : MetaDataBase
     {
         /// <summary>
         /// 初始化
@@ -37,7 +37,6 @@ namespace SourceGenerator.Analyzers.MetaData
         /// 方法唯一标识符，区分方法重载
         /// </summary>
         public string Key { get; private set; }
-
         /// <summary>
         /// 返回值
         /// </summary>

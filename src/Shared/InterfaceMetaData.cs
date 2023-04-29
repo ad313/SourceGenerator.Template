@@ -98,7 +98,7 @@ namespace SourceGenerator.Analyzers.MetaData
             }
         }
 
-        public bool Has(string key)
+        public virtual bool Exists(string key)
         {
             var newUsing = new string[UsingList.Count];
             Array.Copy(UsingList.ToArray(), newUsing, UsingList.Count);
@@ -110,7 +110,7 @@ namespace SourceGenerator.Analyzers.MetaData
         /// <summary>
         /// 合并所有父级数据
         /// </summary>
-        public virtual void MergeAllParent()
+        public virtual void MergeAllParents()
         {
             foreach (var parent in BaseInterfaceMetaDataList)
             {

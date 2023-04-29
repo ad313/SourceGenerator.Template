@@ -3,6 +3,9 @@ using System.Reflection;
 
 namespace SourceGenerator.Analyzers.Extend
 {
+    /// <summary>
+    /// 嵌入资源扩展
+    /// </summary>
     public static class AssemblyResourceExtension
     {
         public static Stream GetResourceStream(this Assembly assembly, string name)
@@ -26,7 +29,6 @@ namespace SourceGenerator.Analyzers.Extend
 
                 var bytes = new byte[stream.Length];
                 stream.Read(bytes, 0, bytes.Length);
-                // 设置当前流的位置为流的开始 
                 stream.Seek(0, SeekOrigin.Begin);
                 stream.Dispose();
                 return System.Text.Encoding.UTF8.GetString(bytes);
