@@ -6,7 +6,6 @@ using SourceGenerator.Analyzers.Renders;
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
 
 namespace SourceGenerator.Analyzers
@@ -19,7 +18,12 @@ namespace SourceGenerator.Analyzers
     {
         private readonly StringBuilder _errorBuilder = new StringBuilder();
         private readonly StringBuilder _timeBuilder = new StringBuilder();
+
         public static SourceProductionContext Context;
+        /// <summary>
+        /// Map 文件名称
+        /// </summary>
+        public const string MapName = "Map.json";
 
         /// <summary>
         /// 初始化
@@ -29,14 +33,18 @@ namespace SourceGenerator.Analyzers
         {
             //Debugger.Launch();
 
-            var textFiles = initializationContextContext.AdditionalTextsProvider.Where(file => file.Path.EndsWith(".txt", StringComparison.OrdinalIgnoreCase)).Collect();
+            var textFiles = initializationContextContext.AdditionalTextsProvider.Where(file =>
+                    file.Path.EndsWith(".txt", StringComparison.OrdinalIgnoreCase) ||
+                    file.Path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                .Collect();
+
             var compilations = initializationContextContext.CompilationProvider.Select((compilation, cancellationToken) => compilation);
 
             initializationContextContext.RegisterSourceOutput(compilations.Combine(textFiles), (context, compilation) =>
             {
                 try
                 {
-                    if (context.CancellationToken.IsCancellationRequested) 
+                    if (context.CancellationToken.IsCancellationRequested)
                         return;
 
                     Context = context;
@@ -65,17 +73,16 @@ namespace SourceGenerator.Analyzers
             var watch = Stopwatch.StartNew();
             watch.Start();
 
-            var receiver = new SyntaxReceiver(compilation, context.CancellationToken);
             AssemblyMetaData meta = null;
 
             #region 1、获取元数据
 
             try
             {
-                meta = receiver.GetMetaData(compilation);
+                meta = new SyntaxReceiver(compilation, context.CancellationToken).GetMetaData();
                 meta.AssemblyName = compilation.AssemblyName;
-                
-                TemplateRender.ToTimeStringBuilder("1、获取元数据", _timeBuilder, watch);
+
+                TemplateRender.ToTimeStringBuilder("1、获取元数据", _timeBuilder, watch.ElapsedMilliseconds);
             }
             catch (Exception e)
             {
@@ -95,24 +102,23 @@ namespace SourceGenerator.Analyzers
 
             #endregion
 
-            #region 5、自定义模板生成代码
+            #region 2、渲染模板
             try
             {
                 if (context.CancellationToken.IsCancellationRequested)
                     return;
 
-                TemplateRender.BuildExtend(context, additionalTexts, meta, _errorBuilder);
-                TemplateRender.ToTimeStringBuilder("2、自定义模板生成代码", _timeBuilder, watch);
+                TemplateRender.Build(context, additionalTexts, meta);
+                TemplateRender.ToTimeStringBuilder("2、渲染模板", _timeBuilder, watch.ElapsedMilliseconds);
             }
             catch (Exception e)
             {
-                TemplateRender.ToErrorStringBuilder("2、自定义模板生成代码", _errorBuilder, e);
-                return;
+                TemplateRender.ToErrorStringBuilder("2、渲染模板", _errorBuilder, e);
             }
             finally
             {
                 watch.Stop();
-            } 
+            }
             #endregion
         }
     }

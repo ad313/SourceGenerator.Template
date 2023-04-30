@@ -11,7 +11,7 @@ using System.Threading;
 namespace SourceGenerator.Analyzers
 {
     /// <summary>
-    /// Aop 语法接收器
+    /// 语法接收器
     /// </summary>
     sealed class SyntaxReceiver : ISyntaxReceiver
     {
@@ -72,9 +72,8 @@ namespace SourceGenerator.Analyzers
         /// <summary>
         /// 获取所有接口和类
         /// </summary>
-        /// <param name="compilation"></param>
         /// <returns></returns>
-        public AssemblyMetaData GetMetaData(Compilation compilation)
+        public AssemblyMetaData GetMetaData()
         {
             var result = new AssemblyMetaData(new List<InterfaceMetaData>(), new List<ClassMetaData>(), new List<StructMetaData>(), new List<EnumMetaData>());
 
@@ -97,7 +96,7 @@ namespace SourceGenerator.Analyzers
 
             foreach (var metaData in result.InterfaceMetaDataList)
             {
-                metaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => metaData.Has(d.Key)).ToList();
+                metaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => metaData.Exists(d.Key)).ToList();
             }
 
             #endregion
@@ -123,8 +122,8 @@ namespace SourceGenerator.Analyzers
 
             foreach (var metaData in result.ClassMetaDataList)
             {
-                metaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => ((InterfaceMetaData)metaData).Has(d.Key)).ToList();
-                metaData.BaseClassMetaDataList = result.ClassMetaDataList.Where(d => metaData.Has(d.Key)).ToList();
+                metaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => ((InterfaceMetaData)metaData).Exists(d.Key)).ToList();
+                metaData.BaseClassMetaData = result.ClassMetaDataList.FirstOrDefault(d => metaData.Exists(d.Key));
             }
 
             #endregion
@@ -150,7 +149,7 @@ namespace SourceGenerator.Analyzers
 
             foreach (var metaData in result.StructMetaDataList)
             {
-                metaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => metaData.Has(d.Key)).ToList();
+                metaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => metaData.Exists(d.Key)).ToList();
             }
 
             #endregion
@@ -189,7 +188,7 @@ namespace SourceGenerator.Analyzers
                 //实现的接口集合、继承的类
                 var array = declaration.BaseList?.ToString().Split(':').Last().Trim().Split(',').Select(d => d.Trim()).ToList() ?? new List<string>();
                 var interfaces = array.Where(d => d.Split('.').Last().StartsWith("I")).ToList();
-                var classes = array.Where(d => !d.Split('.').Last().StartsWith("I")).ToList();
+                var baseClass = array.FirstOrDefault(d => !d.Split('.').Last().StartsWith("I"));
 
                 //using 引用
                 //特殊处理 class中嵌套class
@@ -243,7 +242,7 @@ namespace SourceGenerator.Analyzers
                         props,
                         methods,
                         interfaces,
-                        classes,
+                        baseClass,
                         constructorDictionary,
                         usingList,
                         declaration.Modifiers.ToString()) as TOut;

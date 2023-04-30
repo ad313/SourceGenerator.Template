@@ -9,8 +9,28 @@
     <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
 
+	<ItemGroup>
+		<PackageReference Include="Nito.AsyncEx" Version="5.0.0" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Templates\BizEnumExtend.txt" />
+    <None Remove="Templates\BizEnumExtend_Main.txt" />
+    <None Remove="Templates\ClassToProtoExtend.txt" />
+    <None Remove="Templates\ClassToProtoExtend_Main.txt" />
+    <None Remove="Templates\Map.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="Templates\BizEnumExtend.txt" />
+    <AdditionalFiles Include="Templates\BizEnumExtend_Main.txt" />
+    <AdditionalFiles Include="Templates\ClassToProtoExtend.txt" />
+    <AdditionalFiles Include="Templates\ClassToProtoExtend_Main.txt" />
+    <AdditionalFiles Include="Templates\Map.json" />
+  </ItemGroup>
+
   <!--<ItemGroup>
-    <PackageReference Include="SourceGenerator.Template" Version="0.0.1" />
+    <PackageReference Include="SourceGenerator.Template" Version="0.0.3" />
   </ItemGroup>-->
 
   <ItemGroup>

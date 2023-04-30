@@ -5,7 +5,7 @@ namespace SourceGenerator.Analyzers.MetaData
     /// <summary>
     /// 结构体元数据
     /// </summary>
-    public class StructMetaData : InterfaceMetaData
+    public sealed class StructMetaData : InterfaceMetaData
     {
         /// <summary>Initializes a new instance of the <see cref="T:System.Object"></see> class.</summary>
         public StructMetaData(
@@ -25,19 +25,10 @@ namespace SourceGenerator.Analyzers.MetaData
         }
         
         /// <summary>
-        /// 构造函数参数
+        /// 构造函数
         /// </summary>
         public List<KeyValueModel> Constructor { get; set; }
-
-        //public new bool Has(string key)
-        //{
-        //    var newUsing = new string[Usings.Count];
-        //    Array.Copy(Usings.ToArray(), newUsing, Usings.Count);
-        //    newUsing = newUsing.Append(Namespace).ToArray();
-
-        //    return BaseStructs.Contains(key) || BaseStructs.SelectMany(t => newUsing.Select(u => $"{u.Replace("using ", "").Replace(";", "")}.{t.Split('.').Last()}")).Contains(key);
-        //}
-
+        
         /// <summary>
         /// 合并
         /// </summary>

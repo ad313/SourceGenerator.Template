@@ -8,31 +8,29 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
 
 namespace SourceGenerator.Analyzers.Renders
 {
-    internal partial class TemplateRender
+    internal sealed partial class TemplateRender
     {
         /// <summary>
-        /// 构建扩展代码
+        /// 执行渲染模板
         /// </summary>
         /// <param name="context"></param>
         /// <param name="additionalTexts"></param>
         /// <param name="meta"></param>
-        public static void BuildExtend(SourceProductionContext context, ImmutableArray<AdditionalText> additionalTexts, AssemblyMetaData meta, StringBuilder sb)
+        public static void Build(SourceProductionContext context, ImmutableArray<AdditionalText> additionalTexts, AssemblyMetaData meta)
         {
-            var extendMapModels = GetExtendMapModels(additionalTexts);
-            RenderExtendMain(context, meta, extendMapModels, sb);
+            RenderTemplate(context, meta, GetMaps(additionalTexts));
         }
 
-        private static List<ExtendTemplateModel> GetExtendMapModels(ImmutableArray<AdditionalText> additionalTexts)
+        private static List<MapModel> GetMaps(ImmutableArray<AdditionalText> additionalTexts)
         {
-            var list = new List<ExtendTemplateModel>();
-            var json = additionalTexts.FirstOrDefault(d => d.Path.Replace("/", "\\").EndsWith("\\Map.txt", StringComparison.OrdinalIgnoreCase))?.GetText()?.ToString();
+            var list = new List<MapModel>();
+            var json = additionalTexts.FirstOrDefault(d => d.Path.Replace("/", "\\").EndsWith($"\\{IncrementalGenerator.MapName}", StringComparison.OrdinalIgnoreCase))?.GetText()?.ToString();
             if (!string.IsNullOrWhiteSpace(json))
             {
-                list = JsonConvert.DeserializeObject<List<ExtendTemplateModel>>(json);
+                list = JsonConvert.DeserializeObject<List<MapModel>>(json);
             }
 
             foreach (var model in list)
@@ -62,25 +60,25 @@ namespace SourceGenerator.Analyzers.Renders
             return list;
         }
 
-        private static void RenderExtendMain(SourceProductionContext context, AssemblyMetaData meta, List<ExtendTemplateModel> extendMapModels, StringBuilder sb)
+        private static void RenderTemplate(SourceProductionContext context, AssemblyMetaData meta, List<MapModel> mapModels)
         {
-            foreach (var extendMapModel in extendMapModels)
+            foreach (var mapModel in mapModels)
             {
                 if (context.CancellationToken.IsCancellationRequested)
                     return;
 
-                if (string.IsNullOrWhiteSpace(extendMapModel.MainTemplateString))
+                if (string.IsNullOrWhiteSpace(mapModel.MainTemplateString))
                     continue;
 
                 var scriptObject1 = new FilterFunctions();
-                scriptObject1.Import(new { meta_data = meta, template_data = extendMapModel });
+                scriptObject1.Import(new { meta_data = meta, template_data = mapModel });
+
                 var scContext = new TemplateContext();
                 scContext.PushGlobal(scriptObject1);
 
-                var template = Template.Parse(extendMapModel.MainTemplateString);
-                template.Render(scContext);
+                Template.Parse(mapModel.MainTemplateString).Render(scContext);
 
-                extendMapModel.TemplateResult.Clear();
+                mapModel.TemplateResult.Clear();
             }
         }
     }

@@ -4,7 +4,10 @@ using System.Text.RegularExpressions;
 
 namespace SourceGenerator.Analyzers.MetaData
 {
-    public class PropertyMetaData: MetaDataBase
+    /// <summary>
+    /// 属性元数据
+    /// </summary>
+    public sealed class PropertyMetaData: MetaDataBase
     {
         public PropertyMetaData(string name, List<AttributeMetaData> attributeMetaData, List<string> originalDescription, string accessModifier, string extModifier) : base(name, accessModifier, extModifier, attributeMetaData)
         {
@@ -36,6 +39,9 @@ namespace SourceGenerator.Analyzers.MetaData
         /// </summary>
         public string Description { get; private set; }
 
+        /// <summary>
+        /// 原始注释
+        /// </summary>
         public List<string> OriginalDescription { get; private set; }
 
         public static string GetStringParam(List<AttributeMetaData> attributeMetaData, string attributeName, string key)

@@ -15,7 +15,7 @@
         </member>
         <member name="T:SourceGenerator.Analyzers.MetaData.AssemblyMetaData">
             <summary>
-            扫描接口、类元数据
+            元数据
             </summary>
         </member>
         <member name="P:SourceGenerator.Analyzers.MetaData.AssemblyMetaData.AssemblyName">
@@ -48,6 +48,11 @@
             处理数据，类和接口有继承的情况，处理标记数据
             </summary>
         </member>
+        <member name="T:SourceGenerator.Analyzers.MetaData.AttributeMetaData">
+            <summary>
+            Attribute 元数据
+            </summary>
+        </member>
         <member name="P:SourceGenerator.Analyzers.MetaData.AttributeMetaData.Name">
             <summary>
             Attribute名称
@@ -63,22 +68,22 @@
             类元数据
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.#ctor(System.String,System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.AttributeMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.PropertyMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.MethodMetaData},System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.KeyValueModel},System.Collections.Generic.List{System.String},System.String,System.String)">
+        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.#ctor(System.String,System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.AttributeMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.PropertyMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.MethodMetaData},System.Collections.Generic.List{System.String},System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.KeyValueModel},System.Collections.Generic.List{System.String},System.String,System.String)">
             <summary>Initializes a new instance of the <see cref="T:System.Object"></see> class.</summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.ClassMetaData.BaseClasses">
+        <member name="P:SourceGenerator.Analyzers.MetaData.ClassMetaData.BaseClass">
             <summary>
-            继承的类
+            基类
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.ClassMetaData.BaseClassMetaDataList">
+        <member name="P:SourceGenerator.Analyzers.MetaData.ClassMetaData.BaseClassMetaData">
             <summary>
-            继承的类
+            基类
             </summary>
         </member>
         <member name="P:SourceGenerator.Analyzers.MetaData.ClassMetaData.Constructor">
             <summary>
-            构造函数参数
+            构造函数
             </summary>
         </member>
         <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.MergePartial(SourceGenerator.Analyzers.MetaData.ClassMetaData)">
@@ -87,7 +92,7 @@
             </summary>
             <param name="other"></param>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.MergeAllParent">
+        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.MergeAllParents">
             <summary>
             合并所有父级数据
             </summary>
@@ -193,7 +198,7 @@
             </summary>
             <param name="other"></param>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.MergeAllParent">
+        <member name="M:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.MergeAllParents">
             <summary>
             合并所有父级数据
             </summary>
@@ -290,9 +295,19 @@
             输入参数
             </summary>
         </member>
+        <member name="T:SourceGenerator.Analyzers.MetaData.PropertyMetaData">
+            <summary>
+            属性元数据
+            </summary>
+        </member>
         <member name="P:SourceGenerator.Analyzers.MetaData.PropertyMetaData.Description">
             <summary>
             属性描述
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.PropertyMetaData.OriginalDescription">
+            <summary>
+            原始注释
             </summary>
         </member>
         <member name="T:SourceGenerator.Analyzers.MetaData.StructMetaData">
@@ -305,7 +320,7 @@
         </member>
         <member name="P:SourceGenerator.Analyzers.MetaData.StructMetaData.Constructor">
             <summary>
-            构造函数参数
+            构造函数
             </summary>
         </member>
         <member name="M:SourceGenerator.Analyzers.MetaData.StructMetaData.MergePartial(SourceGenerator.Analyzers.MetaData.StructMetaData)">

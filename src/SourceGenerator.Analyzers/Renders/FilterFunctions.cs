@@ -10,168 +10,270 @@ using System.Text.RegularExpressions;
 
 namespace SourceGenerator.Analyzers.Renders
 {
-    // We simply inherit from ScriptObject
-    // All functions defined in the object will be imported
+    /// <summary>
+    /// Scriban 自定义函数
+    /// </summary>
     public class FilterFunctions : ScriptObject
     {
         /// <summary>
         /// 通过空格分割字符串，返回特定 index 的数据
+        /// split_string_by_whitespace
         /// </summary>
         /// <param name="text"></param>
         /// <param name="index"></param>
         /// <returns></returns>
         public static string SplitStringByWhitespace(string text, int index)
         {
+            if (string.IsNullOrWhiteSpace(text))
+                return null;
+
             var arr = Regex.Split(text, "\\s+");
-            if (arr.Length >= index)
-                return arr[index];
-            return null;
+            return arr.Length >= index ? arr[index] : null;
         }
 
         /// <summary>
-        /// 判断 class 是否有指定的特性
+        /// 判断 是否有指定的特性
+        /// has_attribute
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="obj">属性、方法、接口、类、特性集合</param>
         /// <param name="attributeName"></param>
         /// <returns></returns>
-        public static bool ClassHasAttribute(ClassMetaData data, string attributeName)
+        public static bool HasAttribute(object obj, string attributeName)
         {
-            return data.AttributeMetaData.HasAttribute(attributeName);
+            if (obj is MetaDataBase data)
+            {
+                return data.AttributeMetaData.HasAttribute(attributeName);
+            }
+
+            if (obj is List<AttributeMetaData> attrs)
+            {
+                return attrs.HasAttribute(attributeName);
+            }
+
+            return false;
         }
 
         /// <summary>
-        /// 判断 attribute 是否有指定的特性
+        /// 合并父级，把所有父级的东西合并到子类，针对 class 和 interface
+        /// merge
         /// </summary>
-        /// <param name="attributeMetaDatas"></param>
-        /// <param name="attributeName"></param>
+        /// <param name="obj">接口、类</param>
         /// <returns></returns>
-        public static bool HasAttribute(List<AttributeMetaData> attributeMetaDatas, string attributeName)
+        public static object Merge(object obj)
         {
-            return attributeMetaDatas.HasAttribute(attributeName);
+            if (obj is ClassMetaData classMetaData)
+            {
+                classMetaData.MergeAllParents();
+            }
+
+            if (obj is InterfaceMetaData interfaceMetaData)
+            {
+                interfaceMetaData.MergeAllParents();
+            }
+
+            return obj;
         }
 
         /// <summary>
-        /// 获取特性 指定 key 的值
+        /// 根据 特性名称 和 特性参数Key，获取对应的值
+        /// get_attribute_param_value_from_attribute_list
         /// </summary>
-        /// <param name="attributeMetaDatas"></param>
+        /// <param name="attributeMetaDataList">特性集合</param>
         /// <param name="attributeName"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static string GetAttributeParamValueByAttributeList(List<AttributeMetaData> attributeMetaDatas, string attributeName, string key)
+        public static string GetAttributeParamValueFromAttributeList(List<AttributeMetaData> attributeMetaDataList, string attributeName, string key)
         {
-            var attr = attributeMetaDatas.FirstOrDefault(d => d.Name == attributeName || d.Name + "Attribute" == attributeName);
+            var attr = attributeMetaDataList.FirstOrDefault(d => d.Name == attributeName || d.Name + "Attribute" == attributeName);
             if (attr == null)
                 return null;
 
-            if (attr.ParamDictionary.TryGetValue(key, out string v))
+            return GetAttributeParamValueFromAttribute(attr, key);
+        }
+
+        /// <summary>
+        /// 根据 特性名称 和 特性参数Key，获取对应的值
+        /// get_attribute_param_value_from_attribute
+        /// </summary>
+        /// <param name="attributeMetaData">特性</param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static string GetAttributeParamValueFromAttribute(AttributeMetaData attributeMetaData, string key)
+        {
+            return attributeMetaData.ParamDictionary.TryGetValue(key, out string v) ? v : null;
+        }
+
+        #region Filter
+
+        /// <summary>
+        /// 根据特性名称 过滤（属性、方法、类、接口、结构体、枚举、特性）列表
+        /// list_filter_by_attribute
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="attributeName"></param>
+        /// <returns></returns>
+        public static object ListFilterByAttribute(object obj, string attributeName)
+        {
+            if (obj is List<PropertyMetaData> propertyMeta)
             {
-                return v;
+                return ListFilterByAttributeInternal(propertyMeta, attributeName);
             }
 
-            return null;
+            if (obj is List<MethodMetaData> methodMeta)
+            {
+                return ListFilterByAttributeInternal(methodMeta, attributeName);
+            }
+
+            if (obj is List<ClassMetaData> classMeta)
+            {
+                return ListFilterByAttributeInternal(classMeta, attributeName);
+            }
+
+            if (obj is List<InterfaceMetaData> interfaceMeta)
+            {
+                return ListFilterByAttributeInternal(interfaceMeta, attributeName);
+            }
+
+            if (obj is List<StructMetaData> structMeta)
+            {
+                return ListFilterByAttributeInternal(structMeta, attributeName);
+            }
+
+            if (obj is List<EnumMetaData> enumMeta)
+            {
+                return ListFilterByAttributeInternal(enumMeta, attributeName);
+            }
+
+            if (obj is List<AttributeMetaData> attributeMeta)
+            {
+                return attributeMeta.Where(t => AttributeNameFilter(t.Name, attributeName)).ToList();
+            }
+
+            return obj;
         }
 
-        #region Property
-
-        /// <summary>
-        /// 判断属性是否有指定的特性
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="attributeName"></param>
-        /// <returns></returns>
-        public static bool PropertyHasAttribute(PropertyMetaData data, string attributeName)
-        {
-            return data.AttributeMetaData.HasAttribute(attributeName);
-        }
-
-        /// <summary>
-        /// 属性列表过滤 特性名称
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="attributeName"></param>
-        /// <returns></returns>
-        public static List<PropertyMetaData> PropertyListAttributeFilter(List<PropertyMetaData> data, string attributeName)
+        private static List<T> ListFilterByAttributeInternal<T>(List<T> data, string attributeName) where T : MetaDataBase
         {
             return data.Where(d => d.AttributeMetaData.HasAttribute(attributeName)).ToList();
         }
 
         /// <summary>
-        /// 属性列表过滤 特性名称、特性 Key 和 值
+        /// 根据特性名称、特性参数Key 过滤（属性、方法、类、接口、结构体、枚举、特性）列表
+        /// list_filter_by_attribute_key
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="obj"></param>
         /// <param name="attributeName"></param>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
+        /// <param name="key">特性参数Key</param>
         /// <returns></returns>
-        public static List<PropertyMetaData> PropertyListAttributeWithParamFilter(List<PropertyMetaData> data, string attributeName, string key, string value)
+        public static object ListFilterByAttributeKey(object obj, string attributeName, string key)
         {
-            return data.Where(d => d.AttributeMetaData.Any(t => (t.Name == attributeName || t.Name + "Attribute" == attributeName) && t.ParamDictionary.Any(dic => dic.Key == key && dic.Value == value))).ToList();
-        }
-
-        /// <summary>
-        /// 获取特性 指定 key 的值
-        /// </summary>
-        /// <param name="propertyMetaData"></param>
-        /// <param name="attributeName"></param>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public static string GetAttributeParamValue(PropertyMetaData propertyMetaData, string attributeName, string key)
-        {
-            var attr = propertyMetaData.AttributeMetaData.FirstOrDefault(d => d.Name == attributeName || d.Name + "Attribute" == attributeName);
-            if (attr == null)
-                return null;
-
-            if (attr.ParamDictionary.TryGetValue(key, out string v))
+            if (obj is List<PropertyMetaData> propertyMeta)
             {
-                return v;
+                return ListFilterByAttributeKeyInternal(propertyMeta, attributeName, key);
             }
 
-            return null;
+            if (obj is List<MethodMetaData> methodMeta)
+            {
+                return ListFilterByAttributeKeyInternal(methodMeta, attributeName, key);
+            }
+
+            if (obj is List<ClassMetaData> classMeta)
+            {
+                return ListFilterByAttributeKeyInternal(classMeta, attributeName, key);
+            }
+
+            if (obj is List<InterfaceMetaData> interfaceMeta)
+            {
+                return ListFilterByAttributeKeyInternal(interfaceMeta, attributeName, key);
+            }
+
+            if (obj is List<StructMetaData> structMeta)
+            {
+                return ListFilterByAttributeKeyInternal(structMeta, attributeName, key);
+            }
+
+            if (obj is List<EnumMetaData> enumMeta)
+            {
+                return ListFilterByAttributeKeyInternal(enumMeta, attributeName, key);
+            }
+
+            if (obj is List<AttributeMetaData> attributeMeta)
+            {
+                return attributeMeta.Where(t => AttributeNameFilter(t.Name, attributeName) && t.ParamDictionary.Any(dic => dic.Key == key)).ToList();
+            }
+
+            return obj;
         }
 
-        #endregion
-
-        #region Method
-
-        /// <summary>
-        /// 判断方法是否有指定的特性
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="attributeName"></param>
-        /// <returns></returns>
-        public static bool MethodHasAttribute(MethodMetaData data, string attributeName)
+        private static List<T> ListFilterByAttributeKeyInternal<T>(List<T> data, string attributeName, string key) where T : MetaDataBase
         {
-            return data.AttributeMetaData.HasAttribute(attributeName);
+            return data.Where(d => d.AttributeMetaData.Any(t => AttributeNameFilter(t.Name, attributeName) && t.ParamDictionary.Any(dic => dic.Key == key))).ToList();
         }
 
         /// <summary>
-        /// 方法列表过滤 特性名称
+        /// 根据特性名称、特性参数Key、特性参数值 过滤（属性、方法、类、接口、结构体、枚举、特性）列表
+        /// list_filter_by_attribute_key_value
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="obj"></param>
         /// <param name="attributeName"></param>
+        /// <param name="key">特性参数Key</param>
+        /// <param name="value">特性参数值</param>
         /// <returns></returns>
-        public static List<MethodMetaData> MethodListAttributeFilter(List<MethodMetaData> data, string attributeName)
+        public static object ListFilterByAttributeKeyValue(object obj, string attributeName, string key, string value)
         {
-            return data.Where(d => d.AttributeMetaData.HasAttribute(attributeName)).ToList();
+            if (obj is List<PropertyMetaData> propertyMeta)
+            {
+                return ListFilterByAttributeKeyValueInternal(propertyMeta, attributeName, key, value);
+            }
+
+            if (obj is List<MethodMetaData> methodMeta)
+            {
+                return ListFilterByAttributeKeyValueInternal(methodMeta, attributeName, key, value);
+            }
+
+            if (obj is List<ClassMetaData> classMeta)
+            {
+                return ListFilterByAttributeKeyValueInternal(classMeta, attributeName, key, value);
+            }
+
+            if (obj is List<InterfaceMetaData> interfaceMeta)
+            {
+                return ListFilterByAttributeKeyValueInternal(interfaceMeta, attributeName, key, value);
+            }
+
+            if (obj is List<StructMetaData> structMeta)
+            {
+                return ListFilterByAttributeKeyValueInternal(structMeta, attributeName, key, value);
+            }
+
+            if (obj is List<EnumMetaData> enumMeta)
+            {
+                return ListFilterByAttributeKeyValueInternal(enumMeta, attributeName, key, value);
+            }
+
+            if (obj is List<AttributeMetaData> attributeMeta)
+            {
+                return attributeMeta.Where(t => AttributeNameFilter(t.Name, attributeName) && t.ParamDictionary.Any(dic => dic.Key == key && dic.Value == value)).ToList();
+            }
+
+            return obj;
         }
 
-        /// <summary>
-        /// 方法列表过滤 特性名称、特性 Key 和 值
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="attributeName"></param>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static List<MethodMetaData> MethodListAttributeWithParamFilter(List<MethodMetaData> data, string attributeName, string key, string value)
+        private static List<T> ListFilterByAttributeKeyValueInternal<T>(List<T> data, string attributeName, string key, string value) where T : MetaDataBase
         {
-            return data.Where(d => d.AttributeMetaData.Any(t => (t.Name == attributeName || t.Name + "Attribute" == attributeName) && t.ParamDictionary.Any(dic => dic.Key == key && dic.Value == value))).ToList();
+            return data.Where(d => d.AttributeMetaData.Any(t => AttributeNameFilter(t.Name, attributeName) && t.ParamDictionary.Any(dic => dic.Key == key && dic.Value == value))).ToList();
+        }
+
+        private static bool AttributeNameFilter(string attributeName, string otherName)
+        {
+            return attributeName == otherName || $"{attributeName}Attribute" == otherName;
         }
 
         #endregion
 
         /// <summary>
         /// 获取传入的字符串中 第一个不为空的数据
+        /// get_first_not_null_value
         /// </summary>
         /// <param name="first"></param>
         /// <param name="second"></param>
@@ -181,6 +283,11 @@ namespace SourceGenerator.Analyzers.Renders
             return !string.IsNullOrWhiteSpace(first) ? first.Trim('"') : second?.Trim('"');
         }
 
+        /// <summary>
+        /// 获取当前时间
+        /// now
+        /// </summary>
+        /// <returns></returns>
         public static string Now()
         {
             return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -188,6 +295,7 @@ namespace SourceGenerator.Analyzers.Renders
 
         /// <summary>
         /// 让字符串首字母小写
+        /// low_first_code
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -199,7 +307,16 @@ namespace SourceGenerator.Analyzers.Renders
             return str.Substring(0, 1).ToLower() + str.Substring(1);
         }
 
-        public static void Render(dynamic data, ExtendTemplateModel templateModel, string templateName, string fileName)
+        /// <summary>
+        /// 渲染模板
+        /// render
+        /// </summary>
+        /// <param name="data">传入数据</param>
+        /// <param name="templateModel">模板定义数据，主要获取模板内容</param>
+        /// <param name="templateName">模板名称</param>
+        /// <param name="fileName">保存的文件名，为空则自动生成</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static void Render(dynamic data, MapModel templateModel, string templateName, string fileName)
         {
             var templateString = templateModel?.GetTemplate(templateName);
             if (string.IsNullOrWhiteSpace(templateString))
@@ -219,9 +336,14 @@ namespace SourceGenerator.Analyzers.Renders
             IncrementalGenerator.Context.AddSource(fileName, result);
         }
 
+        /// <summary>
+        /// 转换成json，并存为对应的文件名
+        /// json
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="name"></param>
         public static void Json(dynamic data, string name)
         {
-            //IncrementalGenerator.Context.AddSource(string.IsNullOrWhiteSpace(name) ? Guid.NewGuid().ToString() : name, JsonSerializer.ToJson(data));
             IncrementalGenerator.Context.AddSource(string.IsNullOrWhiteSpace(name) ? Guid.NewGuid().ToString() : name, JsonConvert.SerializeObject(data));
         }
     }

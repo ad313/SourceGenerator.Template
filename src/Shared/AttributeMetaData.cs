@@ -3,7 +3,10 @@ using System.Collections.Generic;
 
 namespace SourceGenerator.Analyzers.MetaData
 {
-    public class AttributeMetaData
+    /// <summary>
+    /// Attribute 元数据
+    /// </summary>
+    public sealed class AttributeMetaData
     {
         /// <summary>
         /// Attribute名称
@@ -32,16 +35,12 @@ namespace SourceGenerator.Analyzers.MetaData
 
         public int? GetIntParam(string key)
         {
-            if (ParamDictionary.TryGetValue(key, out string str) && int.TryParse(str, out int v))
-                return v;
-            return null;
+            return ParamDictionary.TryGetValue(key, out string str) && int.TryParse(str, out int v) ? v : null;
         }
 
         public bool? GetBoolParam(string key)
         {
-            if (ParamDictionary.TryGetValue(key, out string str) && bool.TryParse(str, out bool v))
-                return v;
-            return null;
+            return ParamDictionary.TryGetValue(key, out string str) && bool.TryParse(str, out bool v) ? v : null;
         }
 
         public T GetParam<T>(string key)

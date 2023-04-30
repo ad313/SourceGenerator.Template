@@ -7,7 +7,7 @@ namespace SourceGenerator.Analyzers.MetaData
     /// <summary>
     /// 类元数据
     /// </summary>
-    public class ClassMetaData : InterfaceMetaData
+    public sealed class ClassMetaData : InterfaceMetaData
     {
         /// <summary>Initializes a new instance of the <see cref="T:System.Object"></see> class.</summary>
         public ClassMetaData(
@@ -17,7 +17,7 @@ namespace SourceGenerator.Analyzers.MetaData
             List<PropertyMetaData> propertyMeta,
             List<MethodMetaData> methodMetaData,
             List<string> baseInterfaces,
-            List<string> baseClasses,
+            string baseClass,
             List<KeyValueModel> constructor,
             List<string> usings,
             string accessModifier,
@@ -26,31 +26,35 @@ namespace SourceGenerator.Analyzers.MetaData
         {
             Constructor = constructor;
             BaseInterfaces = baseInterfaces;
-            BaseClasses = baseClasses;
+            BaseClass = baseClass;
         }
 
         /// <summary>
-        /// 继承的类
+        /// 基类
         /// </summary>
-        public List<string> BaseClasses { get; set; }
+        public string BaseClass { get; set; }
 
         /// <summary>
-        /// 继承的类
+        /// 基类
         /// </summary>
-        public List<ClassMetaData> BaseClassMetaDataList { get; set; }
+        public ClassMetaData BaseClassMetaData { get; set; }
 
         /// <summary>
-        /// 构造函数参数
+        /// 构造函数
         /// </summary>
         public List<KeyValueModel> Constructor { get; set; }
 
-        public new bool Has(string key)
+        public override bool Exists(string key)
         {
+            if (string.IsNullOrWhiteSpace(BaseClass))
+                return false;
+
             var newUsing = new string[UsingList.Count];
             Array.Copy(UsingList.ToArray(), newUsing, UsingList.Count);
             newUsing = newUsing.Append(Namespace).ToArray();
 
-            return BaseClasses.Contains(key) || BaseClasses.SelectMany(t => newUsing.Select(u => $"{u.Replace("using ", "").Replace(";", "")}.{t.Split('.').Last()}")).Contains(key);
+            return BaseClass.Equals(key, StringComparison.OrdinalIgnoreCase) ||
+                   newUsing.Select(u => $"{u.Replace("using ", "").Replace(";", "").Trim()}.{BaseClass.Split('.').Last()}").Contains(key);
         }
 
         /// <summary>
@@ -64,22 +68,19 @@ namespace SourceGenerator.Analyzers.MetaData
 
             base.MergePartial(other);
 
-            if (BaseClasses != null && other.BaseClasses != null)
-            {
-                BaseClasses.AddRange(other.BaseClasses);
-                BaseClasses = BaseClasses.Distinct().ToList();
-            }
+            if (!string.IsNullOrWhiteSpace(other.BaseClass))
+                BaseClass = other.BaseClass;
 
-            if (BaseClassMetaDataList != null && other.BaseClassMetaDataList != null)
-                BaseClassMetaDataList.AddRange(other.BaseClassMetaDataList);
+            if (other.BaseClassMetaData != null)
+                BaseClassMetaData = other.BaseClassMetaData;
         }
 
         /// <summary>
         /// 合并所有父级数据
         /// </summary>
-        public override void MergeAllParent()
+        public override void MergeAllParents()
         {
-            MergeParentItem(this, BaseClassMetaDataList.FirstOrDefault());
+            MergeParentItem(this, BaseClassMetaData);
         }
 
         /// <summary>
@@ -90,11 +91,11 @@ namespace SourceGenerator.Analyzers.MetaData
             if (parent == null)
                 return;
 
-            if (parent.BaseClassMetaDataList != null && parent.BaseClassMetaDataList.Any())
+            if (parent.BaseClassMetaData != null)
             {
-                MergeParentItem(parent, parent.BaseClassMetaDataList.First());
+                MergeParentItem(parent, parent.BaseClassMetaData);
             }
-            
+
             if (parent.UsingList != null)
             {
                 source.UsingList.AddRange(parent.UsingList);
