@@ -9,7 +9,7 @@
 {{ for class in meta_data.class_meta_data_list }}       
 
 // 判断 class 是否有 BizDictionaryAttribute 标记，有，则继续往下走
-{{ if has_attribute class.attribute_meta_data 'BizDictionaryAttribute'}}
+{{ if has_attribute class 'BizDictionaryAttribute'}}
 
 //获取到需要的class数据，继续调用模板  BizEnumExtend.txt
 //render：方法名，固定，后面4个是参数

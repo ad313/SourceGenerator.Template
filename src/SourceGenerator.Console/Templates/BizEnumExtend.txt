@@ -3,7 +3,7 @@
 */
 {{ for using in usings }}
 {{- using}}
-{{ end }}using Mic.Aop;
+{{ end }}using SourceGenerator.Consoles.Builders.BizEnumExtendBuilder;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,11 +11,11 @@ namespace {{ namespace }}
 {
     {{ split_string_by_whitespace access_modifier 0 }} partial class {{ name }}
     {
-    {{- for prop in (property_list_attribute_filter property_meta 'BizDictionaryAttribute') }}
+    {{- for prop in (list_filter_by_attribute property_meta 'BizDictionaryAttribute') }}
         /// <summary>
         /// {{ prop.description }}
         /// </summary> 
-        {{ if (get_attribute_param_value prop 'BizDictionaryAttribute' 'BizType')=='BizTypeEnum.Enum' }}
+        {{ if (get_attribute_param_value_from_attribute_list prop.attribute_meta_data 'BizDictionaryAttribute' 'BizType')=='BizTypeEnum.Enum' }}
         {{- prop.access_modifier}} string {{prop.name}}Text => {{prop.name}}.GetEnumDescription();
         {{- else }}
         {{- prop.access_modifier}} string {{prop.name}}Text { get; set; }
@@ -29,8 +29,8 @@ namespace {{ namespace }}
         {
             if (list == null || !list.Any()) return list;
             var codes = new List<string>();
-            {{- for prop in (property_list_attribute_with_param_filter property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Dictionary') }}
-            {{- dicKey = get_first_not_null_value (get_attribute_param_value prop 'BizDictionaryAttribute' 'Code') prop.name}}
+            {{- for prop in (list_filter_by_attribute_key_value property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Dictionary') }}
+            {{- dicKey = get_first_not_null_value (get_attribute_param_value_from_attribute_list prop.attribute_meta_data 'BizDictionaryAttribute' 'Code') prop.name}}
             if (list.Exists(d => !string.IsNullOrWhiteSpace(d.{{prop.name}}))) { codes.Add("{{dicKey}}"); }
             {{- end }}
             if (!codes.Any()) return list;
@@ -39,9 +39,9 @@ namespace {{ namespace }}
             if (!dic.Any()) return list;
             foreach (var dto in list)
             {        
-                {{- for prop in (property_list_attribute_with_param_filter property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Dictionary') }}
-                {{- dicKey = get_first_not_null_value (get_attribute_param_value prop 'BizDictionaryAttribute' 'Code') prop.name}}
-                {{- isMultiple = (get_attribute_param_value prop 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
+                {{- for prop in (list_filter_by_attribute_key_value property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Dictionary') }}
+                {{- dicKey = get_first_not_null_value (get_attribute_param_value_from_attribute_list prop.attribute_meta_data 'BizDictionaryAttribute' 'Code') prop.name}}
+                {{- isMultiple = (get_attribute_param_value_from_attribute_list prop.attribute_meta_data 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
                 if (!string.IsNullOrWhiteSpace(dto.{{prop.name}}) && dic.TryGetValue("{{dicKey}}", out List<DictionaryItem> value{{prop.name}}))
                 {
                     {{- if isMultiple }}
@@ -59,17 +59,17 @@ namespace {{ namespace }}
         {
 			if (dto == null) return dto;
 			var codes = new List<string>();
-			{{- for prop in (property_list_attribute_with_param_filter property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Dictionary') }}
-            {{- dicKey = get_first_not_null_value (get_attribute_param_value prop 'BizDictionaryAttribute' 'Code') prop.name}}
+			{{- for prop in (list_filter_by_attribute_key_value property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Dictionary') }}
+            {{- dicKey = get_first_not_null_value (get_attribute_param_value_from_attribute_list prop.attribute_meta_data 'BizDictionaryAttribute' 'Code') prop.name}}
             if (!string.IsNullOrWhiteSpace(dto.{{prop.name}})) { codes.Add("{{dicKey}}"); }
             {{- end }}
 			if (!codes.Any()) return dto;
 			var service = ServiceHelper.GetService<IBizDictionaryService>();
 			var dic = AsyncHelper.RunSync(() => service.GetBizDictionary(codes));
 			if (!dic.Any()) return dto;
-			{{- for prop in (property_list_attribute_with_param_filter property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Dictionary') }}
-            {{- dicKey = get_first_not_null_value (get_attribute_param_value prop 'BizDictionaryAttribute' 'Code') prop.name}}
-            {{- isMultiple = (get_attribute_param_value prop 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
+			{{- for prop in (list_filter_by_attribute_key_value property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Dictionary') }}
+            {{- dicKey = get_first_not_null_value (get_attribute_param_value_from_attribute_list prop.attribute_meta_data 'BizDictionaryAttribute' 'Code') prop.name}}
+            {{- isMultiple = (get_attribute_param_value_from_attribute_list prop.attribute_meta_data 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
             if (!string.IsNullOrWhiteSpace(dto.{{prop.name}}) && dic.TryGetValue("{{dicKey}}", out List<DictionaryItem> value{{prop.name}}))
             {
                 {{- if isMultiple }}
@@ -86,8 +86,8 @@ namespace {{ namespace }}
         {
 			if (list == null || !list.Any()) return list;
 			var codes = new List<string>();
-            {{- for prop in (property_list_attribute_with_param_filter property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Department') }}
-            {{- isMultiple = (get_attribute_param_value prop 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
+            {{- for prop in (list_filter_by_attribute_key_value property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Department') }}
+            {{- isMultiple = (get_attribute_param_value_from_attribute_list prop.attribute_meta_data 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
             {{- if isMultiple}}
             if (list.Exists(d => !string.IsNullOrWhiteSpace(d.{{prop.name}}))) {codes.AddRange(list.Where(d => !string.IsNullOrWhiteSpace(d.{{prop.name}})).SelectMany(d => d.{{prop.name}}.Split(',')).Where(d => !string.IsNullOrWhiteSpace(d)).Distinct().ToList()); }
             {{- else }}
@@ -100,8 +100,8 @@ namespace {{ namespace }}
 			if (!data.Any()) return list;
 			foreach (var dto in list) 
             {
-                {{- for prop in (property_list_attribute_with_param_filter property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Department') }}
-                {{- isMultiple = (get_attribute_param_value prop 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
+                {{- for prop in (list_filter_by_attribute_key_value property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Department') }}
+                {{- isMultiple = (get_attribute_param_value_from_attribute_list prop.attribute_meta_data 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
                 if (!string.IsNullOrWhiteSpace(dto.{{prop.name}})) 
                 {
                     {{- if isMultiple}}
@@ -119,8 +119,8 @@ namespace {{ namespace }}
         {
 			if (dto == null) return dto;
 			var codes = new List<string>();
-            {{- for prop in (property_list_attribute_with_param_filter property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Department') }}
-            {{- isMultiple = (get_attribute_param_value prop 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
+            {{- for prop in (list_filter_by_attribute_key_value property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Department') }}
+            {{- isMultiple = (get_attribute_param_value_from_attribute_list prop.attribute_meta_data 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
             {{- if isMultiple}}
             if (!string.IsNullOrWhiteSpace(dto.{{prop.name}})) { codes.AddRange(dto.{{prop.name}}.Split(',').Where(d => !string.IsNullOrWhiteSpace(d)).Distinct().ToList()); }
             {{- else }}
@@ -131,8 +131,8 @@ namespace {{ namespace }}
 			var service = ServiceHelper.GetService<IBizDictionaryService>();
 			var data = AsyncHelper.RunSync(() => service.GetBizDepartment(codes.Distinct().ToList()));
 			if (!data.Any()) return dto;
-			{{- for prop in (property_list_attribute_with_param_filter property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Department') }}
-            {{- isMultiple = (get_attribute_param_value prop 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
+			{{- for prop in (list_filter_by_attribute_key_value property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Department') }}
+            {{- isMultiple = (get_attribute_param_value_from_attribute_list prop.attribute_meta_data 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
             if (!string.IsNullOrWhiteSpace(dto.{{prop.name}})) 
             {
                 {{- if isMultiple}}
@@ -149,8 +149,8 @@ namespace {{ namespace }}
         {
 			if (list == null || !list.Any()) return list;
 			var codes = new List<string>();
-            {{- for prop in (property_list_attribute_with_param_filter property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Region') }}
-            {{- isMultiple = (get_attribute_param_value prop 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
+            {{- for prop in (list_filter_by_attribute_key_value property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Region') }}
+            {{- isMultiple = (get_attribute_param_value_from_attribute_list prop.attribute_meta_data 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
             {{- if isMultiple}}
             if (list.Exists(d => !string.IsNullOrWhiteSpace(d.{{prop.name}}))) {codes.AddRange(list.Where(d => !string.IsNullOrWhiteSpace(d.{{prop.name}})).SelectMany(d => d.{{prop.name}}.Split(',')).Where(d => !string.IsNullOrWhiteSpace(d)).Distinct().ToList()); }
             {{- else }}
@@ -163,8 +163,8 @@ namespace {{ namespace }}
 			if (!data.Any()) return list;
 			foreach (var dto in list) 
             {
-                {{- for prop in (property_list_attribute_with_param_filter property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Region') }}
-                {{- isMultiple = (get_attribute_param_value prop 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
+                {{- for prop in (list_filter_by_attribute_key_value property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Region') }}
+                {{- isMultiple = (get_attribute_param_value_from_attribute_list prop.attribute_meta_data 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
                 if (!string.IsNullOrWhiteSpace(dto.{{prop.name}})) 
                 {
                     {{- if isMultiple}}
@@ -182,8 +182,8 @@ namespace {{ namespace }}
         {
 			if (dto == null) return dto;
 			var codes = new List<string>();
-            {{- for prop in (property_list_attribute_with_param_filter property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Region') }}
-            {{- isMultiple = (get_attribute_param_value prop 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
+            {{- for prop in (list_filter_by_attribute_key_value property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Region') }}
+            {{- isMultiple = (get_attribute_param_value_from_attribute_list prop.attribute_meta_data 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
             {{- if isMultiple}}
             if (!string.IsNullOrWhiteSpace(dto.{{prop.name}})) { codes.AddRange(dto.{{prop.name}}.Split(',').Where(d => !string.IsNullOrWhiteSpace(d)).Distinct().ToList()); }
             {{- else }}
@@ -194,8 +194,8 @@ namespace {{ namespace }}
 			var service = ServiceHelper.GetService<IBizDictionaryService>();
 			var data = AsyncHelper.RunSync(() => service.GetBizRegion(codes.Distinct().ToList()));
 			if (!data.Any()) return dto;
-			{{- for prop in (property_list_attribute_with_param_filter property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Region') }}
-            {{- isMultiple = (get_attribute_param_value prop 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
+			{{- for prop in (list_filter_by_attribute_key_value property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.Region') }}
+            {{- isMultiple = (get_attribute_param_value_from_attribute_list prop.attribute_meta_data 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
             if (!string.IsNullOrWhiteSpace(dto.{{prop.name}})) 
             {
                 {{- if isMultiple}}
@@ -212,8 +212,8 @@ namespace {{ namespace }}
         {
 			if (list == null || !list.Any()) return list;
 			var codes = new List<string>();
-            {{- for prop in (property_list_attribute_with_param_filter property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.User') }}
-            {{- isMultiple = (get_attribute_param_value prop 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
+            {{- for prop in (list_filter_by_attribute_key_value property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.User') }}
+            {{- isMultiple = (get_attribute_param_value_from_attribute_list prop.attribute_meta_data 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
             {{- if isMultiple}}
             if (list.Exists(d => !string.IsNullOrWhiteSpace(d.{{prop.name}}))) {codes.AddRange(list.Where(d => !string.IsNullOrWhiteSpace(d.{{prop.name}})).SelectMany(d => d.{{prop.name}}.Split(',')).Where(d => !string.IsNullOrWhiteSpace(d)).Distinct().ToList()); }
             {{- else }}
@@ -226,8 +226,8 @@ namespace {{ namespace }}
 			if (!data.Any()) return list;
 			foreach (var dto in list) 
             {
-                {{- for prop in (property_list_attribute_with_param_filter property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.User') }}
-                {{- isMultiple = (get_attribute_param_value prop 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
+                {{- for prop in (list_filter_by_attribute_key_value property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.User') }}
+                {{- isMultiple = (get_attribute_param_value_from_attribute_list prop.attribute_meta_data 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
                 if (!string.IsNullOrWhiteSpace(dto.{{prop.name}})) 
                 {
                     {{- if isMultiple}}
@@ -245,8 +245,8 @@ namespace {{ namespace }}
         {
 			if (dto == null) return dto;
 			var codes = new List<string>();
-            {{- for prop in (property_list_attribute_with_param_filter property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.User') }}
-            {{- isMultiple = (get_attribute_param_value prop 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
+            {{- for prop in (list_filter_by_attribute_key_value property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.User') }}
+            {{- isMultiple = (get_attribute_param_value_from_attribute_list prop.attribute_meta_data 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
             {{- if isMultiple}}
             if (!string.IsNullOrWhiteSpace(dto.{{prop.name}})) { codes.AddRange(dto.{{prop.name}}.Split(',').Where(d => !string.IsNullOrWhiteSpace(d)).Distinct().ToList()); }
             {{- else }}
@@ -257,8 +257,8 @@ namespace {{ namespace }}
 			var service = ServiceHelper.GetService<IBizDictionaryService>();
 			var data = AsyncHelper.RunSync(() => service.GetBizUser(codes.Distinct().ToList()));
 			if (!data.Any()) return dto;
-			{{- for prop in (property_list_attribute_with_param_filter property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.User') }}
-            {{- isMultiple = (get_attribute_param_value prop 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
+			{{- for prop in (list_filter_by_attribute_key_value property_meta 'BizDictionaryAttribute' 'BizType' 'BizTypeEnum.User') }}
+            {{- isMultiple = (get_attribute_param_value_from_attribute_list prop.attribute_meta_data 'BizDictionaryAttribute' 'IsMultiple')=='true'}}
             if (!string.IsNullOrWhiteSpace(dto.{{prop.name}})) 
             {
                 {{- if isMultiple}}

@@ -1,5 +1,5 @@
 ﻿{{ for class in meta_data.class_meta_data_list }}  
 {{ if has_attribute class 'ClassToProtoAttribute'}}
-{{render (merge_parents class) template_data 'ClassToProtoExtend.txt' ''}}
+{{render (merge class) template_data 'ClassToProtoExtend.txt' ''}}
 {{ end }}
 {{ end }}

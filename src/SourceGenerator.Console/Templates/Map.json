@@ -1,10 +1,10 @@
 ﻿[
-  //{
-  //  "Code": "BizEnumExtendBuilder111",
-  //  "Name": "枚举业务扩展",
-  //  "MainTemplate": "BizEnumExtend_Main.txt",
-  //  "Templates": [ "BizEnumExtend.txt" ]
-  //}
+  {
+    "Code": "BizEnumExtendBuilder",
+    "Name": "枚举业务扩展",
+    "MainTemplate": "BizEnumExtend_Main.txt",
+    "Templates": [ "BizEnumExtend.txt" ]
+  },
   //{
   //  "Code": "QuartzToolBuilder",
   //  "Name": "Quartz 扩展",

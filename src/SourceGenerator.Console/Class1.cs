@@ -1,7 +1,8 @@
-﻿using System;
+﻿using SourceGenerator.Consoles.Builders.ClassToProtoBuilder;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using SourceGenerator.Consoles.tmp;
+using SourceGenerator.Consoles.Builders.BizEnumExtendBuilder;
 
 namespace SourceGenerator.Consoles
 {
@@ -9,7 +10,7 @@ namespace SourceGenerator.Consoles
     {
 
     }
-
+    
     [ClassToProto]
     public partial class Class2
     {
@@ -21,6 +22,7 @@ namespace SourceGenerator.Consoles
 
     public partial class Class2 : Class3, Interface2
     {
+        [Display(Name = "bbb")]
         public new string b { get; set; }
         public async Task Get(string name)
         {
@@ -28,7 +30,7 @@ namespace SourceGenerator.Consoles
         }
     }
 
-    public  class Class3:Class4
+    public class Class3 : Class4
     {
         [Display(Name = "b")]
         public string b { get; set; }

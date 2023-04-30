@@ -9,6 +9,10 @@
     <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
 
+	<ItemGroup>
+		<PackageReference Include="Nito.AsyncEx" Version="5.0.0" />
+	</ItemGroup>
+
   <ItemGroup>
     <None Remove="Templates\BizEnumExtend.txt" />
     <None Remove="Templates\BizEnumExtend_Main.txt" />

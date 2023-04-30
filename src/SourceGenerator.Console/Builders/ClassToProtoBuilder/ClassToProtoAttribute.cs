@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SourceGenerator.Consoles.tmp
+namespace SourceGenerator.Consoles.Builders.ClassToProtoBuilder
 {
     /// <summary>
     /// ClassToProto 标记
