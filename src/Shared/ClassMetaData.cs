@@ -19,10 +19,10 @@ namespace SourceGenerator.Analyzers.MetaData
             List<string> baseInterfaces,
             string baseClass,
             List<KeyValueModel> constructor,
-            List<string> usings,
+            List<string> usingList,
             string accessModifier,
             string extModifier = null)
-            : base(@namespace, name, attributeMetaData, propertyMeta, methodMetaData, baseInterfaces, usings, accessModifier, extModifier)
+            : base(@namespace, name, attributeMetaData, propertyMeta, methodMetaData, baseInterfaces, usingList, accessModifier, extModifier)
         {
             Constructor = constructor;
             BaseInterfaces = baseInterfaces;
@@ -44,7 +44,7 @@ namespace SourceGenerator.Analyzers.MetaData
         /// </summary>
         public List<KeyValueModel> Constructor { get; set; }
 
-        public override bool Exists(string key)
+        public override bool BaseExists(string key)
         {
             if (string.IsNullOrWhiteSpace(BaseClass))
                 return false;
@@ -54,7 +54,24 @@ namespace SourceGenerator.Analyzers.MetaData
             newUsing = newUsing.Append(Namespace).ToArray();
 
             return BaseClass.Equals(key, StringComparison.OrdinalIgnoreCase) ||
-                   newUsing.Select(u => $"{u.Replace("using ", "").Replace(";", "").Trim()}.{BaseClass.Split('.').Last()}").Contains(key);
+                   newUsing.Select(u => $"{u}.{BaseClass.Split('.').Last()}").Contains(key);
+        }
+
+        /// <summary>
+        /// 加上命名空间 判断是否存在
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public bool Exists(string key)
+        {
+            if (string.IsNullOrWhiteSpace(key))
+                return false;
+
+            var newUsing = new string[UsingList.Count];
+            Array.Copy(UsingList.ToArray(), newUsing, UsingList.Count);
+            newUsing = newUsing.Append(Namespace).ToArray();
+
+            return newUsing.Select(u => $"{u}.{Name.Split('.').Last()}").Contains(key);
         }
 
         /// <summary>

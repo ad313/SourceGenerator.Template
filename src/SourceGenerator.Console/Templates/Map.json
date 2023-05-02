@@ -11,10 +11,16 @@
   //  "MainTemplate": "QuartzToolExtend_Main.txt",
   //  "Templates": [ "QuartzToolExtend.txt" ]
   //},
-  {
-    "Code": "ClassToProtoBuilder",
-    "Name": "ClassToProto 扩展",
-    "MainTemplate": "ClassToProtoExtend_Main.txt",
-    "Templates": [ "ClassToProtoExtend.txt" ]
-  }
+    {
+        "Code": "ClassToProtoBuilder",
+        "Name": "ClassToProto 扩展",
+        "MainTemplate": "ClassToProtoExtend_Main.txt",
+        "Templates": [ "ClassToProtoExtend.txt" ]
+    },
+    {
+        "Code": "AopBuilder",
+        "Name": "Aop 扩展",
+        "MainTemplate": "AopExtend_Main.txt",
+        "Templates": [ "AopExtend.txt" ]
+    }
 ]

@@ -98,13 +98,13 @@ namespace SourceGenerator.Analyzers.MetaData
             }
         }
 
-        public virtual bool Exists(string key)
+        public virtual bool BaseExists(string key)
         {
             var newUsing = new string[UsingList.Count];
             Array.Copy(UsingList.ToArray(), newUsing, UsingList.Count);
             newUsing = newUsing.Append(Namespace).ToArray();
 
-            return BaseInterfaces.Contains(key) || BaseInterfaces.SelectMany(t => newUsing.Select(u => $"{u.Replace("using ", "").Replace(";", "")}.{t.Split('.').Last()}")).Contains(key);
+            return BaseInterfaces.Contains(key) || BaseInterfaces.SelectMany(t => newUsing.Select(u => $"{u}.{t.Split('.').Last()}")).Contains(key);
         }
 
         /// <summary>

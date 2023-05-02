@@ -73,7 +73,7 @@ namespace SourceGenerator.Analyzers.Extend
                 var attributeName = attribute.Name.ToString();
                 var attributeMetaData = new AttributeMetaData(attributeName);
                 list.Add(attributeMetaData);
-
+                
                 if (attribute.ArgumentList?.Arguments == null)
                     continue;
 

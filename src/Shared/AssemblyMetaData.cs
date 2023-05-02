@@ -70,6 +70,33 @@ namespace SourceGenerator.Analyzers.MetaData
                 //}
             }
 
+            //处理特性关联的class
+            ClassMetaDataList?.ForEach(item =>
+            {
+                item.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList));
+                item.PropertyMeta?.ForEach(prop => prop.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList)));
+                item.MethodMetaData?.ForEach(method => method.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList)));
+            });
+
+            InterfaceMetaDataList?.ForEach(item =>
+            {
+                item.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList));
+                item.PropertyMeta?.ForEach(prop => prop.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList)));
+                item.MethodMetaData?.ForEach(method => method.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList)));
+            });
+
+            StructMetaDataList?.ForEach(item =>
+            {
+                item.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList));
+                item.PropertyMeta?.ForEach(prop => prop.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList)));
+                item.MethodMetaData?.ForEach(method => method.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList)));
+            });
+
+            EnumMetaDataList?.ForEach(item =>
+            {
+                item.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList));
+            });
+
             return this;
         }
     }

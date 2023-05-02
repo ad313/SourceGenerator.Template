@@ -1,7 +1,7 @@
 ﻿/*
   此代码通过 SourceGenerator，使用模板 Scriban 自动生成：{{ now() }} 
 */
-{{ for using in usings }}
+{{ for using in usingList }}
 {{- using}}
 {{ end }}using SourceGenerator.Consoles.Builders.BizEnumExtendBuilder;
 using System.Collections.Generic;

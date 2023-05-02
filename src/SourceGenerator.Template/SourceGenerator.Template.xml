@@ -63,6 +63,11 @@
             参数值
             </summary>
         </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.AttributeMetaData.ClassMetaData">
+            <summary>
+            对应的 ClassMetaData
+            </summary>
+        </member>
         <member name="T:SourceGenerator.Analyzers.MetaData.ClassMetaData">
             <summary>
             类元数据
@@ -85,6 +90,13 @@
             <summary>
             构造函数
             </summary>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.Exists(System.String)">
+            <summary>
+            加上命名空间 判断是否存在
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
         </member>
         <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.MergePartial(SourceGenerator.Analyzers.MetaData.ClassMetaData)">
             <summary>

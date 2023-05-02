@@ -54,6 +54,27 @@ namespace SourceGenerator.Analyzers.Renders
         }
 
         /// <summary>
+        /// 判断特性父级
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="parent"></param>
+        /// <returns></returns>
+        public static bool AttributeHasParent(object obj, string parent)
+        {
+            if (obj is MetaDataBase data)
+            {
+                return data.AttributeMetaData.Any(d => d.ClassMetaData != null && d.ClassMetaData.BaseExists(parent));
+            }
+
+            if (obj is List<AttributeMetaData> attrs)
+            {
+                return attrs.Any(d => d.ClassMetaData != null && d.ClassMetaData.BaseExists(parent));
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// 合并父级，把所有父级的东西合并到子类，针对 class 和 interface
         /// merge
         /// </summary>
