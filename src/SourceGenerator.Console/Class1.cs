@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 namespace SourceGenerator.Consoles
 {
+    
     internal class Class1
     {
         public void Test1()
