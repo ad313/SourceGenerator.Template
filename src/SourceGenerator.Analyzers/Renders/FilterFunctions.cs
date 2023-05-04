@@ -54,6 +54,28 @@ namespace SourceGenerator.Analyzers.Renders
         }
 
         /// <summary>
+        /// 判断 是否有指定的特性
+        /// has_attribute
+        /// </summary>
+        /// <param name="obj">属性、方法、接口、类、特性集合</param>
+        /// <param name="attributeName"></param>
+        /// <returns></returns>
+        public static bool HasAttributeByFullName(object obj, string attributeName)
+        {
+            if (obj is MetaDataBase data)
+            {
+                return data.AttributeMetaData.HasAttributeByFullName(attributeName);
+            }
+
+            if (obj is List<AttributeMetaData> attrs)
+            {
+                return attrs.HasAttributeByFullName(attributeName);
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// 判断特性父级
         /// </summary>
         /// <param name="obj"></param>
@@ -69,6 +91,11 @@ namespace SourceGenerator.Analyzers.Renders
             if (obj is List<AttributeMetaData> attrs)
             {
                 return attrs.Any(d => d.ClassMetaData != null && d.ClassMetaData.BaseExists(parent));
+            }
+
+            if (obj is AttributeMetaData attr)
+            {
+                return attr.ClassMetaData != null && attr.ClassMetaData.BaseExists(parent);
             }
 
             return false;
@@ -105,7 +132,7 @@ namespace SourceGenerator.Analyzers.Renders
         /// <returns></returns>
         public static string GetAttributeParamValueFromAttributeList(List<AttributeMetaData> attributeMetaDataList, string attributeName, string key)
         {
-            var attr = attributeMetaDataList.FirstOrDefault(d => d.Name == attributeName || d.Name + "Attribute" == attributeName);
+            var attr = attributeMetaDataList.FirstOrDefault(d => d.EqualsByName(attributeName));
             if (attr == null)
                 return null;
 
@@ -167,15 +194,124 @@ namespace SourceGenerator.Analyzers.Renders
 
             if (obj is List<AttributeMetaData> attributeMeta)
             {
-                return attributeMeta.Where(t => AttributeNameFilter(t.Name, attributeName)).ToList();
+                return attributeMeta.Where(t => t.EqualsByName(attributeName)).ToList();
             }
 
+            return obj;
+        }
+
+        /// <summary>
+        /// 根据名称 过滤（属性、方法、类、接口、结构体、枚举、特性）列表
+        /// list_filter_by_name
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static object ListFilterByName(object obj, string name)
+        {
+            if (obj is List<PropertyMetaData> propertyMeta)
+            {
+                return propertyMeta.Where(d => d.Name == name).ToList();
+            }
+
+            if (obj is List<MethodMetaData> methodMeta)
+            {
+                return methodMeta.Where(d => d.Key == name).ToList();
+            }
+
+            if (obj is List<ClassMetaData> classMeta)
+            {
+                return classMeta.Where(d => d.Name == name).ToList();
+            }
+
+            if (obj is List<InterfaceMetaData> interfaceMeta)
+            {
+                return interfaceMeta.Where(d => d.Name == name).ToList();
+            }
+
+            if (obj is List<StructMetaData> structMeta)
+            {
+                return structMeta.Where(d => d.Name == name).ToList();
+            }
+
+            if (obj is List<EnumMetaData> enumMeta)
+            {
+                return enumMeta.Where(d => d.Name == name).ToList();
+            }
+
+            if (obj is List<AttributeMetaData> attributeMeta)
+            {
+                return attributeMeta.Where(d => d.Name == name).ToList();
+            }
+
+            return obj;
+        }
+
+        /// <summary>
+        /// 根据特性名称 过滤（属性、方法、类、接口、结构体、枚举、特性）列表
+        /// list_filter_by_attribute
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="attributeNameObject"></param>
+        /// <returns></returns>
+        public static object ListFilterByAttributes(object obj, object attributeNameObject)
+        {
+            if (attributeNameObject is ScriptArray attributeNames)
+            {
+                if (obj is List<PropertyMetaData> propertyMeta)
+                {
+                    return ListFilterByAttributeInternal(propertyMeta, attributeNames);
+                }
+
+                if (obj is List<MethodMetaData> methodMeta)
+                {
+                    return ListFilterByAttributeInternal(methodMeta, attributeNames);
+                }
+
+                if (obj is List<ClassMetaData> classMeta)
+                {
+                    return ListFilterByAttributeInternal(classMeta, attributeNames);
+                }
+
+                if (obj is List<InterfaceMetaData> interfaceMeta)
+                {
+                    return ListFilterByAttributeInternal(interfaceMeta, attributeNames);
+                }
+
+                if (obj is List<StructMetaData> structMeta)
+                {
+                    return ListFilterByAttributeInternal(structMeta, attributeNames);
+                }
+
+                if (obj is List<EnumMetaData> enumMeta)
+                {
+                    return ListFilterByAttributeInternal(enumMeta, attributeNames);
+                }
+
+                if (obj is List<AttributeMetaData> attributeMeta)
+                {
+                    if (attributeMeta.Any())
+                    {
+
+                    }
+                    var ss= attributeNames.SelectMany(attributeName =>
+                        attributeMeta.Where(t => t.EqualsByName(attributeName.ToString()))).ToList();
+                    return ss;
+                }
+            }
+            
             return obj;
         }
 
         private static List<T> ListFilterByAttributeInternal<T>(List<T> data, string attributeName) where T : MetaDataBase
         {
             return data.Where(d => d.AttributeMetaData.HasAttribute(attributeName)).ToList();
+        }
+
+        private static List<T> ListFilterByAttributeInternal<T>(List<T> data, ScriptArray attributeNames) where T : MetaDataBase
+        {
+            return attributeNames.SelectMany(attributeName =>
+                data.Where(d => d.AttributeMetaData.HasAttribute(attributeName.ToString()))).ToList();
         }
 
         /// <summary>
@@ -220,7 +356,7 @@ namespace SourceGenerator.Analyzers.Renders
 
             if (obj is List<AttributeMetaData> attributeMeta)
             {
-                return attributeMeta.Where(t => AttributeNameFilter(t.Name, attributeName) && t.ParamDictionary.Any(dic => dic.Key == key)).ToList();
+                return attributeMeta.Where(t => t.EqualsByName(attributeName) && t.ParamDictionary.Any(dic => dic.Key == key)).ToList();
             }
 
             return obj;
@@ -228,7 +364,7 @@ namespace SourceGenerator.Analyzers.Renders
 
         private static List<T> ListFilterByAttributeKeyInternal<T>(List<T> data, string attributeName, string key) where T : MetaDataBase
         {
-            return data.Where(d => d.AttributeMetaData.Any(t => AttributeNameFilter(t.Name, attributeName) && t.ParamDictionary.Any(dic => dic.Key == key))).ToList();
+            return data.Where(d => d.AttributeMetaData.Any(t => t.EqualsByName(attributeName) && t.ParamDictionary.Any(dic => dic.Key == key))).ToList();
         }
 
         /// <summary>
@@ -274,7 +410,7 @@ namespace SourceGenerator.Analyzers.Renders
 
             if (obj is List<AttributeMetaData> attributeMeta)
             {
-                return attributeMeta.Where(t => AttributeNameFilter(t.Name, attributeName) && t.ParamDictionary.Any(dic => dic.Key == key && dic.Value == value)).ToList();
+                return attributeMeta.Where(t => t.EqualsByName(attributeName) && t.ParamDictionary.Any(dic => dic.Key == key && dic.Value == value)).ToList();
             }
 
             return obj;
@@ -282,13 +418,9 @@ namespace SourceGenerator.Analyzers.Renders
 
         private static List<T> ListFilterByAttributeKeyValueInternal<T>(List<T> data, string attributeName, string key, string value) where T : MetaDataBase
         {
-            return data.Where(d => d.AttributeMetaData.Any(t => AttributeNameFilter(t.Name, attributeName) && t.ParamDictionary.Any(dic => dic.Key == key && dic.Value == value))).ToList();
+            return data.Where(d => d.AttributeMetaData.Any(t => t.EqualsByName(attributeName) && t.ParamDictionary.Any(dic => dic.Key == key && dic.Value == value))).ToList();
         }
-
-        private static bool AttributeNameFilter(string attributeName, string otherName)
-        {
-            return attributeName == otherName || $"{attributeName}Attribute" == otherName;
-        }
+        
 
         #endregion
 

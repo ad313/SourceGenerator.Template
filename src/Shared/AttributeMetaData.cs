@@ -10,6 +10,13 @@ namespace SourceGenerator.Analyzers.MetaData
     public sealed class AttributeMetaData
     {
         /// <summary>
+        /// 唯一值
+        /// </summary>
+        public string Key => ClassMetaData?.Key ?? Name;
+
+        public string SafeName => Name.EndsWith("Attribute") ? Name : $"{Name}Attribute";
+
+        /// <summary>
         /// Attribute名称
         /// </summary>
         public string Name { get; set; }
@@ -85,6 +92,48 @@ namespace SourceGenerator.Analyzers.MetaData
             }
 
             return default!;
+        }
+
+        public bool Equals(AttributeMetaData other)
+        {
+            return Key == other?.Key;
+        }
+
+        /// <summary>
+        /// 获取哈希
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return this.Key.GetHashCode();
+        }
+
+        public bool EqualsByName(string name)
+        {
+            return IsEquals(name, Name);
+        }
+
+        public bool EqualsByFullName(string name)
+        {
+            return IsEquals(name, Key);
+        }
+
+        private bool IsEquals(string first,string second)
+        {
+            string fullname, shortname;
+            var attrLen = "Attribute".Length;
+            if (first.EndsWith("Attribute"))
+            {
+                fullname = first;
+                shortname = first.Remove(first.Length - attrLen, attrLen);
+            }
+            else
+            {
+                fullname = first + "Attribute";
+                shortname = first;
+            }
+
+            return second == fullname || second == shortname;
         }
     }
 }

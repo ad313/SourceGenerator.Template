@@ -1,14 +1,16 @@
 ﻿using SourceGenerator.Consoles.Builders.ClassToProtoBuilder;
 using System;
 using System.Threading.Tasks;
-using SourceGenerator.Consoles.Builders.AopBuilder;
 
 namespace SourceGenerator.Consoles
 {
-    [Log]
     internal class Class1
     {
+        public void Test1()
+        {
 
+        }
+        
     }
     
     [ClassToProto]

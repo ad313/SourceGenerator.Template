@@ -16,16 +16,16 @@ namespace SourceGenerator.Analyzers.MetaData
             List<AttributeMetaData> attributeMetaData,
             List<PropertyMetaData> propertyMeta,
             List<MethodMetaData> methodMetaData,
-            List<string> baseInterfaces,
+            List<string> baseInterfaceList,
             string baseClass,
             List<KeyValueModel> constructor,
             List<string> usingList,
             string accessModifier,
             string extModifier = null)
-            : base(@namespace, name, attributeMetaData, propertyMeta, methodMetaData, baseInterfaces, usingList, accessModifier, extModifier)
+            : base(@namespace, name, attributeMetaData, propertyMeta, methodMetaData, baseInterfaceList, usingList, accessModifier, extModifier)
         {
             Constructor = constructor;
-            BaseInterfaces = baseInterfaces;
+            BaseInterfaceList = baseInterfaceList;
             BaseClass = baseClass;
         }
 
@@ -72,6 +72,42 @@ namespace SourceGenerator.Analyzers.MetaData
             newUsing = newUsing.Append(Namespace).ToArray();
 
             return newUsing.Select(u => $"{u}.{Name.Split('.').Last()}").Contains(key);
+        }
+
+        /// <summary>
+        /// 加上命名空间 判断是否存在
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool ExistsInterface(string key, string name)
+        {
+            if (string.IsNullOrWhiteSpace(key))
+                return false;
+
+            var newUsing = new string[UsingList.Count];
+            Array.Copy(UsingList.ToArray(), newUsing, UsingList.Count);
+            newUsing = newUsing.Append(Namespace).ToArray();
+
+            return newUsing.Select(u => $"{u}.{name.Split('.').Last()}").Contains(key);
+        }
+
+        /// <summary>
+        /// 加上命名空间 判断是否存在
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="names"></param>
+        /// <returns></returns>
+        public bool ExistsInterface(string key, List<string> names)
+        {
+            if (string.IsNullOrWhiteSpace(key))
+                return false;
+
+            var newUsing = new string[UsingList.Count];
+            Array.Copy(UsingList.ToArray(), newUsing, UsingList.Count);
+            newUsing = newUsing.Append(Namespace).ToArray();
+            
+            return names.SelectMany(name => newUsing.Select(u => $"{u}.{name.Split('.').Last()}")).Contains(key);
         }
 
         /// <summary>

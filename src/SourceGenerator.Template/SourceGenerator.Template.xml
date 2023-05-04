@@ -43,6 +43,11 @@
             enum 元数据
             </summary>
         </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.AssemblyMetaData.AllAttributeMetaDataList">
+            <summary>
+            所有 的 Attribute
+            </summary>
+        </member>
         <member name="M:SourceGenerator.Analyzers.MetaData.AssemblyMetaData.FormatData">
             <summary>
             处理数据，类和接口有继承的情况，处理标记数据
@@ -51,6 +56,11 @@
         <member name="T:SourceGenerator.Analyzers.MetaData.AttributeMetaData">
             <summary>
             Attribute 元数据
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.AttributeMetaData.Key">
+            <summary>
+            唯一值
             </summary>
         </member>
         <member name="P:SourceGenerator.Analyzers.MetaData.AttributeMetaData.Name">
@@ -67,6 +77,12 @@
             <summary>
             对应的 ClassMetaData
             </summary>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.AttributeMetaData.GetHashCode">
+            <summary>
+            获取哈希
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:SourceGenerator.Analyzers.MetaData.ClassMetaData">
             <summary>
@@ -96,6 +112,22 @@
             加上命名空间 判断是否存在
             </summary>
             <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.ExistsInterface(System.String,System.String)">
+            <summary>
+            加上命名空间 判断是否存在
+            </summary>
+            <param name="key"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.ExistsInterface(System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            加上命名空间 判断是否存在
+            </summary>
+            <param name="key"></param>
+            <param name="names"></param>
             <returns></returns>
         </member>
         <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.MergePartial(SourceGenerator.Analyzers.MetaData.ClassMetaData)">
@@ -184,7 +216,7 @@
             方法集合
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.BaseInterfaces">
+        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.BaseInterfaceList">
             <summary>
             继承的接口
             </summary>

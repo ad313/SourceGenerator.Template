@@ -123,7 +123,7 @@ namespace SourceGenerator.Analyzers
 
             foreach (var metaData in result.ClassMetaDataList)
             {
-                metaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => ((InterfaceMetaData)metaData).BaseExists(d.Key)).ToList();
+                metaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => metaData.ExistsInterface(d.Key, metaData.BaseInterfaceList)).ToList();
                 metaData.BaseClassMetaData = result.ClassMetaDataList.FirstOrDefault(d => metaData.BaseExists(d.Key));
             }
 

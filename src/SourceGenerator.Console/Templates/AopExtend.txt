@@ -1,33 +1,114 @@
 ﻿/*
   此代码通过 SourceGenerator，使用模板 Scriban 自动生成：{{ now() }} 
 */
+{{ for using in using_list }}
+using {{ using }};
+{{- end }}
+using Microsoft.Extensions.DependencyInjection;
 
- /*
-   message {{ name }}Proto{
-       {{- index = 1  }}
-       {{- for prop in property_meta }}
-       {{- if prop.ext_modifier == 'string' || prop.ext_modifier == 'string?' || prop.ext_modifier == 'DateTime' || prop.ext_modifier == 'DateTime?'}}
-       google.protobuf.StringValue {{prop.name}} = {{ index }};//{{ prop.description }}
-       
-       {{- else if prop.ext_modifier == 'decimal' || prop.ext_modifier == 'double' || prop.ext_modifier == 'float'}}
-       double {{prop.name}} = {{ index }};//{{ prop.description }}
-       {{- else if prop.ext_modifier == 'decimal?' || prop.ext_modifier == 'double?' || prop.ext_modifier == 'float?'}}
-       google.protobuf.DoubleValue {{prop.name}} = {{ index }};//{{ prop.description }}
+namespace {{ namespace }}
+{
+    {{ className = name + '_g' }}
+    public sealed class {{ className }} : {{ name }}
+    {
+        {{- parm = 'IServiceProvider serviceProvider0' }}
+        {{- base = '' }}    
+        {{ for cur in constructor }}
+        {{- parm = parm + ', ' + cur.key + ' ' + cur.value }}
+        {{- if base == '' }}
+        {{- base = cur.value }}
+        {{- else }}
+        {{- base = base + ', ' + cur.value }}
+        {{- end }}    
+        {{- end -}}    
 
-       {{- else if prop.ext_modifier == 'bool' }}
-       bool {{prop.name}} = {{ index }};//{{ prop.description }}
-       {{- else if prop.ext_modifier == 'bool?' }}
-       google.protobuf.BoolValue {{prop.name}} = {{ index }};//{{ prop.description }}
+        {{- if constructor.size>0 }}
+        {{- base = ': base(' + base + ')' }}        
+        {{- end -}}        
+        private readonly IServiceProvider _serviceProvider0;
+        public {{className}}({{ parm }}) {{ base }}       
+        {
+            _serviceProvider0 = serviceProvider0;
+        }
 
-       {{- else if prop.ext_modifier == 'int'}}
-       int32 {{prop.name}} = {{ index }};//{{ prop.description }}
-       {{- else if prop.ext_modifier == 'int?'}}
-       google.protobuf.Int32Value {{prop.name}} = {{ index }};//{{ prop.description }}
+       {{- for method in method_meta_data }}  
+       {{- if (method.attribute_meta_data!=null && method.attribute_meta_data.size>0) }}
 
+       {{- methodInputParam = '' }}
+       {{- methodParam = '' }}
+       {{- for cur in method.param }}
+       {{- if methodParam == '' }}
+       {{- methodParam = cur.key + " " + cur.value }}
+       {{- methodInputParam = '{ "' + cur.value + '", ' + cur.value + " }"   }}
        {{- else }}
-       //--- [{{ prop.ext_modifier }}] {{prop.name}} = {{ index }};//{{ prop.description }}
+       {{- methodParam = methodParam + ", " + cur.key + " " + cur.value }}
+       {{- methodInputParam = methodInputParam + ', ' + '{ "' + cur.value + '", ' + cur.value + " }"   }}
+       {{- end }}       
+       {{- end }}   
+
+       {{- methodName = '' }}
+       {{- if method.is_task }}
+       {{- methodName = methodName + 'async ' }}
        {{- end }}    
-       {{- index = index + 1 }}
+       {{- methodName = methodName + method.return_value + ' ' + method.name + '(' + methodParam + ')' }}
+        
+             
+       public override {{ methodName }}
+       {
+            var aopContext = new AopContext(_serviceProvider0,
+                new Dictionary<string, dynamic>() { {{methodInputParam}} },
+                {{ method.is_task }},
+                {{ method.has_return_value }},
+                null);
+
+            {{ index = 0 }}
+            {{- for attr in method.attribute_meta_data }}                
+            var aopInterceptor{{ index }} = _serviceProvider0.GetRequiredService<{{attr.safe_name}}>();
+            {{- for pams in attr.param_dictionary }}
+            aopInterceptor{{ index }}.{{ pams.key }} = {{ pams.value }};
+            {{- end }}  
+            {{ index = index + 1 }}
+            {{- end }}  
+
+
+            {{- index = 0 }}
+            {{- for attr in method.attribute_meta_data }}                
+            if(aopInterceptor{{ index }}.HasBefore) aopContext = {{- if method.is_task }} await aopInterceptor{{ index }}.BeforeAsync(aopContext); {{- else }} aopInterceptor{{ index }}.Before(aopContext); {{- end }}  
+            {{- index = index + 1 }}
+            {{- end }}  
+
+
+            {{- index = method.attribute_meta_data.size - 1 }}
+            {{- for attr in method.attribute_meta_data  }}                
+            {{- if index == method.attribute_meta_data.size - 1 }}
+            
+            if (aopInterceptor{{ index }}.HasAopNext)
+            {
+                if (aopInterceptor{{ index }}.HasActualNext)
+                {
+                {{- if method.is_task==false && method.has_return_value==false }}
+                aopContext.ActualMethod = () => Task.Run(() => base.{{ method.name }}({{methodParam}}));
+                {{- else }}
+                aopContext.ActualMethod = () => base.{{ method.name }}({{methodParam}}));
+                {{- end }}  
+                }
+            }
+
+
+
+
+
+
+            
+            {{- end }}
+            if(aopInterceptor{{ index }}.HasAfter) aopContext = {{- if method.is_task }} await aopInterceptor{{ index }}.AfterAsync(aopContext); {{- else }} aopInterceptor{{ index }}.After(aopContext); {{- end }}  
+            {{- index = index - 1 }}
+            {{- end }}              
+
+       }
+
        {{- end }}    
-   }
- */
+       {{- end }}    
+
+    }
+}

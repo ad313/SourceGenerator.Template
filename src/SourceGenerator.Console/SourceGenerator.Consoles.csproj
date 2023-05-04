@@ -11,6 +11,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Nito.AsyncEx" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
 	</ItemGroup>
 
   <ItemGroup>

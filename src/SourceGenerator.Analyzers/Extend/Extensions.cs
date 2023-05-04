@@ -8,40 +8,14 @@ namespace SourceGenerator.Analyzers.Extend
 {
     public static class Extensions
     {
-        public static bool HasAttribute(this SyntaxList<AttributeListSyntax> attributes, string name)
-        {
-            string fullname, shortname;
-            var attrLen = "Attribute".Length;
-            if (name.EndsWith("Attribute"))
-            {
-                fullname = name;
-                shortname = name.Remove(name.Length - attrLen, attrLen);
-            }
-            else
-            {
-                fullname = name + "Attribute";
-                shortname = name;
-            }
-
-            return attributes.Any(al => al.Attributes.Any(a => a.Name.ToString() == shortname || a.Name.ToString() == fullname));
-        }
-
         public static bool HasAttribute(this List<AttributeMetaData> attributes, string name)
         {
-            string fullname, shortname;
-            var attrLen = "Attribute".Length;
-            if (name.EndsWith("Attribute"))
-            {
-                fullname = name;
-                shortname = name.Remove(name.Length - attrLen, attrLen);
-            }
-            else
-            {
-                fullname = name + "Attribute";
-                shortname = name;
-            }
+            return attributes.Any(a => a.EqualsByName(name));
+        }
 
-            return attributes.Any(a => a.Name == shortname || a.Name == fullname);
+        public static bool HasAttributeByFullName(this List<AttributeMetaData> attributes, string name)
+        {
+            return attributes.Any(a => a.EqualsByFullName(name));
         }
 
         public static T FindParent<T>(this SyntaxNode node) where T : class
@@ -113,21 +87,7 @@ namespace SourceGenerator.Analyzers.Extend
             if (!attributeMetaData.Any()) return null;
             return attributeMetaData.FirstOrDefault(d => d.Name == attributeName)?.GetBoolParam(key);
         }
-
-        //public static bool HasAopAttribute<T>(this T classDeclarationSyntax, List<string> aopAttributeList, string ignoreAttribute) where T : MemberDeclarationSyntax
-        //{
-        //    foreach (var attribute in aopAttributeList)
-        //    {
-        //        if (classDeclarationSyntax.AttributeLists.HasAttribute(attribute))
-        //            return true;
-        //    }
-
-        //    if (classDeclarationSyntax.AttributeLists.HasAttribute(ignoreAttribute))
-        //        return true;
-
-        //    return false;
-        //}
-
+        
         public static bool HasIgnore(this List<AttributeMetaData> attributeMetaDatas, string ignoreAttribute)
         {
             return attributeMetaDatas.Any(d => d.Name == ignoreAttribute || d.Name + "Attribute" == ignoreAttribute);
