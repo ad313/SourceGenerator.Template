@@ -28,10 +28,10 @@ namespace SourceGenerator.Analyzers.Renders
         /// 模板内容
         /// </summary>
         public ConcurrentDictionary<string, string> TemplateDictionary { get; set; } = new ConcurrentDictionary<string, string>();
-        /// <summary>
-        /// 模板渲染结果
-        /// </summary>
-        public ConcurrentDictionary<string, string> TemplateResult { get; set; } = new ConcurrentDictionary<string, string>();
+        ///// <summary>
+        ///// 模板渲染结果
+        ///// </summary>
+        //public ConcurrentDictionary<string, string> TemplateResult { get; set; } = new ConcurrentDictionary<string, string>();
         /// <summary>
         /// 主模板内容
         /// </summary>

@@ -13,6 +13,8 @@ namespace SourceGenerator.Analyzers.Renders
 {
     internal sealed partial class TemplateRender
     {
+        private static readonly object Obj = new object();
+
         /// <summary>
         /// 执行渲染模板
         /// </summary>
@@ -22,6 +24,31 @@ namespace SourceGenerator.Analyzers.Renders
         public static void Build(SourceProductionContext context, ImmutableArray<AdditionalText> additionalTexts, AssemblyMetaData meta)
         {
             RenderTemplate(context, meta, GetMaps(additionalTexts));
+        }
+
+        private static List<MapModel> SetMaps(List<MapModel> maps)
+        {
+            var key = "MapsCache";
+            var cache = AppDomain.CurrentDomain.GetData(key);
+            var cacheData = cache == null ? new List<MapModel>() : (List<MapModel>)cache;
+
+            if (maps == null || !maps.Any())
+                return cacheData;
+
+            lock (Obj)
+            {
+                foreach (var model in cacheData)
+                {
+                    if (maps.Any(d => d.Code == model.Code))
+                        continue;
+
+                    maps.Add(model);
+                }
+
+                AppDomain.CurrentDomain.SetData(key, maps);
+            }
+
+            return maps;
         }
 
         private static List<MapModel> GetMaps(ImmutableArray<AdditionalText> additionalTexts)
@@ -57,7 +84,7 @@ namespace SourceGenerator.Analyzers.Renders
                 }
             }
 
-            return list;
+            return SetMaps(list);
         }
 
         private static void RenderTemplate(SourceProductionContext context, AssemblyMetaData meta, List<MapModel> mapModels)
@@ -78,7 +105,7 @@ namespace SourceGenerator.Analyzers.Renders
 
                 Template.Parse(mapModel.MainTemplateString).Render(scContext);
 
-                mapModel.TemplateResult.Clear();
+                //mapModel.TemplateResult.Clear();
             }
         }
     }

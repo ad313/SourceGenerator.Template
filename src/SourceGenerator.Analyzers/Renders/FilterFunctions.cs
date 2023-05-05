@@ -290,13 +290,8 @@ namespace SourceGenerator.Analyzers.Renders
 
                 if (obj is List<AttributeMetaData> attributeMeta)
                 {
-                    if (attributeMeta.Any())
-                    {
-
-                    }
-                    var ss= attributeNames.SelectMany(attributeName =>
+                    return attributeNames.SelectMany(attributeName =>
                         attributeMeta.Where(t => t.EqualsByName(attributeName.ToString()))).ToList();
-                    return ss;
                 }
             }
             

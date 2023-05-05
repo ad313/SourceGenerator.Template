@@ -4,15 +4,6 @@
         <name>SourceGenerator.Template</name>
     </assembly>
     <members>
-        <member name="M:SourceGenerator.Template.MetaDataHelper.LoadJson(System.String)">
-            <summary>
-            读取json，转换元数据
-            </summary>
-            <param name="path"></param>
-            <returns></returns>
-            <exception cref="T:System.IO.FileNotFoundException"></exception>
-            <exception cref="T:System.Exception"></exception>
-        </member>
         <member name="T:SourceGenerator.Analyzers.MetaData.AssemblyMetaData">
             <summary>
             元数据
