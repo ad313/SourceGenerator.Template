@@ -11,9 +11,12 @@
 
 	<ItemGroup>
 		<PackageReference Include="Nito.AsyncEx" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
 	</ItemGroup>
 
   <ItemGroup>
+    <None Remove="Templates\AopExtend.txt" />
+    <None Remove="Templates\AopExtend_Main.txt" />
     <None Remove="Templates\BizEnumExtend.txt" />
     <None Remove="Templates\BizEnumExtend_Main.txt" />
     <None Remove="Templates\ClassToProtoExtend.txt" />
@@ -24,7 +27,9 @@
   <ItemGroup>
     <AdditionalFiles Include="Templates\BizEnumExtend.txt" />
     <AdditionalFiles Include="Templates\BizEnumExtend_Main.txt" />
+    <AdditionalFiles Include="Templates\AopExtend.txt" />
     <AdditionalFiles Include="Templates\ClassToProtoExtend.txt" />
+    <AdditionalFiles Include="Templates\AopExtend_Main.txt" />
     <AdditionalFiles Include="Templates\ClassToProtoExtend_Main.txt" />
     <AdditionalFiles Include="Templates\Map.json" />
   </ItemGroup>

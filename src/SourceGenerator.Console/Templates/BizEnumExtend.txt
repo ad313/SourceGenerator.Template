@@ -1,9 +1,10 @@
 ﻿/*
   此代码通过 SourceGenerator，使用模板 Scriban 自动生成：{{ now() }} 
 */
-{{ for using in usings }}
-{{- using}}
-{{ end }}using SourceGenerator.Consoles.Builders.BizEnumExtendBuilder;
+{{ for using in using_list }}
+using {{ using }};
+{{- end }}
+using SourceGenerator.Consoles.Builders.BizEnumExtendBuilder;
 using System.Collections.Generic;
 using System.Linq;
 

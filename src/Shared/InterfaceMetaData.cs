@@ -17,7 +17,7 @@ namespace SourceGenerator.Analyzers.MetaData
             List<AttributeMetaData> attributeMetaData,
             List<PropertyMetaData> propertyMeta,
             List<MethodMetaData> methodMetaData,
-            List<string> baseInterfaces,
+            List<string> baseInterfaceList,
             List<string> usingList,
             string accessModifier,
             string extModifier) 
@@ -26,7 +26,7 @@ namespace SourceGenerator.Analyzers.MetaData
             Namespace = @namespace;
             PropertyMeta = propertyMeta;
             MethodMetaData = methodMetaData;
-            BaseInterfaces = baseInterfaces;
+            BaseInterfaceList = baseInterfaceList;
             UsingList = usingList;
         }
 
@@ -48,7 +48,7 @@ namespace SourceGenerator.Analyzers.MetaData
         /// <summary>
         /// 继承的接口
         /// </summary>
-        public List<string> BaseInterfaces { get; set; }
+        public List<string> BaseInterfaceList { get; set; }
 
         /// <summary>
         /// 继承的接口
@@ -82,10 +82,10 @@ namespace SourceGenerator.Analyzers.MetaData
             if (MethodMetaData != null && other.MethodMetaData != null)
                 MethodMetaData.AddRange(other.MethodMetaData);
 
-            if (BaseInterfaces != null && other.BaseInterfaces != null)
+            if (BaseInterfaceList != null && other.BaseInterfaceList != null)
             {
-                BaseInterfaces.AddRange(other.BaseInterfaces);
-                BaseInterfaces = BaseInterfaces.Distinct().ToList();
+                BaseInterfaceList.AddRange(other.BaseInterfaceList);
+                BaseInterfaceList = BaseInterfaceList.Distinct().ToList();
             }
 
             if (BaseInterfaceMetaDataList != null && other.BaseInterfaceMetaDataList != null)
@@ -98,13 +98,13 @@ namespace SourceGenerator.Analyzers.MetaData
             }
         }
 
-        public virtual bool Exists(string key)
+        public virtual bool BaseExists(string key)
         {
             var newUsing = new string[UsingList.Count];
             Array.Copy(UsingList.ToArray(), newUsing, UsingList.Count);
             newUsing = newUsing.Append(Namespace).ToArray();
 
-            return BaseInterfaces.Contains(key) || BaseInterfaces.SelectMany(t => newUsing.Select(u => $"{u.Replace("using ", "").Replace(";", "")}.{t.Split('.').Last()}")).Contains(key);
+            return BaseInterfaceList.Contains(key) || BaseInterfaceList.SelectMany(t => newUsing.Select(u => $"{u}.{t.Split('.').Last()}")).Contains(key);
         }
 
         /// <summary>

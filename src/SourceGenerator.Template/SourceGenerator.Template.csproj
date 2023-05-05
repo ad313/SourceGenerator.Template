@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>net5.0;net6.0;net7.0</TargetFrameworks>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Version>0.0.3</Version>
+		<Version>1.0.0</Version>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<DocumentationFile>SourceGenerator.Template.xml</DocumentationFile>
 		<Description>通过 SourceGenerator 扫描程序集，获取元数据。使用 Scriban 模板引擎，自定义模板生成代码</Description>
@@ -29,6 +29,10 @@
 		<Compile Update="..\Shared\MetaDataBase.cs" Link="MetaData\MetaDataBase.cs" />
 		<Compile Update="..\Shared\MethodMetaData.cs" Link="MetaData\MethodMetaData.cs" />
 		<Compile Update="..\Shared\PropertyMetaData.cs" Link="MetaData\PropertyMetaData.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="NugetPackage\analyzers\dotnet\cs\" />
 	</ItemGroup>
 
 	<!--nuget analyzers -->

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Xml.Linq;
 
 namespace SourceGenerator.Analyzers
 {
@@ -96,7 +97,7 @@ namespace SourceGenerator.Analyzers
 
             foreach (var metaData in result.InterfaceMetaDataList)
             {
-                metaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => metaData.Exists(d.Key)).ToList();
+                metaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => metaData.BaseExists(d.Key)).ToList();
             }
 
             #endregion
@@ -122,8 +123,8 @@ namespace SourceGenerator.Analyzers
 
             foreach (var metaData in result.ClassMetaDataList)
             {
-                metaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => ((InterfaceMetaData)metaData).Exists(d.Key)).ToList();
-                metaData.BaseClassMetaData = result.ClassMetaDataList.FirstOrDefault(d => metaData.Exists(d.Key));
+                metaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => metaData.ExistsInterface(d.Key, metaData.BaseInterfaceList)).ToList();
+                metaData.BaseClassMetaData = result.ClassMetaDataList.FirstOrDefault(d => metaData.BaseExists(d.Key));
             }
 
             #endregion
@@ -149,7 +150,7 @@ namespace SourceGenerator.Analyzers
 
             foreach (var metaData in result.StructMetaDataList)
             {
-                metaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => metaData.Exists(d.Key)).ToList();
+                metaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => metaData.BaseExists(d.Key)).ToList();
             }
 
             #endregion
@@ -247,7 +248,7 @@ namespace SourceGenerator.Analyzers
                         usingList,
                         declaration.Modifiers.ToString()) as TOut;
                 }
-
+                
                 if (typeof(TOut) == typeof(InterfaceMetaData))
                 {
                     return new InterfaceMetaData(namespaceName,
@@ -277,7 +278,7 @@ namespace SourceGenerator.Analyzers
                 throw new Exception($"class 报错：{declaration.Identifier.Text}", e);
             }
         }
-
+        
         private MethodMetaData GetMethodMetaData(MethodDeclarationSyntax methodDeclarationSyntax)
         {
             var param = new List<KeyValueModel>();
