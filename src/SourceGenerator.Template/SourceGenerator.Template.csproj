@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>net5.0;net6.0;net7.0</TargetFrameworks>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Version>0.0.3</Version>
+		<Version>1.0.0</Version>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<DocumentationFile>SourceGenerator.Template.xml</DocumentationFile>
 		<Description>通过 SourceGenerator 扫描程序集，获取元数据。使用 Scriban 模板引擎，自定义模板生成代码</Description>
@@ -31,8 +31,12 @@
 		<Compile Update="..\Shared\PropertyMetaData.cs" Link="MetaData\PropertyMetaData.cs" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="NugetPackage\analyzers\dotnet\cs\" />
+	</ItemGroup>
+
 	<!--nuget analyzers -->
-	<!--<ItemGroup>
+	<ItemGroup>
 		<None Include="NugetPackage\tools\*.*" PackagePath="tools" Pack="true" />
 		<None Include="NugetPackage\analyzers\dotnet\cs\**" PackagePath="analyzers\dotnet\cs" Pack="true" />
 	</ItemGroup>
@@ -41,5 +45,5 @@
 	</ItemGroup>
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="dotnet publish ../SourceGenerator.Analyzers/SourceGenerator.Analyzers.csproj -c Release -o NugetPackage/analyzers/dotnet/cs" />
-	</Target>-->
+	</Target>
 </Project>
