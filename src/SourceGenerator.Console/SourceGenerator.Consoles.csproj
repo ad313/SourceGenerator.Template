@@ -10,8 +10,11 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Nito.AsyncEx" Version="5.0.0" />
+		<PackageReference Include="Mic" Version="0.0.0.13" />
+		<PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+		<PackageReference Include="SaiLing.Biz.Sg.Templates" Version="1.0.0.1" />
+		<!--<PackageReference Include="SaiLing.Biz.Dictionary.Extensions" Version="2.1.1.16" />-->
 	</ItemGroup>
 
   <ItemGroup>
@@ -24,7 +27,7 @@
     <None Remove="Templates\Map.json" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <AdditionalFiles Include="Templates\BizEnumExtend.txt" />
     <AdditionalFiles Include="Templates\BizEnumExtend_Main.txt" />
     <AdditionalFiles Include="Templates\AopExtend.txt" />
@@ -32,7 +35,7 @@
     <AdditionalFiles Include="Templates\AopExtend_Main.txt" />
     <AdditionalFiles Include="Templates\ClassToProtoExtend_Main.txt" />
     <AdditionalFiles Include="Templates\Map.json" />
-  </ItemGroup>
+  </ItemGroup>-->
 
   <!--<ItemGroup>
     <PackageReference Include="SourceGenerator.Template" Version="0.0.3" />

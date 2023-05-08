@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>net5.0;net6.0;net7.0</TargetFrameworks>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<DocumentationFile>SourceGenerator.Template.xml</DocumentationFile>
 		<Description>通过 SourceGenerator 扫描程序集，获取元数据。使用 Scriban 模板引擎，自定义模板生成代码</Description>

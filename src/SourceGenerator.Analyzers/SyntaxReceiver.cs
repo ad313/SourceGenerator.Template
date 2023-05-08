@@ -109,7 +109,7 @@ namespace SourceGenerator.Analyzers
                 var metaData = GetMetaData<ClassDeclarationSyntax, ClassMetaData>(declaration);
                 if (metaData == null)
                     continue;
-
+                
                 var exists = result.ClassMetaDataList.FirstOrDefault(d => d.Equals(metaData));
                 if (exists != null)
                 {
