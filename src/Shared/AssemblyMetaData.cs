@@ -78,33 +78,35 @@ namespace SourceGenerator.Analyzers.MetaData
             }
 
             #endregion
-            
+
             #region 处理特性对应的class
+
+            var attrClassMetaDataList = ClassMetaDataList?.Where(d => d.IsAttribute).ToList()??new List<ClassMetaData>();
 
             ClassMetaDataList?.ForEach(item =>
                 {
-                    item.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList));
-                    item.PropertyMeta?.ForEach(prop => prop.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList)));
-                    item.MethodMetaData?.ForEach(method => method.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList)));
+                    item.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.NewUsingList, attrClassMetaDataList));
+                    item.PropertyMeta?.ForEach(prop => prop.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.NewUsingList, attrClassMetaDataList)));
+                    item.MethodMetaData?.ForEach(method => method.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.NewUsingList, attrClassMetaDataList)));
                 });
 
             InterfaceMetaDataList?.ForEach(item =>
             {
-                item.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList));
-                item.PropertyMeta?.ForEach(prop => prop.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList)));
-                item.MethodMetaData?.ForEach(method => method.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList)));
+                item.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.NewUsingList, attrClassMetaDataList));
+                item.PropertyMeta?.ForEach(prop => prop.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.NewUsingList, attrClassMetaDataList)));
+                item.MethodMetaData?.ForEach(method => method.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.NewUsingList, attrClassMetaDataList)));
             });
 
             StructMetaDataList?.ForEach(item =>
             {
-                item.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList));
-                item.PropertyMeta?.ForEach(prop => prop.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList)));
-                item.MethodMetaData?.ForEach(method => method.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList)));
+                item.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.NewUsingList, attrClassMetaDataList));
+                item.PropertyMeta?.ForEach(prop => prop.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.NewUsingList, attrClassMetaDataList)));
+                item.MethodMetaData?.ForEach(method => method.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.NewUsingList, attrClassMetaDataList)));
             });
 
             EnumMetaDataList?.ForEach(item =>
             {
-                item.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.Namespace, item.UsingList, ClassMetaDataList));
+                item.AttributeMetaData?.ForEach(att => att.SetClassMetaData(item.NewUsingList, attrClassMetaDataList));
             });
 
             #endregion
@@ -118,7 +120,7 @@ namespace SourceGenerator.Analyzers.MetaData
             AllAttributeMetaDataList.AddRange(ClassMetaDataList?.SelectMany(d => d.AttributeMetaData).ToList() ?? new List<AttributeMetaData>());
             AllAttributeMetaDataList.AddRange(ClassMetaDataList?.SelectMany(d => d.MethodMetaData.SelectMany(m => m.AttributeMetaData)).ToList() ?? new List<AttributeMetaData>());
             AllAttributeMetaDataList.AddRange(ClassMetaDataList?.SelectMany(d => d.PropertyMeta.SelectMany(m => m.AttributeMetaData)).ToList() ?? new List<AttributeMetaData>());
-            
+
             AllAttributeMetaDataList.AddRange(StructMetaDataList?.SelectMany(d => d.AttributeMetaData).ToList() ?? new List<AttributeMetaData>());
             AllAttributeMetaDataList.AddRange(StructMetaDataList?.SelectMany(d => d.MethodMetaData.SelectMany(m => m.AttributeMetaData)).ToList() ?? new List<AttributeMetaData>());
             AllAttributeMetaDataList.AddRange(StructMetaDataList?.SelectMany(d => d.PropertyMeta.SelectMany(m => m.AttributeMetaData)).ToList() ?? new List<AttributeMetaData>());
@@ -127,7 +129,7 @@ namespace SourceGenerator.Analyzers.MetaData
             AllAttributeMetaDataList.AddRange(EnumMetaDataList?.SelectMany(d => d.MemberMeta.SelectMany(m => m.AttributeMetaData)).ToList() ?? new List<AttributeMetaData>());
 
             AllAttributeMetaDataList = AllAttributeMetaDataList.GroupBy(d => d.Key).Select(d => d.First()).ToList();
-            
+
             #endregion
 
             return this;

@@ -54,7 +54,17 @@
             唯一值
             </summary>
         </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.AttributeMetaData.FullName">
+            <summary>
+            包含 Attribute
+            </summary>
+        </member>
         <member name="P:SourceGenerator.Analyzers.MetaData.AttributeMetaData.Name">
+            <summary>
+            Attribute名称
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.AttributeMetaData.ShortName">
             <summary>
             Attribute名称
             </summary>
@@ -98,20 +108,10 @@
             构造函数
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.Exists(System.String)">
+        <member name="P:SourceGenerator.Analyzers.MetaData.ClassMetaData.IsAttribute">
             <summary>
-            加上命名空间 判断是否存在
+            是否是 Attribute
             </summary>
-            <param name="key"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.ExistsInterface(System.String,System.String)">
-            <summary>
-            加上命名空间 判断是否存在
-            </summary>
-            <param name="key"></param>
-            <param name="name"></param>
-            <returns></returns>
         </member>
         <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.ExistsInterface(System.String,System.Collections.Generic.List{System.String})">
             <summary>
@@ -153,6 +153,11 @@
             </summary>
         </member>
         <member name="P:SourceGenerator.Analyzers.MetaData.EnumMetaData.UsingList">
+            <summary>
+            引用
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.EnumMetaData.NewUsingList">
             <summary>
             引用
             </summary>
@@ -220,6 +225,11 @@
         <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.UsingList">
             <summary>
             引用
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.NewUsingList">
+            <summary>
+            引用 添加自身 namespace
             </summary>
         </member>
         <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.IsLeaf">

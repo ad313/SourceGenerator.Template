@@ -6,8 +6,6 @@ using SourceGenerator.Analyzers.Renders;
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace SourceGenerator.Analyzers
@@ -33,7 +31,7 @@ namespace SourceGenerator.Analyzers
         /// <summary>
         /// 额外提供的程序集的名称 包含关系
         /// </summary>
-        private const string TemplateAssemblyName = "Sg.Templates.dll";
+        public const string TemplateAssemblyName = "Sg.Templates.dll";
 
         /// <summary>
         /// 初始化
@@ -84,15 +82,18 @@ namespace SourceGenerator.Analyzers
             watch.Start();
 
             AssemblyMetaData meta = null;
-            
+
             #region 1、获取元数据
 
             try
             {
-                meta = new SyntaxReceiver(compilation, context.CancellationToken).GetMetaData();
+                meta = new SyntaxReceiver(compilation, context.CancellationToken).GetMetaData(out StringBuilder sb);
                 meta.AssemblyName = compilation.AssemblyName;
 
                 TemplateRender.ToTimeStringBuilder("1、获取元数据", _timeBuilder, watch.ElapsedMilliseconds);
+
+               _timeBuilder.AppendLine(TemplateRender.ToMetaStringBuilder(meta).ToString());
+               _timeBuilder.AppendLine(sb.ToString());
             }
             catch (Exception e)
             {
@@ -117,11 +118,8 @@ namespace SourceGenerator.Analyzers
             {
                 if (context.CancellationToken.IsCancellationRequested)
                     return;
-
-                var templateAssemblyDllList = compilation.References.Where(d => d.Display != null && d.Display.Contains(TemplateAssemblyName)).ToList();
-                var templateAssemblyList = templateAssemblyDllList.Select(d => d.Display == null ? null : Assembly.LoadFile(d.Display)).Where(d => d != null).ToList();
-
-                TemplateRender.Build(context, additionalTexts, meta, templateAssemblyList);
+                
+                TemplateRender.Build(context, additionalTexts, meta, compilation);
                 TemplateRender.ToTimeStringBuilder("2、渲染模板", _timeBuilder, watch.ElapsedMilliseconds);
             }
             catch (Exception e)

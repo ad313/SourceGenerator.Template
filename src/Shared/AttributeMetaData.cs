@@ -13,13 +13,18 @@ namespace SourceGenerator.Analyzers.MetaData
         /// 唯一值
         /// </summary>
         public string Key => ClassMetaData?.Key ?? Name;
-
-        public string SafeName => Name.EndsWith("Attribute") ? Name : $"{Name}Attribute";
-
+        /// <summary>
+        /// 包含 Attribute
+        /// </summary>
+        public string FullName { get; set; }
         /// <summary>
         /// Attribute名称
         /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// Attribute名称
+        /// </summary>
+        public string ShortName { get; set; }
         /// <summary>
         /// 参数值
         /// </summary>
@@ -32,23 +37,20 @@ namespace SourceGenerator.Analyzers.MetaData
         public AttributeMetaData(string name)
         {
             Name = name;
+            ShortName = name.IndexOf('.') > -1 ? name.Split('.').Last() : name;
+            FullName = ShortName.EndsWith("Attribute") ? ShortName : $"{ShortName}Attribute";
         }
 
-        public void SetClassMetaData(string @namespace, List<string> usingList, List<ClassMetaData> classMetaDataList)
+        public void SetClassMetaData(List<string> newUsing, List<ClassMetaData> classMetaDataList)
         {
             if (classMetaDataList == null)
                 return;
 
-            var newUsing = new string[usingList.Count];
-            Array.Copy(usingList.ToArray(), newUsing, usingList.Count);
-            newUsing = newUsing.Append(@namespace).ToArray();
-
             var classList = new List<ClassMetaData>();
-            var keys = newUsing.Select(u => $"{u}.{Name.Split('.').Last()}").ToList();
+            var keys = newUsing.Select(u => $"{u}.{ShortName}").ToList();
             foreach (var key in keys)
             {
-                var exists = classMetaDataList.Where(d => d.Exists(key) || d.Exists($"{key}Attribute")).ToList();
-
+                var exists = classMetaDataList.Where(d => d.Key == key || d.Key == $"{key}Attribute").ToList();
                 classList.AddRange(exists);
             }
 
@@ -118,7 +120,7 @@ namespace SourceGenerator.Analyzers.MetaData
             return IsEquals(name, Key);
         }
 
-        private bool IsEquals(string first,string second)
+        private bool IsEquals(string first, string second)
         {
             string fullname, shortname;
             var attrLen = "Attribute".Length;

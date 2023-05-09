@@ -28,6 +28,11 @@ namespace SourceGenerator.Analyzers.MetaData
             MethodMetaData = methodMetaData;
             BaseInterfaceList = baseInterfaceList;
             UsingList = usingList;
+
+            var newUsing = new string[UsingList.Count];
+            Array.Copy(UsingList.ToArray(), newUsing, UsingList.Count);
+            newUsing = newUsing.Append(Namespace).ToArray();
+            NewUsingList = newUsing.ToList();
         }
 
         /// <summary>
@@ -59,6 +64,11 @@ namespace SourceGenerator.Analyzers.MetaData
         /// 引用
         /// </summary>
         public List<string> UsingList { get; set; }
+
+        /// <summary>
+        /// 引用 添加自身 namespace
+        /// </summary>
+        public List<string> NewUsingList { get; set; }
 
         /// <summary>
         /// 是否是最底层的叶子节点
@@ -100,11 +110,7 @@ namespace SourceGenerator.Analyzers.MetaData
 
         public virtual bool BaseExists(string key)
         {
-            var newUsing = new string[UsingList.Count];
-            Array.Copy(UsingList.ToArray(), newUsing, UsingList.Count);
-            newUsing = newUsing.Append(Namespace).ToArray();
-
-            return BaseInterfaceList.Contains(key) || BaseInterfaceList.SelectMany(t => newUsing.Select(u => $"{u}.{t.Split('.').Last()}")).Contains(key);
+            return BaseInterfaceList.Contains(key) || BaseInterfaceList.SelectMany(t => NewUsingList.Select(u => $"{u}.{t.Split('.').Last()}")).Contains(key);
         }
 
         /// <summary>

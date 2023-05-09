@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
+using Newtonsoft.Json;
+using SourceGenerator.Analyzers.MetaData;
 
 namespace SourceGenerator.Analyzers.Renders
 {
@@ -34,8 +39,34 @@ namespace SourceGenerator.Analyzers.Renders
         {
             sb ??= new StringBuilder();
             sb.AppendLine($"// {name} =>");
-            sb.AppendLine($"// 耗时：{elapsedMilliseconds}");
+            sb.AppendLine($"// 耗时：{elapsedMilliseconds} ms");
             sb.AppendLine();
+        }
+
+        /// <summary>
+        /// 生成元数据统计内容
+        /// </summary>
+        public static StringBuilder ToMetaStringBuilder(AssemblyMetaData meta)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"//interface：{meta.InterfaceMetaDataList.Count} 个");
+            sb.AppendLine($"//    class：{meta.ClassMetaDataList.Count} 个");
+            sb.AppendLine($"//   struct：{meta.StructMetaDataList.Count} 个");
+            sb.AppendLine($"//     enum：{meta.EnumMetaDataList.Count} 个");
+            return sb;
+        }
+
+        /// <summary>
+        /// 生成加载模板与外部模板模板统计情况
+        /// </summary>
+        public static StringBuilder ToTemplateAssemblyStringBuilder(List<MapModel> maps, List<Assembly> templateAssemblyList)
+        {
+            var sb = new StringBuilder();
+            sb.Append("// 模板程序集：");
+            sb.AppendLine(string.Join("、", templateAssemblyList.Select(d => d.FullName)));
+            sb.Append("// 模板map：");
+            sb.AppendLine(JsonConvert.SerializeObject(maps));
+            return sb;
         }
     }
 }

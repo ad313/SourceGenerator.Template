@@ -27,6 +27,8 @@ namespace SourceGenerator.Analyzers.MetaData
             Constructor = constructor;
             BaseInterfaceList = baseInterfaceList;
             BaseClass = baseClass;
+
+            IsAttribute = BaseClass != null && BaseClass.Split('.').Last() == "Attribute";
         }
 
         /// <summary>
@@ -44,52 +46,18 @@ namespace SourceGenerator.Analyzers.MetaData
         /// </summary>
         public List<KeyValueModel> Constructor { get; set; }
 
+        /// <summary>
+        /// 是否是 Attribute
+        /// </summary>
+        public bool IsAttribute { get; set; }
+
         public override bool BaseExists(string key)
         {
             if (string.IsNullOrWhiteSpace(BaseClass))
                 return false;
 
-            var newUsing = new string[UsingList.Count];
-            Array.Copy(UsingList.ToArray(), newUsing, UsingList.Count);
-            newUsing = newUsing.Append(Namespace).ToArray();
-
             return BaseClass.Equals(key, StringComparison.OrdinalIgnoreCase) ||
-                   newUsing.Select(u => $"{u}.{BaseClass.Split('.').Last()}").Contains(key);
-        }
-
-        /// <summary>
-        /// 加上命名空间 判断是否存在
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public bool Exists(string key)
-        {
-            if (string.IsNullOrWhiteSpace(key))
-                return false;
-
-            var newUsing = new string[UsingList.Count];
-            Array.Copy(UsingList.ToArray(), newUsing, UsingList.Count);
-            newUsing = newUsing.Append(Namespace).ToArray();
-
-            return newUsing.Select(u => $"{u}.{Name.Split('.').Last()}").Contains(key);
-        }
-
-        /// <summary>
-        /// 加上命名空间 判断是否存在
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public bool ExistsInterface(string key, string name)
-        {
-            if (string.IsNullOrWhiteSpace(key))
-                return false;
-
-            var newUsing = new string[UsingList.Count];
-            Array.Copy(UsingList.ToArray(), newUsing, UsingList.Count);
-            newUsing = newUsing.Append(Namespace).ToArray();
-
-            return newUsing.Select(u => $"{u}.{name.Split('.').Last()}").Contains(key);
+                   NewUsingList.Select(u => $"{u}.{BaseClass.Split('.').Last()}").Contains(key);
         }
 
         /// <summary>
@@ -103,11 +71,7 @@ namespace SourceGenerator.Analyzers.MetaData
             if (string.IsNullOrWhiteSpace(key))
                 return false;
 
-            var newUsing = new string[UsingList.Count];
-            Array.Copy(UsingList.ToArray(), newUsing, UsingList.Count);
-            newUsing = newUsing.Append(Namespace).ToArray();
-            
-            return names.SelectMany(name => newUsing.Select(u => $"{u}.{name.Split('.').Last()}")).Contains(key);
+            return names.SelectMany(name => NewUsingList.Select(u => $"{u}.{name.Split('.').Last()}")).Contains(key);
         }
 
         /// <summary>

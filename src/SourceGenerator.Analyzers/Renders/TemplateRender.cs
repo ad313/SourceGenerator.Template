@@ -22,21 +22,21 @@ namespace SourceGenerator.Analyzers.Renders
         /// <param name="context">上下文</param>
         /// <param name="additionalTexts">当前程序集参与编译的分析器文件</param>
         /// <param name="meta">当前程序集元数据</param>
-        /// <param name="templateAssemblyList">提供额外的模板程序集</param>
-        public static void Build(SourceProductionContext context, ImmutableArray<AdditionalText> additionalTexts, AssemblyMetaData meta, List<Assembly> templateAssemblyList)
+        /// <param name="compilation">提供额外的模板程序集</param>
+        public static void Build(SourceProductionContext context, ImmutableArray<AdditionalText> additionalTexts, AssemblyMetaData meta, Compilation compilation)
         {
+            //加载外部模板程序集
+            var templateAssemblyDllList = compilation.References.Where(d => d.Display != null && d.Display.EndsWith(IncrementalGenerator.TemplateAssemblyName)).ToList();
+            var templateAssemblyList = templateAssemblyDllList.Select(d => d.Display == null ? null : Assembly.LoadFile(d.Display)).Where(d => d != null).ToList();
+
+            //获取模板
             var maps = GetMaps(additionalTexts, templateAssemblyList);
 
-            var sb = new StringBuilder();
-            sb.Append("// 模板程序集：");
-            sb.AppendLine(string.Join("、", templateAssemblyList.Select(d => d.FullName)));
-            sb.Append("// 模板map：");
-            sb.AppendLine(JsonConvert.SerializeObject(maps));
-            context.AddSource("template", sb.ToString());
+            context.AddSource("TemplateInfo", ToTemplateAssemblyStringBuilder(maps, templateAssemblyList).ToString());
 
             RenderTemplate(context, meta, maps);
         }
-        
+
         private static List<MapModel> GetMaps(ImmutableArray<AdditionalText> additionalTexts, List<Assembly> templateAssemblyList)
         {
             var list = new List<MapModel>();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SourceGenerator.Analyzers.MetaData
 {
@@ -22,6 +23,11 @@ namespace SourceGenerator.Analyzers.MetaData
             Namespace = @namespace;
             MemberMeta = memberMeta;
             UsingList = usingList;
+
+            var newUsing = new string[UsingList.Count];
+            Array.Copy(UsingList.ToArray(), newUsing, UsingList.Count);
+            newUsing = newUsing.Append(Namespace).ToArray();
+            NewUsingList = newUsing.ToList();
         }
         
         /// <summary>
@@ -38,6 +44,11 @@ namespace SourceGenerator.Analyzers.MetaData
         /// 引用
         /// </summary>
         public List<string> UsingList { get; set; }
+
+        /// <summary>
+        /// 引用
+        /// </summary>
+        public List<string> NewUsingList { get; set; }
 
         public bool Equals(EnumMetaData other)
         {

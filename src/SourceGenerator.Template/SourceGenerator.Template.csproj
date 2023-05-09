@@ -1,8 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net5.0;net6.0;net7.0</TargetFrameworks>
+		<TargetFramework>netstandard2.0</TargetFramework>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Version>1.0.2</Version>
+		<Version>1.0.3</Version>
+		<LangVersion>9.0</LangVersion>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<DocumentationFile>SourceGenerator.Template.xml</DocumentationFile>
 		<Description>通过 SourceGenerator 扫描程序集，获取元数据。使用 Scriban 模板引擎，自定义模板生成代码</Description>
@@ -13,10 +14,6 @@
 	<PropertyGroup>
 		<NoWarn>1701;1702;1591</NoWarn>
 	</PropertyGroup>
-
-	<!--<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-	</ItemGroup>-->
 
 	<ItemGroup>
 		<Compile Include="..\Shared\*.cs" />
@@ -36,7 +33,7 @@
 	</ItemGroup>
 
 	<!--nuget analyzers -->
-	<!--<ItemGroup>
+	<ItemGroup>
 		<None Include="NugetPackage\tools\*.*" PackagePath="tools" Pack="true" />
 		<None Include="NugetPackage\analyzers\dotnet\cs\**" PackagePath="analyzers\dotnet\cs" Pack="true" />
 	</ItemGroup>
@@ -45,5 +42,5 @@
 	</ItemGroup>
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="dotnet publish ../SourceGenerator.Analyzers/SourceGenerator.Analyzers.csproj -c Release -o NugetPackage/analyzers/dotnet/cs" />
-	</Target>-->
+	</Target>
 </Project>

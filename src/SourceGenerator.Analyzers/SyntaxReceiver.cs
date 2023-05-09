@@ -5,9 +5,10 @@ using SourceGenerator.Analyzers.Extend;
 using SourceGenerator.Analyzers.MetaData;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading;
-using System.Xml.Linq;
 
 namespace SourceGenerator.Analyzers
 {
@@ -16,6 +17,8 @@ namespace SourceGenerator.Analyzers
     /// </summary>
     sealed class SyntaxReceiver : ISyntaxReceiver
     {
+        private readonly CancellationToken _token;
+
         /// <summary>
         /// Struct
         /// </summary>
@@ -36,7 +39,7 @@ namespace SourceGenerator.Analyzers
         /// Record
         /// </summary>
         private readonly List<RecordDeclarationSyntax> _recordSyntaxList;
-
+        
         public SyntaxReceiver(List<ClassDeclarationSyntax> classSyntaxList, List<InterfaceDeclarationSyntax> interfaceSyntaxList)
         {
             _classSyntaxList = classSyntaxList;
@@ -45,6 +48,7 @@ namespace SourceGenerator.Analyzers
 
         public SyntaxReceiver(Compilation compilation, CancellationToken token)
         {
+            _token = token;
             var syntaxNodes = compilation.SyntaxTrees.SelectMany(d => d.GetRoot(token).DescendantNodes()).ToList();
             _classSyntaxList = syntaxNodes.OfType<ClassDeclarationSyntax>().ToList();
             _structSyntaxList = syntaxNodes.OfType<StructDeclarationSyntax>().ToList();
@@ -74,8 +78,11 @@ namespace SourceGenerator.Analyzers
         /// 获取所有接口和类
         /// </summary>
         /// <returns></returns>
-        public AssemblyMetaData GetMetaData()
+        public AssemblyMetaData GetMetaData(out StringBuilder sb)
         {
+            var watch = Stopwatch.StartNew();
+            sb = new StringBuilder();
+
             var result = new AssemblyMetaData(new List<InterfaceMetaData>(), new List<ClassMetaData>(), new List<StructMetaData>(), new List<EnumMetaData>());
 
             #region 处理接口
@@ -83,6 +90,8 @@ namespace SourceGenerator.Analyzers
             //Debugger.Launch();
             foreach (var declaration in _interfaceSyntaxList)
             {
+                _token.ThrowIfCancellationRequested();
+                
                 var metaData = GetMetaData<InterfaceDeclarationSyntax, InterfaceMetaData>(declaration);
                 var exists = result.InterfaceMetaDataList.FirstOrDefault(d => d.Equals(metaData));
                 if (exists != null)
@@ -101,15 +110,20 @@ namespace SourceGenerator.Analyzers
             }
 
             #endregion
+
+            sb.AppendLine($"//interface：{watch.ElapsedMilliseconds} ms");
+            watch.Restart();
             
             #region 处理类
-
+            
             foreach (var declaration in _classSyntaxList)
             {
+                _token.ThrowIfCancellationRequested();
+                
                 var metaData = GetMetaData<ClassDeclarationSyntax, ClassMetaData>(declaration);
                 if (metaData == null)
                     continue;
-                
+
                 var exists = result.ClassMetaDataList.FirstOrDefault(d => d.Equals(metaData));
                 if (exists != null)
                 {
@@ -121,18 +135,23 @@ namespace SourceGenerator.Analyzers
                 }
             }
 
-            foreach (var metaData in result.ClassMetaDataList)
+            foreach (var metaData in result.ClassMetaDataList.Where(d => !string.IsNullOrWhiteSpace(d.BaseClass) || d.BaseInterfaceList?.Count > 0))
             {
                 metaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => metaData.ExistsInterface(d.Key, metaData.BaseInterfaceList)).ToList();
                 metaData.BaseClassMetaData = result.ClassMetaDataList.FirstOrDefault(d => metaData.BaseExists(d.Key));
             }
 
             #endregion
+            
+            sb.AppendLine($"//    class：{watch.ElapsedMilliseconds} ms");
+            watch.Restart();
 
             #region 处理 Struct
 
             foreach (var declaration in _structSyntaxList)
             {
+                _token.ThrowIfCancellationRequested();
+
                 var metaData = GetMetaData<StructDeclarationSyntax, StructMetaData>(declaration);
                 if (metaData == null)
                     continue;
@@ -155,20 +174,33 @@ namespace SourceGenerator.Analyzers
 
             #endregion
 
+            sb.AppendLine($"//   struct：{watch.ElapsedMilliseconds} ms");
+            watch.Restart();
+
             #region 处理 enum
-            
+
             foreach (var declaration in _enumSyntaxList)
             {
+                _token.ThrowIfCancellationRequested();
+
                 var metaData = GetMetaData<EnumDeclarationSyntax, EnumMetaData>(declaration);
                 if (metaData == null)
                     continue;
 
                 result.EnumMetaDataList.Add(metaData);
             }
-            
+
             #endregion
 
-            return result.FormatData();
+            sb.AppendLine($"//     enum：{watch.ElapsedMilliseconds} ms");
+            watch.Restart();
+            //return result;
+            var data = result.FormatData();
+
+            sb.AppendLine($"//   Format：{watch.ElapsedMilliseconds} ms");
+            watch.Stop();
+
+            return data;
         }
         
         private TOut GetMetaData<TIn, TOut>(TIn declaration) where TIn : BaseTypeDeclarationSyntax where TOut : MetaDataBase
