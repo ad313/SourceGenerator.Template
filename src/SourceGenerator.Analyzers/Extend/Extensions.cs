@@ -45,7 +45,7 @@ namespace SourceGenerator.Analyzers.Extend
                     continue;
                 
                 var attributeName = attribute.Name.ToString();
-                var attributeMetaData = new AttributeMetaData(attributeName);
+                var attributeMetaData = new AttributeMetaData(attributeName, attribute.ToString());
                 list.Add(attributeMetaData);
                 
                 if (attribute.ArgumentList?.Arguments == null)

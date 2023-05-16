@@ -21,8 +21,9 @@ namespace SourceGenerator.Analyzers.MetaData
             List<KeyValueModel> constructor,
             List<string> usingList,
             string accessModifier,
-            string extModifier = null)
-            : base(@namespace, name, attributeMetaData, propertyMeta, methodMetaData, baseInterfaceList, usingList, accessModifier, extModifier)
+            string extModifier = null,
+            string source = null)
+            : base(@namespace, name, attributeMetaData, propertyMeta, methodMetaData, baseInterfaceList, usingList, accessModifier, extModifier, source)
         {
             Constructor = constructor;
             BaseInterfaceList = baseInterfaceList;

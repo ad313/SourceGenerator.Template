@@ -9,10 +9,9 @@ namespace SourceGenerator.Analyzers.MetaData
     /// </summary>
     public sealed class PropertyMetaData: MetaDataBase
     {
-        public PropertyMetaData(string name, List<AttributeMetaData> attributeMetaData, List<string> originalDescription, string accessModifier, string extModifier) : base(name, accessModifier, extModifier, attributeMetaData)
+        public PropertyMetaData(string name, List<AttributeMetaData> attributeMetaData, List<string> originalDescription, string accessModifier, string extModifier, string source) : base(name, accessModifier, extModifier, attributeMetaData, source)
         {
             OriginalDescription = originalDescription;
-
             Description = GetStringParam(AttributeMetaData, "Display", "Name")?.Trim('"');
 
             if (string.IsNullOrWhiteSpace(Description))
@@ -32,6 +31,7 @@ namespace SourceGenerator.Analyzers.MetaData
                     Description = match.Groups[match.Groups.Count - 1].Value.Trim().TrimStart('/').TrimEnd('/').Trim();
                 }
             }
+            
         }
 
         /// <summary>

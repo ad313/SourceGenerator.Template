@@ -22,6 +22,10 @@ namespace SourceGenerator.Analyzers.MetaData
         /// </summary>
         public string Name { get; set; }
         /// <summary>
+        /// 原始字符串
+        /// </summary>
+        public string Source { get; private set; }
+        /// <summary>
         /// Attribute名称
         /// </summary>
         public string ShortName { get; set; }
@@ -34,11 +38,12 @@ namespace SourceGenerator.Analyzers.MetaData
         /// </summary>
         public ClassMetaData ClassMetaData { get; private set; }
 
-        public AttributeMetaData(string name)
+        public AttributeMetaData(string name, string source)
         {
             Name = name;
             ShortName = name.IndexOf('.') > -1 ? name.Split('.').Last() : name;
             FullName = ShortName.EndsWith("Attribute") ? ShortName : $"{ShortName}Attribute";
+            Source = source;
         }
 
         public void SetClassMetaData(List<string> newUsing, List<ClassMetaData> classMetaDataList)

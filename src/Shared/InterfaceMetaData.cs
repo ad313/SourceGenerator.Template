@@ -20,8 +20,9 @@ namespace SourceGenerator.Analyzers.MetaData
             List<string> baseInterfaceList,
             List<string> usingList,
             string accessModifier,
-            string extModifier) 
-            : base(name, accessModifier, extModifier, attributeMetaData)
+            string extModifier,
+            string source)
+            : base(name, accessModifier, extModifier, attributeMetaData, source)
         {
             Namespace = @namespace;
             PropertyMeta = propertyMeta;

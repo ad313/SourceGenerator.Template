@@ -18,7 +18,8 @@ namespace SourceGenerator.Analyzers.MetaData
         /// <param name="perfix">方法修饰符</param>
         /// <param name="accessModifier"></param>
         /// <param name="extModifier"></param>
-        public MethodMetaData(string name, List<AttributeMetaData> attributeMetaData, string returnValue, List<KeyValueModel> param, string perfix, string accessModifier, string extModifier) : base(name,accessModifier,extModifier, attributeMetaData)
+        /// <param name="source"></param>
+        public MethodMetaData(string name, List<AttributeMetaData> attributeMetaData, string returnValue, List<KeyValueModel> param, string perfix, string accessModifier, string extModifier, string source = null) : base(name, accessModifier, extModifier, attributeMetaData, source)
         {
             ReturnValue = returnValue;
             Param = param;

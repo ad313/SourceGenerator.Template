@@ -18,16 +18,21 @@ namespace SourceGenerator.Analyzers.MetaData
         /// </summary>
         public string ExtModifier { get; set; }
         /// <summary>
+        /// 原始字符串
+        /// </summary>
+        public string Source { get; private set; }
+        /// <summary>
         /// Attribute 参数
         /// </summary>
         public List<AttributeMetaData> AttributeMetaData { get; private set; }
 
-        public MetaDataBase(string name, string accessModifier, string extModifier, List<AttributeMetaData> attributeMetaData)
+        public MetaDataBase(string name, string accessModifier, string extModifier, List<AttributeMetaData> attributeMetaData, string source)
         {
             Name = name;
             AccessModifier = accessModifier;
             ExtModifier = extModifier;
             AttributeMetaData = attributeMetaData;
+            Source = source;
         }
 
         /// <summary>

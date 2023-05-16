@@ -215,7 +215,7 @@ namespace SourceGenerator.Analyzers
 
                 var enumMembers = new List<EnumMemberMetaData>();
                 //属性集合
-                var props = properties.Select(d => new PropertyMetaData(d.Identifier.Text, d.GetAttributeMetaData(), GetPropertyDescription(d), d.Modifiers.ToString(), d.Type?.ToString())).ToList();
+                var props = properties.Select(d => new PropertyMetaData(d.Identifier.Text, d.GetAttributeMetaData(), GetPropertyDescription(d), d.Modifiers.ToString(), d.Type?.ToString(), d.ToString())).ToList();
                 //方法集合
                 var methods = methodSyntax.Select(GetMethodMetaData).ToList();
                 //实现的接口集合、继承的类
@@ -251,7 +251,7 @@ namespace SourceGenerator.Analyzers
                     enumMembers = membersSyntax.Select(d =>
                         new EnumMemberMetaData(baseTypeDeclarationSyntax.Identifier.Text, d.Identifier.Text,
                             string.IsNullOrWhiteSpace(d.EqualsValue?.Value.ToString()) ? null : Convert.ToInt32(d.EqualsValue.Value.ToString())
-                            , d.GetAttributeMetaData())).ToList();
+                            , d.GetAttributeMetaData(), d.ToString())).ToList();
                 }
 
                 if (typeof(TOut) == typeof(StructMetaData))
@@ -280,7 +280,7 @@ namespace SourceGenerator.Analyzers
                         usingList,
                         declaration.Modifiers.ToString()) as TOut;
                 }
-                
+
                 if (typeof(TOut) == typeof(InterfaceMetaData))
                 {
                     return new InterfaceMetaData(namespaceName,
@@ -290,7 +290,7 @@ namespace SourceGenerator.Analyzers
                         methods,
                         interfaces,
                         usingList,
-                        declaration.Modifiers.ToString(), null) as TOut;
+                        declaration.Modifiers.ToString(), null, null) as TOut;
                 }
 
                 if (typeof(TOut) == typeof(EnumMetaData))
@@ -300,7 +300,7 @@ namespace SourceGenerator.Analyzers
                         declaration.GetAttributeMetaData(),
                         enumMembers,
                         usingList,
-                        declaration.Modifiers.ToString(), null) as TOut;
+                        declaration.Modifiers.ToString(), null, declaration.ToString()) as TOut;
                 }
 
                 return default;

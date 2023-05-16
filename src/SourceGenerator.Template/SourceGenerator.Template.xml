@@ -64,6 +64,11 @@
             Attribute名称
             </summary>
         </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.AttributeMetaData.Source">
+            <summary>
+            原始字符串
+            </summary>
+        </member>
         <member name="P:SourceGenerator.Analyzers.MetaData.AttributeMetaData.ShortName">
             <summary>
             Attribute名称
@@ -90,7 +95,7 @@
             类元数据
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.#ctor(System.String,System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.AttributeMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.PropertyMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.MethodMetaData},System.Collections.Generic.List{System.String},System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.KeyValueModel},System.Collections.Generic.List{System.String},System.String,System.String)">
+        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.#ctor(System.String,System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.AttributeMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.PropertyMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.MethodMetaData},System.Collections.Generic.List{System.String},System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.KeyValueModel},System.Collections.Generic.List{System.String},System.String,System.String,System.String)">
             <summary>Initializes a new instance of the <see cref="T:System.Object"></see> class.</summary>
         </member>
         <member name="P:SourceGenerator.Analyzers.MetaData.ClassMetaData.BaseClass">
@@ -194,7 +199,7 @@
             接口元数据
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.#ctor(System.String,System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.AttributeMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.PropertyMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.MethodMetaData},System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String},System.String,System.String)">
+        <member name="M:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.#ctor(System.String,System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.AttributeMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.PropertyMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.MethodMetaData},System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String},System.String,System.String,System.String)">
             <summary>Initializes a new instance of the <see cref="T:System.Object"></see> class.</summary>
         </member>
         <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.Namespace">
@@ -274,6 +279,11 @@
             扩展修饰符 partial,virtual string,int 等
             </summary>
         </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.MetaDataBase.Source">
+            <summary>
+            原始字符串
+            </summary>
+        </member>
         <member name="P:SourceGenerator.Analyzers.MetaData.MetaDataBase.AttributeMetaData">
             <summary>
             Attribute 参数
@@ -298,7 +308,7 @@
             方法元数据
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.MethodMetaData.#ctor(System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.AttributeMetaData},System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.KeyValueModel},System.String,System.String,System.String)">
+        <member name="M:SourceGenerator.Analyzers.MetaData.MethodMetaData.#ctor(System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.AttributeMetaData},System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.KeyValueModel},System.String,System.String,System.String,System.String)">
             <summary>
             初始化
             </summary>
@@ -309,6 +319,7 @@
             <param name="perfix">方法修饰符</param>
             <param name="accessModifier"></param>
             <param name="extModifier"></param>
+            <param name="source"></param>
         </member>
         <member name="P:SourceGenerator.Analyzers.MetaData.MethodMetaData.Key">
             <summary>
@@ -360,7 +371,7 @@
             结构体元数据
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.StructMetaData.#ctor(System.String,System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.AttributeMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.PropertyMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.MethodMetaData},System.Collections.Generic.List{System.String},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.KeyValueModel},System.Collections.Generic.List{System.String},System.String,System.String)">
+        <member name="M:SourceGenerator.Analyzers.MetaData.StructMetaData.#ctor(System.String,System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.AttributeMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.PropertyMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.MethodMetaData},System.Collections.Generic.List{System.String},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.KeyValueModel},System.Collections.Generic.List{System.String},System.String,System.String,System.String)">
             <summary>Initializes a new instance of the <see cref="T:System.Object"></see> class.</summary>
         </member>
         <member name="P:SourceGenerator.Analyzers.MetaData.StructMetaData.Constructor">

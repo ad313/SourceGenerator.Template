@@ -17,8 +17,9 @@ namespace SourceGenerator.Analyzers.MetaData
             List<EnumMemberMetaData> memberMeta,
             List<string> usingList,
             string accessModifier,
-            string extModifier)
-            : base(name, accessModifier, extModifier, attributeMetaData)
+            string extModifier,
+            string source)
+            : base(name, accessModifier, extModifier, attributeMetaData, source)
         {
             Namespace = @namespace;
             MemberMeta = memberMeta;
@@ -75,11 +76,12 @@ namespace SourceGenerator.Analyzers.MetaData
         public EnumMemberMetaData(string enumName,
             string name,
             int? value,
-            List<AttributeMetaData> attributeMetaData)
-            : base(name, null, null, attributeMetaData)
+            List<AttributeMetaData> attributeMetaData,
+            string source)
+            : base(name, null, null, attributeMetaData, source)
         {
             EnumName = enumName;
-            Value= value;
+            Value = value;
         }
 
         /// <summary>
