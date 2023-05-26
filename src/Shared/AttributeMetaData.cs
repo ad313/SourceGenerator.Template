@@ -36,7 +36,7 @@ namespace SourceGenerator.Analyzers.MetaData
         /// <summary>
         /// 对应的 ClassMetaData
         /// </summary>
-        public ClassMetaData ClassMetaData { get; private set; }
+        public ClassMetaData ClassMetaData { get; set; }
 
         public AttributeMetaData(string name, string source)
         {

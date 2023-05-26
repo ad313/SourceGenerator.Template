@@ -81,7 +81,7 @@ namespace SourceGenerator.Analyzers.MetaData
 
             #region 处理特性对应的class
 
-            var attrClassMetaDataList = ClassMetaDataList?.Where(d => d.IsAttribute).ToList()??new List<ClassMetaData>();
+            var attrClassMetaDataList = ClassMetaDataList?.Where(d => d.IsAttribute).ToList() ?? new List<ClassMetaData>();
 
             ClassMetaDataList?.ForEach(item =>
                 {
@@ -128,7 +128,17 @@ namespace SourceGenerator.Analyzers.MetaData
             AllAttributeMetaDataList.AddRange(EnumMetaDataList?.SelectMany(d => d.AttributeMetaData).ToList() ?? new List<AttributeMetaData>());
             AllAttributeMetaDataList.AddRange(EnumMetaDataList?.SelectMany(d => d.MemberMeta.SelectMany(m => m.AttributeMetaData)).ToList() ?? new List<AttributeMetaData>());
 
-            AllAttributeMetaDataList = AllAttributeMetaDataList.GroupBy(d => d.Key).Select(d => d.First()).ToList();
+            AllAttributeMetaDataList = AllAttributeMetaDataList.GroupBy(d => d.Key).Select(d =>
+            {
+                var allParam = d.SelectMany(s => s.ParamDictionary.Keys).Distinct().ToDictionary(t => t, t => t);
+                var item = d.FirstOrDefault(c => c.ClassMetaData != null) ?? d.First();
+                var temp = new AttributeMetaData(item.Name, item.Source)
+                {
+                    ClassMetaData = item.ClassMetaData,
+                    ParamDictionary = allParam
+                };
+                return temp;
+            }).ToList();
 
             #endregion
 

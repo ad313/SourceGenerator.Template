@@ -1,0 +1,108 @@
+﻿
+//Main 入口
+//这里是入口，传入固定的数据：meta_data、template_data
+//meta_data：扫描到的当前程序集的所有元数据，包含接口、类、方法、属性、特性等，是总的数据
+//template_data：json中定义的模板数据
+
+//在 AopExtend 这个扩展中，需要所有的 interface、class 元数据，需要两个特性
+//循环所有的 特性 元数据，找出所有的 Aop 特性
+
+//aop 忽略和基类
+{{- ingoreAopAttLiteName = 'IgnoreAopAttribute' }}
+{{- baseAopAttName = 'AopInterceptor' }}
+{{- aopAttArray = [] }}
+{{ for attr in meta_data.all_attribute_meta_data_list }}       
+
+// 判断 特性 是否继承 Aop基类
+{{ if (attribute_has_parent attr baseAopAttName) || (get_attribute_param_value_from_attribute attr 'AopTag') != null}}
+{{ aopAttArray[aopAttArray.size] = attr.name}}
+{{ end }}
+{{ end }}
+
+//得到所有的 Aop 特性
+{{ if aopAttArray.size == 0}}
+{{~ ret ~}}
+{{ end }}
+
+//开始处理数据
+{{ for class in meta_data.class_meta_data_list }}  
+{{ hasAop = false }}
+//class 忽略aop
+{{ classHasIgnoreAop = (has_attribute class ingoreAopAttLiteName) }}
+//class 只保留aop特性
+{{ class.attribute_meta_data = (list_filter_by_attributes class.attribute_meta_data aopAttArray)}}
+
+{{ for method in class.method_meta_data }}  
+//方法 忽略aop,跳过
+{{ if has_attribute method ingoreAopAttLiteName}}
+{{ method.attribute_meta_data = null }}
+{{ continue }}
+{{ end }}
+
+//方法 只保留aop特性
+{{ method.attribute_meta_data = (list_filter_by_attributes method.attribute_meta_data aopAttArray)}}
+{{ if method.attribute_meta_data.size>0 }}
+{{ hasAop = true }}
+{{ continue }}
+{{ end }}
+
+//如果方法上没有aop特性，则往上检查class
+//class忽略aop，跳过
+{{ if classHasIgnoreAop }}
+{{ continue }}
+{{ end }}
+
+//class 有 aop特性，则赋给方法
+{{ if class.attribute_meta_data.size>0 }}
+{{ method.attribute_meta_data = class.attribute_meta_data }}
+{{ hasAop = true }}
+{{ continue }}
+{{ end }}
+
+//继续往上看接口
+{{ if class.base_interface_meta_data_list==null || class.base_interface_meta_data_list.size<1 }}
+{{ continue }}
+{{ end }}
+
+//接口方法 是否有aop
+{{ for interface in class.base_interface_meta_data_list }}
+{{ interfaceMethod = (list_filter_by_name interface.method_meta_data method.key) }}
+{{ if interfaceMethod==null || interfaceMethod.size<1}}
+{{ continue }}
+{{ end }}
+
+//接口方法 是否忽略aop
+{{ if has_attribute interfaceMethod[0] ingoreAopAttLiteName}}
+{{ method.attribute_meta_data = null }}
+{{ break }}
+{{ end }}
+
+//方法 只保留aop特性
+{{ method.attribute_meta_data = (list_filter_by_attributes interfaceMethod[0].attribute_meta_data aopAttArray)}}
+{{ if method.attribute_meta_data.size>0 }}
+{{ hasAop = true }}
+{{ break }}
+{{ end }}
+
+//接口特性
+{{ interfaceHasIgnoreAop = (has_attribute interface ingoreAopAttLiteName) }}
+//接口忽略aop，跳过
+{{ if interfaceHasIgnoreAop }}
+{{ break }}
+{{ end }}
+
+{{ interface.attribute_meta_data = (list_filter_by_attributes interface.attribute_meta_data aopAttArray)}}
+{{ if interface.attribute_meta_data.size>0 }}
+{{ method.attribute_meta_data = interface.attribute_meta_data }}
+{{ hasAop = true }}
+{{ break }}
+{{ end }}
+{{ end }}
+{{ end }}
+
+//渲染Aop
+{{ if hasAop }}
+{{render class template_data 'AopExtend.txt' ''}}
+{{ end }}
+
+{{ end }}

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SourceGenerator.Analyzers.MetaData
@@ -25,7 +26,25 @@ namespace SourceGenerator.Analyzers.MetaData
             Param = param;
 
             HasReturnValue = !string.IsNullOrWhiteSpace(returnValue) && returnValue != "void" && returnValue != "Task";
-            IsTask = returnValue?.StartsWith("Task") == true || returnValue?.StartsWith("ValueTask") == true;
+            IsTask = returnValue?.StartsWith("Task") == true || returnValue?.StartsWith("ValueTask") == true || returnValue?.StartsWith("ITask") == true;
+
+            if (HasReturnValue)
+            {
+                if (IsTask)
+                {
+                    var arr = returnValue?.Replace("Task<", "#").Replace("ValueTask<", "#").Replace("ITask<", "#")
+                        .Split('#').ToList() ?? new List<string>();
+
+                    if (arr.Count == 2)
+                    {
+                        ReturnType = arr[1].Split('>')[0];
+                    }
+                }
+                else
+                {
+                    ReturnType = ReturnValue;
+                }
+            }
 
             CanOverride = !string.IsNullOrWhiteSpace(perfix) && perfix.Contains(" ") && new List<string>() { "virtual", "override" }.Contains(perfix
                 .Replace("public", "").Trim()
@@ -42,6 +61,10 @@ namespace SourceGenerator.Analyzers.MetaData
         /// 返回值
         /// </summary>
         public string ReturnValue { get; private set; }
+        /// <summary>
+        /// 返回值类型
+        /// </summary>
+        public string ReturnType { get; private set; }
         /// <summary>
         /// 是否有返回值
         /// </summary>

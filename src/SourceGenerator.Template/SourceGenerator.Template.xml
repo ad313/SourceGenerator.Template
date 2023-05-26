@@ -331,6 +331,11 @@
             返回值
             </summary>
         </member>
+        <member name="P:SourceGenerator.Analyzers.MetaData.MethodMetaData.ReturnType">
+            <summary>
+            返回值类型
+            </summary>
+        </member>
         <member name="P:SourceGenerator.Analyzers.MetaData.MethodMetaData.HasReturnValue">
             <summary>
             是否有返回值

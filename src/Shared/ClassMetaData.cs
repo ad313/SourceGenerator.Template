@@ -28,7 +28,7 @@ namespace SourceGenerator.Analyzers.MetaData
             Constructor = constructor;
             BaseInterfaceList = baseInterfaceList;
             BaseClass = baseClass;
-
+            
             IsAttribute = BaseClass != null && BaseClass.Split('.').Last() == "Attribute";
         }
 

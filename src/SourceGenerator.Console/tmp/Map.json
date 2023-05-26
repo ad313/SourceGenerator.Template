@@ -1,0 +1,9 @@
+[
+  {
+    "Code": "AopBuilder",
+    "Name": "Aop",
+    "MainTemplate": "AopExtend_Main.txt",
+    "Templates": [ "AopExtend.txt" ],
+    "Enable": true
+  }
+]

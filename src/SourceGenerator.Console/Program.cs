@@ -22,7 +22,7 @@ internal class Program
         //    }
         //}
 
-        new BizDictionaryClass().BindBizDepartment();
+        //new BizDictionaryClass().BindBizDepartment();
 
         Console.ReadKey();
     }
