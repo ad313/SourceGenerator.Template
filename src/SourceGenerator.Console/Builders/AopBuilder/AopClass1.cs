@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SourceGenerator.Consoles.Builders.AopBuilder
 {
     //[Log(Enable = true, LogName = "this is bbb", Type = EnumType.b)]
-    [Log2(Enable = true, LogName = "this is bbb2", Type = EnumType.b)]
+    [Log2(AopTag = true, LogName = "this is bbb2", Type = EnumType.b)]
     //[IgnoreAop]
     public interface IAopClass1
     {
@@ -30,8 +30,8 @@ namespace SourceGenerator.Consoles.Builders.AopBuilder
         }
 
         //[Display]
-        [Log(Enable = true, LogName = "this is aaa", Type = EnumType.a)]
-        [Log2(Enable = true, LogName = "this is aaa2", Type = EnumType.a)]
+        [Log(AopTag = true, LogName = "this is aaa", Type = EnumType.a)]
+        [Log2(AopTag = true, LogName = "this is aaa2", Type = EnumType.a)]
         public virtual void Test1(string aaa, string bbb)
         {
 

@@ -30,18 +30,18 @@
 //class 忽略aop
 {{ classHasIgnoreAop = (has_attribute class ingoreAopAttLiteName) }}
 //class 只保留aop特性
-{{ class.attribute_meta_data = (list_filter_by_attributes class.attribute_meta_data aopAttArray)}}
+{{ class.attribute_meta_data_list = (list_filter_by_attributes class.attribute_meta_data_list aopAttArray)}}
 
-{{ for method in class.method_meta_data }}  
+{{ for method in class.method_meta_data_list }}  
 //方法 忽略aop,跳过
 {{ if has_attribute method ingoreAopAttLiteName}}
-{{ method.attribute_meta_data = null }}
+{{ method.attribute_meta_data_list = null }}
 {{ continue }}
 {{ end }}
 
 //方法 只保留aop特性
-{{ method.attribute_meta_data = (list_filter_by_attributes method.attribute_meta_data aopAttArray)}}
-{{ if method.attribute_meta_data.size>0 }}
+{{ method.attribute_meta_data_list = (list_filter_by_attributes method.attribute_meta_data_list aopAttArray)}}
+{{ if method.attribute_meta_data_list.size>0 }}
 {{ hasAop = true }}
 {{ continue }}
 {{ end }}
@@ -53,8 +53,8 @@
 {{ end }}
 
 //class 有 aop特性，则赋给方法
-{{ if class.attribute_meta_data.size>0 }}
-{{ method.attribute_meta_data = class.attribute_meta_data }}
+{{ if class.attribute_meta_data_list.size>0 }}
+{{ method.attribute_meta_data_list = class.attribute_meta_data_list }}
 {{ hasAop = true }}
 {{ continue }}
 {{ end }}
@@ -66,20 +66,20 @@
 
 //接口方法 是否有aop
 {{ for interface in class.base_interface_meta_data_list }}
-{{ interfaceMethod = (list_filter_by_name interface.method_meta_data method.key) }}
+{{ interfaceMethod = (list_filter_by_name interface.method_meta_data_list method.key) }}
 {{ if interfaceMethod==null || interfaceMethod.size<1}}
 {{ continue }}
 {{ end }}
 
 //接口方法 是否忽略aop
 {{ if has_attribute interfaceMethod[0] ingoreAopAttLiteName}}
-{{ method.attribute_meta_data = null }}
+{{ method.attribute_meta_data_list = null }}
 {{ break }}
 {{ end }}
 
 //方法 只保留aop特性
-{{ method.attribute_meta_data = (list_filter_by_attributes interfaceMethod[0].attribute_meta_data aopAttArray)}}
-{{ if method.attribute_meta_data.size>0 }}
+{{ method.attribute_meta_data_list = (list_filter_by_attributes interfaceMethod[0].attribute_meta_data_list aopAttArray)}}
+{{ if method.attribute_meta_data_list.size>0 }}
 {{ hasAop = true }}
 {{ break }}
 {{ end }}
@@ -91,9 +91,9 @@
 {{ break }}
 {{ end }}
 
-{{ interface.attribute_meta_data = (list_filter_by_attributes interface.attribute_meta_data aopAttArray)}}
-{{ if interface.attribute_meta_data.size>0 }}
-{{ method.attribute_meta_data = interface.attribute_meta_data }}
+{{ interface.attribute_meta_data_list = (list_filter_by_attributes interface.attribute_meta_data_list aopAttArray)}}
+{{ if interface.attribute_meta_data_list.size>0 }}
+{{ method.attribute_meta_data_list = interface.attribute_meta_data_list }}
 {{ hasAop = true }}
 {{ break }}
 {{ end }}

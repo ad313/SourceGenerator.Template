@@ -65,7 +65,7 @@ namespace SourceGenerator.Analyzers
                 finally
                 {
                     context.AddSource("Error", _errorBuilder.ToString());
-                    context.AddSource("Times", _timeBuilder.ToString());
+                    context.AddSource("Time", _timeBuilder.ToString());
                 }
             });
         }

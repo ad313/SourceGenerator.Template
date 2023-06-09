@@ -19,14 +19,17 @@ namespace SourceGenerator.Analyzers.Renders
         public static void ToErrorStringBuilder(string name, StringBuilder sb, Exception e)
         {
             sb ??= new StringBuilder();
-            sb.AppendLine($"// {name} 异常 => {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
-            sb.AppendLine($"// Message：{e.Message?.Replace("\r\n", "\r\n//")}");
-            sb.AppendLine($"// InnerException：{e.InnerException?.Message?.Replace("\r\n", "\r\n//")}");
-            sb.Append($"// StackTrace：{e.StackTrace?.Replace("\r\n", "\r\n//")}");
+            sb.AppendLine("/*");
             sb.AppendLine();
-            sb.Append($"// InnerException.StackTrace：{e.InnerException?.StackTrace?.Replace("\r\n", "\r\n//")}");
+            sb.AppendLine($" {name} 异常 => {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
+            sb.AppendLine($" Message：{e.Message}");
+            sb.AppendLine($" InnerException：{e.InnerException?.Message}");
+            sb.Append($" StackTrace：{e.StackTrace}");
+            sb.AppendLine();
+            sb.Append($" InnerException.StackTrace：{e.InnerException?.StackTrace}");
             sb.AppendLine();
             sb.AppendLine();
+            sb.AppendLine("*/");
         }
 
         /// <summary>
@@ -62,10 +65,14 @@ namespace SourceGenerator.Analyzers.Renders
         public static StringBuilder ToTemplateAssemblyStringBuilder(List<MapModel> maps, List<Assembly> templateAssemblyList)
         {
             var sb = new StringBuilder();
-            sb.Append("// 模板程序集：");
+            sb.AppendLine("/*");
+            sb.Append("1、模板程序集：");
             sb.AppendLine(string.Join("、", templateAssemblyList.Select(d => d.FullName)));
-            sb.Append("// 模板map：");
-            sb.AppendLine(JsonConvert.SerializeObject(maps));
+            sb.AppendLine("");
+            sb.AppendLine("2、模板 Map：");
+            sb.AppendLine(JsonConvert.SerializeObject(maps,Formatting.Indented));
+            sb.AppendLine();
+            sb.AppendLine("*/");
             return sb;
         }
     }

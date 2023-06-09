@@ -13,8 +13,8 @@ namespace SourceGenerator.Analyzers.MetaData
         public ClassMetaData(
             string @namespace,
             string name,
-            List<AttributeMetaData> attributeMetaData,
-            List<PropertyMetaData> propertyMeta,
+            List<AttributeMetaData> attributeMetaDataList,
+            List<PropertyMetaData> propertyMetaDataList,
             List<MethodMetaData> methodMetaData,
             List<string> baseInterfaceList,
             string baseClass,
@@ -23,7 +23,7 @@ namespace SourceGenerator.Analyzers.MetaData
             string accessModifier,
             string extModifier = null,
             string source = null)
-            : base(@namespace, name, attributeMetaData, propertyMeta, methodMetaData, baseInterfaceList, usingList, accessModifier, extModifier, source)
+            : base(@namespace, name, attributeMetaDataList, propertyMetaDataList, methodMetaData, baseInterfaceList, usingList, accessModifier, extModifier, source)
         {
             Constructor = constructor;
             BaseInterfaceList = baseInterfaceList;
@@ -120,24 +120,24 @@ namespace SourceGenerator.Analyzers.MetaData
                 source.UsingList = source.UsingList.Distinct().ToList();
             }
 
-            if (parent.PropertyMeta != null)
+            if (parent.PropertyMetaDataList != null)
             {
-                foreach (var metaData in parent.PropertyMeta)
+                foreach (var metaData in parent.PropertyMetaDataList)
                 {
-                    var exists = source.PropertyMeta.FirstOrDefault(d => d.Name == metaData.Name);
+                    var exists = source.PropertyMetaDataList.FirstOrDefault(d => d.Name == metaData.Name);
                     if (exists == null)
                     {
-                        source.PropertyMeta.Add(metaData);
+                        source.PropertyMetaDataList.Add(metaData);
                     }
                     else
                     {
-                        if (metaData.AttributeMetaData != null)
+                        if (metaData.AttributeMetaDataList != null)
                         {
-                            foreach (var attributeMetaData in metaData.AttributeMetaData)
+                            foreach (var attributeMetaData in metaData.AttributeMetaDataList)
                             {
-                                if (exists.AttributeMetaData.All(d => d.Name != attributeMetaData.Name))
+                                if (exists.AttributeMetaDataList.All(d => d.Name != attributeMetaData.Name))
                                 {
-                                    exists.AttributeMetaData.Add(attributeMetaData);
+                                    exists.AttributeMetaDataList.Add(attributeMetaData);
                                 }
                             }
                         }
@@ -145,24 +145,24 @@ namespace SourceGenerator.Analyzers.MetaData
                 }
             }
 
-            if (parent.MethodMetaData != null)
+            if (parent.MethodMetaDataList != null)
             {
-                foreach (var metaData in parent.MethodMetaData)
+                foreach (var metaData in parent.MethodMetaDataList)
                 {
-                    var exists = source.MethodMetaData.FirstOrDefault(d => d.Key == metaData.Key);
+                    var exists = source.MethodMetaDataList.FirstOrDefault(d => d.Key == metaData.Key);
                     if (exists == null)
                     {
-                        source.MethodMetaData.Add(metaData);
+                        source.MethodMetaDataList.Add(metaData);
                     }
                     else
                     {
-                        if (metaData.AttributeMetaData != null)
+                        if (metaData.AttributeMetaDataList != null)
                         {
-                            foreach (var attributeMetaData in metaData.AttributeMetaData)
+                            foreach (var attributeMetaData in metaData.AttributeMetaDataList)
                             {
-                                if (exists.AttributeMetaData.All(d => d.Name != attributeMetaData.Name))
+                                if (exists.AttributeMetaDataList.All(d => d.Name != attributeMetaData.Name))
                                 {
-                                    exists.AttributeMetaData.Add(attributeMetaData);
+                                    exists.AttributeMetaDataList.Add(attributeMetaData);
                                 }
                             }
                         }

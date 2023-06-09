@@ -152,7 +152,7 @@
             命名空间
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.EnumMetaData.MemberMeta">
+        <member name="P:SourceGenerator.Analyzers.MetaData.EnumMetaData.MemberMetaList">
             <summary>
             成员集合
             </summary>
@@ -207,12 +207,12 @@
             命名空间
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.PropertyMeta">
+        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.PropertyMetaDataList">
             <summary>
             属性集合
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.MethodMetaData">
+        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.MethodMetaDataList">
             <summary>
             方法集合
             </summary>
@@ -284,7 +284,7 @@
             原始字符串
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.MetaDataBase.AttributeMetaData">
+        <member name="P:SourceGenerator.Analyzers.MetaData.MetaDataBase.AttributeMetaDataList">
             <summary>
             Attribute 参数
             </summary>
@@ -315,7 +315,7 @@
             <param name="name">名称</param>
             <param name="attributeMetaData">attribute</param>
             <param name="returnValue">返回值</param>
-            <param name="param">输入参数</param>
+            <param name="paramList">输入参数</param>
             <param name="perfix">方法修饰符</param>
             <param name="accessModifier"></param>
             <param name="extModifier"></param>
@@ -351,7 +351,7 @@
             能否被重写
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.MethodMetaData.Param">
+        <member name="P:SourceGenerator.Analyzers.MetaData.MethodMetaData.ParamList">
             <summary>
             输入参数
             </summary>
@@ -366,7 +366,7 @@
             属性描述
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.PropertyMetaData.OriginalDescription">
+        <member name="P:SourceGenerator.Analyzers.MetaData.PropertyMetaData.OriginalDescriptionList">
             <summary>
             原始注释
             </summary>

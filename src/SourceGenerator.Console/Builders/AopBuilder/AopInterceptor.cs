@@ -40,7 +40,7 @@ namespace SourceGenerator.Consoles.Builders.AopBuilder
         /// <summary>
         /// 启用
         /// </summary>
-        public bool Enable { get; set; }
+        public bool AopTag { get; set; }
 
         public AopInterceptor()
         {

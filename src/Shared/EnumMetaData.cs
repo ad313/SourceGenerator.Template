@@ -14,7 +14,7 @@ namespace SourceGenerator.Analyzers.MetaData
         public EnumMetaData(string @namespace,
             string name,
             List<AttributeMetaData> attributeMetaData,
-            List<EnumMemberMetaData> memberMeta,
+            List<EnumMemberMetaData> memberMetaList,
             List<string> usingList,
             string accessModifier,
             string extModifier,
@@ -22,7 +22,7 @@ namespace SourceGenerator.Analyzers.MetaData
             : base(name, accessModifier, extModifier, attributeMetaData, source)
         {
             Namespace = @namespace;
-            MemberMeta = memberMeta;
+            MemberMetaList = memberMetaList;
             UsingList = usingList;
 
             var newUsing = new string[UsingList.Count];
@@ -39,7 +39,7 @@ namespace SourceGenerator.Analyzers.MetaData
         /// <summary>
         /// 成员集合
         /// </summary>
-        public List<EnumMemberMetaData> MemberMeta { get; set; }
+        public List<EnumMemberMetaData> MemberMetaList { get; set; }
         
         /// <summary>
         /// 引用

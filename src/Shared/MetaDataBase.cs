@@ -24,14 +24,14 @@ namespace SourceGenerator.Analyzers.MetaData
         /// <summary>
         /// Attribute 参数
         /// </summary>
-        public List<AttributeMetaData> AttributeMetaData { get; private set; }
+        public List<AttributeMetaData> AttributeMetaDataList { get; private set; }
 
-        public MetaDataBase(string name, string accessModifier, string extModifier, List<AttributeMetaData> attributeMetaData, string source)
+        public MetaDataBase(string name, string accessModifier, string extModifier, List<AttributeMetaData> attributeMetaDataList, string source)
         {
             Name = name;
             AccessModifier = accessModifier;
             ExtModifier = extModifier;
-            AttributeMetaData = attributeMetaData;
+            AttributeMetaDataList = attributeMetaDataList;
             Source = source;
         }
 
@@ -52,8 +52,8 @@ namespace SourceGenerator.Analyzers.MetaData
             if (other == null)
                 return;
 
-            if (AttributeMetaData != null && other.AttributeMetaData != null)
-                AttributeMetaData.AddRange(other.AttributeMetaData);
+            if (AttributeMetaDataList != null && other.AttributeMetaDataList != null)
+                AttributeMetaDataList.AddRange(other.AttributeMetaDataList);
         }
     }
 }

@@ -42,7 +42,7 @@ namespace SourceGenerator.Analyzers.Renders
         {
             if (obj is MetaDataBase data)
             {
-                return data.AttributeMetaData.HasAttribute(attributeName);
+                return data.AttributeMetaDataList.HasAttribute(attributeName);
             }
 
             if (obj is List<AttributeMetaData> attrs)
@@ -64,7 +64,7 @@ namespace SourceGenerator.Analyzers.Renders
         {
             if (obj is MetaDataBase data)
             {
-                return data.AttributeMetaData.HasAttributeByFullName(attributeName);
+                return data.AttributeMetaDataList.HasAttributeByFullName(attributeName);
             }
 
             if (obj is List<AttributeMetaData> attrs)
@@ -85,7 +85,7 @@ namespace SourceGenerator.Analyzers.Renders
         {
             if (obj is MetaDataBase data)
             {
-                return data.AttributeMetaData.Any(d => d.ClassMetaData != null && d.ClassMetaData.BaseExists(parent));
+                return data.AttributeMetaDataList.Any(d => d.ClassMetaData != null && d.ClassMetaData.BaseExists(parent));
             }
 
             if (obj is List<AttributeMetaData> attrs)
@@ -300,13 +300,13 @@ namespace SourceGenerator.Analyzers.Renders
 
         private static List<T> ListFilterByAttributeInternal<T>(List<T> data, string attributeName) where T : MetaDataBase
         {
-            return data.Where(d => d.AttributeMetaData.HasAttribute(attributeName)).ToList();
+            return data.Where(d => d.AttributeMetaDataList.HasAttribute(attributeName)).ToList();
         }
 
         private static List<T> ListFilterByAttributeInternal<T>(List<T> data, ScriptArray attributeNames) where T : MetaDataBase
         {
             return attributeNames.SelectMany(attributeName =>
-                data.Where(d => d.AttributeMetaData.HasAttribute(attributeName.ToString()))).ToList();
+                data.Where(d => d.AttributeMetaDataList.HasAttribute(attributeName.ToString()))).ToList();
         }
 
         /// <summary>
@@ -359,7 +359,7 @@ namespace SourceGenerator.Analyzers.Renders
 
         private static List<T> ListFilterByAttributeKeyInternal<T>(List<T> data, string attributeName, string key) where T : MetaDataBase
         {
-            return data.Where(d => d.AttributeMetaData.Any(t => t.EqualsByName(attributeName) && t.ParamDictionary.Any(dic => dic.Key == key))).ToList();
+            return data.Where(d => d.AttributeMetaDataList.Any(t => t.EqualsByName(attributeName) && t.ParamDictionary.Any(dic => dic.Key == key))).ToList();
         }
 
         /// <summary>
@@ -413,7 +413,7 @@ namespace SourceGenerator.Analyzers.Renders
 
         private static List<T> ListFilterByAttributeKeyValueInternal<T>(List<T> data, string attributeName, string key, string value) where T : MetaDataBase
         {
-            return data.Where(d => d.AttributeMetaData.Any(t => t.EqualsByName(attributeName) && t.ParamDictionary.Any(dic => dic.Key == key && dic.Value == value))).ToList();
+            return data.Where(d => d.AttributeMetaDataList.Any(t => t.EqualsByName(attributeName) && t.ParamDictionary.Any(dic => dic.Key == key && dic.Value == value))).ToList();
         }
         
 

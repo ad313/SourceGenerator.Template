@@ -95,12 +95,12 @@ namespace SourceGenerator.Analyzers.Extend
 
         public static bool HasIgnore(this ClassMetaData classMetaData, string ignoreAttribute)
         {
-            return classMetaData.AttributeMetaData.HasIgnore(ignoreAttribute);
+            return classMetaData.AttributeMetaDataList.HasIgnore(ignoreAttribute);
         }
 
         public static bool HasIgnore(this InterfaceMetaData interfaceMetaData, string ignoreAttribute)
         {
-            return interfaceMetaData.AttributeMetaData.HasIgnore(ignoreAttribute);
+            return interfaceMetaData.AttributeMetaDataList.HasIgnore(ignoreAttribute);
         }
 
         public static AttributeMetaData GetAopAttribute(this List<AttributeMetaData> attributeMetaDatas, List<string> aopAttributeList)

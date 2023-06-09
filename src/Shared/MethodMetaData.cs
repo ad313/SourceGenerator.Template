@@ -15,15 +15,15 @@ namespace SourceGenerator.Analyzers.MetaData
         /// <param name="name">名称</param>
         /// <param name="attributeMetaData">attribute</param>
         /// <param name="returnValue">返回值</param>
-        /// <param name="param">输入参数</param>
+        /// <param name="paramList">输入参数</param>
         /// <param name="perfix">方法修饰符</param>
         /// <param name="accessModifier"></param>
         /// <param name="extModifier"></param>
         /// <param name="source"></param>
-        public MethodMetaData(string name, List<AttributeMetaData> attributeMetaData, string returnValue, List<KeyValueModel> param, string perfix, string accessModifier, string extModifier, string source = null) : base(name, accessModifier, extModifier, attributeMetaData, source)
+        public MethodMetaData(string name, List<AttributeMetaData> attributeMetaData, string returnValue, List<KeyValueModel> paramList, string perfix, string accessModifier, string extModifier, string source = null) : base(name, accessModifier, extModifier, attributeMetaData, source)
         {
             ReturnValue = returnValue;
-            Param = param;
+            ParamList = paramList;
 
             HasReturnValue = !string.IsNullOrWhiteSpace(returnValue) && returnValue != "void" && returnValue != "Task";
             IsTask = returnValue?.StartsWith("Task") == true || returnValue?.StartsWith("ValueTask") == true || returnValue?.StartsWith("ITask") == true;
@@ -50,7 +50,7 @@ namespace SourceGenerator.Analyzers.MetaData
                 .Replace("public", "").Trim()
                 .Split(' ').First());
 
-            Key = GetKey(name, param);
+            Key = GetKey(name, paramList);
         }
 
         /// <summary>
@@ -80,6 +80,6 @@ namespace SourceGenerator.Analyzers.MetaData
         /// <summary>
         /// 输入参数
         /// </summary>
-        public List<KeyValueModel> Param { get; private set; }
+        public List<KeyValueModel> ParamList { get; private set; }
     }
 }

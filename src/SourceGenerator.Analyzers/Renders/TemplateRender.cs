@@ -144,9 +144,6 @@ namespace SourceGenerator.Analyzers.Renders
         {
             foreach (var mapModel in mapModels)
             {
-                if (context.CancellationToken.IsCancellationRequested)
-                    return;
-
                 if (string.IsNullOrWhiteSpace(mapModel.MainTemplateString))
                     continue;
 
