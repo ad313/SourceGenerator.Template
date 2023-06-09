@@ -1,21 +1,24 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using SourceGenerator.Analyzers.Extend;
-using SourceGenerator.Analyzers.MetaData;
+using SourceGenerator.Template.MetaData;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading;
-using System.Xml.Linq;
+using SourceGenerator.Template.Generators.Extensions;
 
-namespace SourceGenerator.Analyzers
+namespace SourceGenerator.Template.Generators
 {
     /// <summary>
     /// 语法接收器
     /// </summary>
     sealed class SyntaxReceiver : ISyntaxReceiver
     {
+        private readonly CancellationToken _token;
+
         /// <summary>
         /// Struct
         /// </summary>
@@ -36,7 +39,7 @@ namespace SourceGenerator.Analyzers
         /// Record
         /// </summary>
         private readonly List<RecordDeclarationSyntax> _recordSyntaxList;
-
+        
         public SyntaxReceiver(List<ClassDeclarationSyntax> classSyntaxList, List<InterfaceDeclarationSyntax> interfaceSyntaxList)
         {
             _classSyntaxList = classSyntaxList;
@@ -45,6 +48,7 @@ namespace SourceGenerator.Analyzers
 
         public SyntaxReceiver(Compilation compilation, CancellationToken token)
         {
+            _token = token;
             var syntaxNodes = compilation.SyntaxTrees.SelectMany(d => d.GetRoot(token).DescendantNodes()).ToList();
             _classSyntaxList = syntaxNodes.OfType<ClassDeclarationSyntax>().ToList();
             _structSyntaxList = syntaxNodes.OfType<StructDeclarationSyntax>().ToList();
@@ -74,8 +78,11 @@ namespace SourceGenerator.Analyzers
         /// 获取所有接口和类
         /// </summary>
         /// <returns></returns>
-        public AssemblyMetaData GetMetaData()
+        public AssemblyMetaData GetMetaData(out StringBuilder sb)
         {
+            var watch = Stopwatch.StartNew();
+            sb = new StringBuilder();
+
             var result = new AssemblyMetaData(new List<InterfaceMetaData>(), new List<ClassMetaData>(), new List<StructMetaData>(), new List<EnumMetaData>());
 
             #region 处理接口
@@ -83,6 +90,8 @@ namespace SourceGenerator.Analyzers
             //Debugger.Launch();
             foreach (var declaration in _interfaceSyntaxList)
             {
+                _token.ThrowIfCancellationRequested();
+                
                 var metaData = GetMetaData<InterfaceDeclarationSyntax, InterfaceMetaData>(declaration);
                 var exists = result.InterfaceMetaDataList.FirstOrDefault(d => d.Equals(metaData));
                 if (exists != null)
@@ -101,11 +110,16 @@ namespace SourceGenerator.Analyzers
             }
 
             #endregion
+
+            sb.AppendLine($"//interface：{watch.ElapsedMilliseconds} ms");
+            watch.Restart();
             
             #region 处理类
-
+            
             foreach (var declaration in _classSyntaxList)
             {
+                _token.ThrowIfCancellationRequested();
+                
                 var metaData = GetMetaData<ClassDeclarationSyntax, ClassMetaData>(declaration);
                 if (metaData == null)
                     continue;
@@ -121,18 +135,23 @@ namespace SourceGenerator.Analyzers
                 }
             }
 
-            foreach (var metaData in result.ClassMetaDataList)
+            foreach (var metaData in result.ClassMetaDataList.Where(d => !string.IsNullOrWhiteSpace(d.BaseClass) || d.BaseInterfaceList?.Count > 0))
             {
                 metaData.BaseInterfaceMetaDataList = result.InterfaceMetaDataList.Where(d => metaData.ExistsInterface(d.Key, metaData.BaseInterfaceList)).ToList();
                 metaData.BaseClassMetaData = result.ClassMetaDataList.FirstOrDefault(d => metaData.BaseExists(d.Key));
             }
 
             #endregion
+            
+            sb.AppendLine($"//    class：{watch.ElapsedMilliseconds} ms");
+            watch.Restart();
 
             #region 处理 Struct
 
             foreach (var declaration in _structSyntaxList)
             {
+                _token.ThrowIfCancellationRequested();
+
                 var metaData = GetMetaData<StructDeclarationSyntax, StructMetaData>(declaration);
                 if (metaData == null)
                     continue;
@@ -155,20 +174,33 @@ namespace SourceGenerator.Analyzers
 
             #endregion
 
+            sb.AppendLine($"//   struct：{watch.ElapsedMilliseconds} ms");
+            watch.Restart();
+
             #region 处理 enum
-            
+
             foreach (var declaration in _enumSyntaxList)
             {
+                _token.ThrowIfCancellationRequested();
+
                 var metaData = GetMetaData<EnumDeclarationSyntax, EnumMetaData>(declaration);
                 if (metaData == null)
                     continue;
 
                 result.EnumMetaDataList.Add(metaData);
             }
-            
+
             #endregion
 
-            return result.FormatData();
+            sb.AppendLine($"//     enum：{watch.ElapsedMilliseconds} ms");
+            watch.Restart();
+            //return result;
+            var data = result.FormatData();
+
+            sb.AppendLine($"//   Format：{watch.ElapsedMilliseconds} ms");
+            watch.Stop();
+
+            return data;
         }
         
         private TOut GetMetaData<TIn, TOut>(TIn declaration) where TIn : BaseTypeDeclarationSyntax where TOut : MetaDataBase
@@ -183,7 +215,7 @@ namespace SourceGenerator.Analyzers
 
                 var enumMembers = new List<EnumMemberMetaData>();
                 //属性集合
-                var props = properties.Select(d => new PropertyMetaData(d.Identifier.Text, d.GetAttributeMetaData(), GetPropertyDescription(d), d.Modifiers.ToString(), d.Type?.ToString())).ToList();
+                var props = properties.Select(d => new PropertyMetaData(d.Identifier.Text, d.GetAttributeMetaData(), GetPropertyDescription(d), d.Modifiers.ToString(), d.Type?.ToString(), d.ToString())).ToList();
                 //方法集合
                 var methods = methodSyntax.Select(GetMethodMetaData).ToList();
                 //实现的接口集合、继承的类
@@ -219,7 +251,7 @@ namespace SourceGenerator.Analyzers
                     enumMembers = membersSyntax.Select(d =>
                         new EnumMemberMetaData(baseTypeDeclarationSyntax.Identifier.Text, d.Identifier.Text,
                             string.IsNullOrWhiteSpace(d.EqualsValue?.Value.ToString()) ? null : Convert.ToInt32(d.EqualsValue.Value.ToString())
-                            , d.GetAttributeMetaData())).ToList();
+                            , d.GetAttributeMetaData(), d.ToString())).ToList();
                 }
 
                 if (typeof(TOut) == typeof(StructMetaData))
@@ -248,7 +280,7 @@ namespace SourceGenerator.Analyzers
                         usingList,
                         declaration.Modifiers.ToString()) as TOut;
                 }
-                
+
                 if (typeof(TOut) == typeof(InterfaceMetaData))
                 {
                     return new InterfaceMetaData(namespaceName,
@@ -258,7 +290,7 @@ namespace SourceGenerator.Analyzers
                         methods,
                         interfaces,
                         usingList,
-                        declaration.Modifiers.ToString(), null) as TOut;
+                        declaration.Modifiers.ToString(), null, null) as TOut;
                 }
 
                 if (typeof(TOut) == typeof(EnumMetaData))
@@ -268,7 +300,7 @@ namespace SourceGenerator.Analyzers
                         declaration.GetAttributeMetaData(),
                         enumMembers,
                         usingList,
-                        declaration.Modifiers.ToString(), null) as TOut;
+                        declaration.Modifiers.ToString(), null, declaration.ToString()) as TOut;
                 }
 
                 return default;

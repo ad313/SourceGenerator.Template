@@ -4,125 +4,121 @@
         <name>SourceGenerator.Template</name>
     </assembly>
     <members>
-        <member name="M:SourceGenerator.Template.MetaDataHelper.LoadJson(System.String)">
-            <summary>
-            读取json，转换元数据
-            </summary>
-            <param name="path"></param>
-            <returns></returns>
-            <exception cref="T:System.IO.FileNotFoundException"></exception>
-            <exception cref="T:System.Exception"></exception>
-        </member>
-        <member name="T:SourceGenerator.Analyzers.MetaData.AssemblyMetaData">
+        <member name="T:SourceGenerator.Template.MetaData.AssemblyMetaData">
             <summary>
             元数据
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.AssemblyMetaData.AssemblyName">
+        <member name="P:SourceGenerator.Template.MetaData.AssemblyMetaData.AssemblyName">
             <summary>
             宿主程序集名称
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.AssemblyMetaData.InterfaceMetaDataList">
+        <member name="P:SourceGenerator.Template.MetaData.AssemblyMetaData.InterfaceMetaDataList">
             <summary>
             Interface 元数据
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.AssemblyMetaData.ClassMetaDataList">
+        <member name="P:SourceGenerator.Template.MetaData.AssemblyMetaData.ClassMetaDataList">
             <summary>
             类元数据
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.AssemblyMetaData.StructMetaDataList">
+        <member name="P:SourceGenerator.Template.MetaData.AssemblyMetaData.StructMetaDataList">
             <summary>
             Struct 元数据
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.AssemblyMetaData.EnumMetaDataList">
+        <member name="P:SourceGenerator.Template.MetaData.AssemblyMetaData.EnumMetaDataList">
             <summary>
             enum 元数据
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.AssemblyMetaData.AllAttributeMetaDataList">
+        <member name="P:SourceGenerator.Template.MetaData.AssemblyMetaData.AllAttributeMetaDataList">
             <summary>
             所有 的 Attribute
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.AssemblyMetaData.FormatData">
+        <member name="M:SourceGenerator.Template.MetaData.AssemblyMetaData.FormatData">
             <summary>
             处理数据，类和接口有继承的情况，处理标记数据
             </summary>
         </member>
-        <member name="T:SourceGenerator.Analyzers.MetaData.AttributeMetaData">
+        <member name="T:SourceGenerator.Template.MetaData.AttributeMetaData">
             <summary>
             Attribute 元数据
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.AttributeMetaData.Key">
+        <member name="P:SourceGenerator.Template.MetaData.AttributeMetaData.Key">
             <summary>
             唯一值
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.AttributeMetaData.Name">
+        <member name="P:SourceGenerator.Template.MetaData.AttributeMetaData.FullName">
+            <summary>
+            包含 Attribute
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Template.MetaData.AttributeMetaData.Name">
             <summary>
             Attribute名称
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.AttributeMetaData.ParamDictionary">
+        <member name="P:SourceGenerator.Template.MetaData.AttributeMetaData.Source">
+            <summary>
+            原始字符串
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Template.MetaData.AttributeMetaData.ShortName">
+            <summary>
+            Attribute名称
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Template.MetaData.AttributeMetaData.ParamDictionary">
             <summary>
             参数值
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.AttributeMetaData.ClassMetaData">
+        <member name="P:SourceGenerator.Template.MetaData.AttributeMetaData.ClassMetaData">
             <summary>
             对应的 ClassMetaData
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.AttributeMetaData.GetHashCode">
+        <member name="M:SourceGenerator.Template.MetaData.AttributeMetaData.GetHashCode">
             <summary>
             获取哈希
             </summary>
             <returns></returns>
         </member>
-        <member name="T:SourceGenerator.Analyzers.MetaData.ClassMetaData">
+        <member name="T:SourceGenerator.Template.MetaData.ClassMetaData">
             <summary>
             类元数据
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.#ctor(System.String,System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.AttributeMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.PropertyMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.MethodMetaData},System.Collections.Generic.List{System.String},System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.KeyValueModel},System.Collections.Generic.List{System.String},System.String,System.String)">
+        <member name="M:SourceGenerator.Template.MetaData.ClassMetaData.#ctor(System.String,System.String,System.Collections.Generic.List{SourceGenerator.Template.MetaData.AttributeMetaData},System.Collections.Generic.List{SourceGenerator.Template.MetaData.PropertyMetaData},System.Collections.Generic.List{SourceGenerator.Template.MetaData.MethodMetaData},System.Collections.Generic.List{System.String},System.String,System.Collections.Generic.List{SourceGenerator.Template.MetaData.KeyValueModel},System.Collections.Generic.List{System.String},System.String,System.String,System.String)">
             <summary>Initializes a new instance of the <see cref="T:System.Object"></see> class.</summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.ClassMetaData.BaseClass">
+        <member name="P:SourceGenerator.Template.MetaData.ClassMetaData.BaseClass">
             <summary>
             基类
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.ClassMetaData.BaseClassMetaData">
+        <member name="P:SourceGenerator.Template.MetaData.ClassMetaData.BaseClassMetaData">
             <summary>
             基类
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.ClassMetaData.Constructor">
+        <member name="P:SourceGenerator.Template.MetaData.ClassMetaData.Constructor">
             <summary>
             构造函数
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.Exists(System.String)">
+        <member name="P:SourceGenerator.Template.MetaData.ClassMetaData.IsAttribute">
             <summary>
-            加上命名空间 判断是否存在
+            是否是 Attribute
             </summary>
-            <param name="key"></param>
-            <returns></returns>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.ExistsInterface(System.String,System.String)">
-            <summary>
-            加上命名空间 判断是否存在
-            </summary>
-            <param name="key"></param>
-            <param name="name"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.ExistsInterface(System.String,System.Collections.Generic.List{System.String})">
+        <member name="M:SourceGenerator.Template.MetaData.ClassMetaData.ExistsInterface(System.String,System.Collections.Generic.List{System.String})">
             <summary>
             加上命名空间 判断是否存在
             </summary>
@@ -130,155 +126,170 @@
             <param name="names"></param>
             <returns></returns>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.MergePartial(SourceGenerator.Analyzers.MetaData.ClassMetaData)">
+        <member name="M:SourceGenerator.Template.MetaData.ClassMetaData.MergePartial(SourceGenerator.Template.MetaData.ClassMetaData)">
             <summary>
             合并分部
             </summary>
             <param name="other"></param>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.MergeAllParents">
+        <member name="M:SourceGenerator.Template.MetaData.ClassMetaData.MergeAllParents">
             <summary>
             合并所有父级数据
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.ClassMetaData.MergeParentItem(SourceGenerator.Analyzers.MetaData.ClassMetaData,SourceGenerator.Analyzers.MetaData.ClassMetaData)">
+        <member name="M:SourceGenerator.Template.MetaData.ClassMetaData.MergeParentItem(SourceGenerator.Template.MetaData.ClassMetaData,SourceGenerator.Template.MetaData.ClassMetaData)">
             <summary>
             合并所有父级数据
             </summary>
         </member>
-        <member name="T:SourceGenerator.Analyzers.MetaData.EnumMetaData">
+        <member name="T:SourceGenerator.Template.MetaData.EnumMetaData">
             <summary>
             枚举元数据
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.EnumMetaData.Namespace">
+        <member name="P:SourceGenerator.Template.MetaData.EnumMetaData.Namespace">
             <summary>
             命名空间
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.EnumMetaData.MemberMeta">
+        <member name="P:SourceGenerator.Template.MetaData.EnumMetaData.MemberMetaList">
             <summary>
             成员集合
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.EnumMetaData.UsingList">
+        <member name="P:SourceGenerator.Template.MetaData.EnumMetaData.UsingList">
             <summary>
             引用
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.EnumMetaData.GetHashCode">
+        <member name="P:SourceGenerator.Template.MetaData.EnumMetaData.NewUsingList">
+            <summary>
+            引用
+            </summary>
+        </member>
+        <member name="M:SourceGenerator.Template.MetaData.EnumMetaData.GetHashCode">
             <summary>
             获取哈希
             </summary>
             <returns></returns>
         </member>
-        <member name="T:SourceGenerator.Analyzers.MetaData.EnumMemberMetaData">
+        <member name="T:SourceGenerator.Template.MetaData.EnumMemberMetaData">
             <summary>
             枚举成员元数据
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.EnumMemberMetaData.EnumName">
+        <member name="P:SourceGenerator.Template.MetaData.EnumMemberMetaData.EnumName">
             <summary>
             枚举名称
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.EnumMemberMetaData.Value">
+        <member name="P:SourceGenerator.Template.MetaData.EnumMemberMetaData.Value">
             <summary>
             枚举值
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.EnumMemberMetaData.GetHashCode">
+        <member name="M:SourceGenerator.Template.MetaData.EnumMemberMetaData.GetHashCode">
             <summary>
             获取哈希
             </summary>
             <returns></returns>
         </member>
-        <member name="T:SourceGenerator.Analyzers.MetaData.InterfaceMetaData">
+        <member name="T:SourceGenerator.Template.MetaData.InterfaceMetaData">
             <summary>
             接口元数据
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.#ctor(System.String,System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.AttributeMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.PropertyMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.MethodMetaData},System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String},System.String,System.String)">
+        <member name="M:SourceGenerator.Template.MetaData.InterfaceMetaData.#ctor(System.String,System.String,System.Collections.Generic.List{SourceGenerator.Template.MetaData.AttributeMetaData},System.Collections.Generic.List{SourceGenerator.Template.MetaData.PropertyMetaData},System.Collections.Generic.List{SourceGenerator.Template.MetaData.MethodMetaData},System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String},System.String,System.String,System.String)">
             <summary>Initializes a new instance of the <see cref="T:System.Object"></see> class.</summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.Namespace">
+        <member name="P:SourceGenerator.Template.MetaData.InterfaceMetaData.Namespace">
             <summary>
             命名空间
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.PropertyMeta">
+        <member name="P:SourceGenerator.Template.MetaData.InterfaceMetaData.PropertyMetaDataList">
             <summary>
             属性集合
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.MethodMetaData">
+        <member name="P:SourceGenerator.Template.MetaData.InterfaceMetaData.MethodMetaDataList">
             <summary>
             方法集合
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.BaseInterfaceList">
+        <member name="P:SourceGenerator.Template.MetaData.InterfaceMetaData.BaseInterfaceList">
             <summary>
             继承的接口
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.BaseInterfaceMetaDataList">
+        <member name="P:SourceGenerator.Template.MetaData.InterfaceMetaData.BaseInterfaceMetaDataList">
             <summary>
             继承的接口
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.UsingList">
+        <member name="P:SourceGenerator.Template.MetaData.InterfaceMetaData.UsingList">
             <summary>
             引用
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.IsLeaf">
+        <member name="P:SourceGenerator.Template.MetaData.InterfaceMetaData.NewUsingList">
+            <summary>
+            引用 添加自身 namespace
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Template.MetaData.InterfaceMetaData.IsLeaf">
             <summary>
             是否是最底层的叶子节点
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.MergePartial(SourceGenerator.Analyzers.MetaData.InterfaceMetaData)">
+        <member name="M:SourceGenerator.Template.MetaData.InterfaceMetaData.MergePartial(SourceGenerator.Template.MetaData.InterfaceMetaData)">
             <summary>
             合并
             </summary>
             <param name="other"></param>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.MergeAllParents">
+        <member name="M:SourceGenerator.Template.MetaData.InterfaceMetaData.MergeAllParents">
             <summary>
             合并所有父级数据
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.MergeParentItem(SourceGenerator.Analyzers.MetaData.InterfaceMetaData,SourceGenerator.Analyzers.MetaData.InterfaceMetaData)">
+        <member name="M:SourceGenerator.Template.MetaData.InterfaceMetaData.MergeParentItem(SourceGenerator.Template.MetaData.InterfaceMetaData,SourceGenerator.Template.MetaData.InterfaceMetaData)">
             <summary>
             合并所有父级数据
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.InterfaceMetaData.GetHashCode">
+        <member name="M:SourceGenerator.Template.MetaData.InterfaceMetaData.GetHashCode">
             <summary>
             获取哈希
             </summary>
             <returns></returns>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.MetaDataBase.Name">
+        <member name="P:SourceGenerator.Template.MetaData.MetaDataBase.Name">
             <summary>
             名称
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.MetaDataBase.AccessModifier">
+        <member name="P:SourceGenerator.Template.MetaData.MetaDataBase.AccessModifier">
             <summary>
             访问修饰符 public private 等
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.MetaDataBase.ExtModifier">
+        <member name="P:SourceGenerator.Template.MetaData.MetaDataBase.ExtModifier">
             <summary>
             扩展修饰符 partial,virtual string,int 等
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.MetaDataBase.AttributeMetaData">
+        <member name="P:SourceGenerator.Template.MetaData.MetaDataBase.Source">
+            <summary>
+            原始字符串
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Template.MetaData.MetaDataBase.AttributeMetaDataList">
             <summary>
             Attribute 参数
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.MetaDataBase.GetKey(System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.KeyValueModel})">
+        <member name="M:SourceGenerator.Template.MetaData.MetaDataBase.GetKey(System.String,System.Collections.Generic.List{SourceGenerator.Template.MetaData.KeyValueModel})">
             <summary>
             方法唯一标识符，区分方法重载
             </summary>
@@ -286,88 +297,94 @@
             <param name="param"></param>
             <returns></returns>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.MetaDataBase.Append(SourceGenerator.Analyzers.MetaData.MetaDataBase)">
+        <member name="M:SourceGenerator.Template.MetaData.MetaDataBase.Append(SourceGenerator.Template.MetaData.MetaDataBase)">
             <summary>
             合并
             </summary>
             <param name="other"></param>
         </member>
-        <member name="T:SourceGenerator.Analyzers.MetaData.MethodMetaData">
+        <member name="T:SourceGenerator.Template.MetaData.MethodMetaData">
             <summary>
             方法元数据
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.MethodMetaData.#ctor(System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.AttributeMetaData},System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.KeyValueModel},System.String,System.String,System.String)">
+        <member name="M:SourceGenerator.Template.MetaData.MethodMetaData.#ctor(System.String,System.Collections.Generic.List{SourceGenerator.Template.MetaData.AttributeMetaData},System.String,System.Collections.Generic.List{SourceGenerator.Template.MetaData.KeyValueModel},System.String,System.String,System.String,System.String)">
             <summary>
             初始化
             </summary>
             <param name="name">名称</param>
             <param name="attributeMetaData">attribute</param>
             <param name="returnValue">返回值</param>
-            <param name="param">输入参数</param>
+            <param name="paramList">输入参数</param>
             <param name="perfix">方法修饰符</param>
             <param name="accessModifier"></param>
             <param name="extModifier"></param>
+            <param name="source"></param>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.MethodMetaData.Key">
+        <member name="P:SourceGenerator.Template.MetaData.MethodMetaData.Key">
             <summary>
             方法唯一标识符，区分方法重载
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.MethodMetaData.ReturnValue">
+        <member name="P:SourceGenerator.Template.MetaData.MethodMetaData.ReturnValue">
             <summary>
             返回值
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.MethodMetaData.HasReturnValue">
+        <member name="P:SourceGenerator.Template.MetaData.MethodMetaData.ReturnType">
+            <summary>
+            返回值类型
+            </summary>
+        </member>
+        <member name="P:SourceGenerator.Template.MetaData.MethodMetaData.HasReturnValue">
             <summary>
             是否有返回值
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.MethodMetaData.IsTask">
+        <member name="P:SourceGenerator.Template.MetaData.MethodMetaData.IsTask">
             <summary>
             是否是异步
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.MethodMetaData.CanOverride">
+        <member name="P:SourceGenerator.Template.MetaData.MethodMetaData.CanOverride">
             <summary>
             能否被重写
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.MethodMetaData.Param">
+        <member name="P:SourceGenerator.Template.MetaData.MethodMetaData.ParamList">
             <summary>
             输入参数
             </summary>
         </member>
-        <member name="T:SourceGenerator.Analyzers.MetaData.PropertyMetaData">
+        <member name="T:SourceGenerator.Template.MetaData.PropertyMetaData">
             <summary>
             属性元数据
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.PropertyMetaData.Description">
+        <member name="P:SourceGenerator.Template.MetaData.PropertyMetaData.Description">
             <summary>
             属性描述
             </summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.PropertyMetaData.OriginalDescription">
+        <member name="P:SourceGenerator.Template.MetaData.PropertyMetaData.OriginalDescriptionList">
             <summary>
             原始注释
             </summary>
         </member>
-        <member name="T:SourceGenerator.Analyzers.MetaData.StructMetaData">
+        <member name="T:SourceGenerator.Template.MetaData.StructMetaData">
             <summary>
             结构体元数据
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.StructMetaData.#ctor(System.String,System.String,System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.AttributeMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.PropertyMetaData},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.MethodMetaData},System.Collections.Generic.List{System.String},System.Collections.Generic.List{SourceGenerator.Analyzers.MetaData.KeyValueModel},System.Collections.Generic.List{System.String},System.String,System.String)">
+        <member name="M:SourceGenerator.Template.MetaData.StructMetaData.#ctor(System.String,System.String,System.Collections.Generic.List{SourceGenerator.Template.MetaData.AttributeMetaData},System.Collections.Generic.List{SourceGenerator.Template.MetaData.PropertyMetaData},System.Collections.Generic.List{SourceGenerator.Template.MetaData.MethodMetaData},System.Collections.Generic.List{System.String},System.Collections.Generic.List{SourceGenerator.Template.MetaData.KeyValueModel},System.Collections.Generic.List{System.String},System.String,System.String,System.String)">
             <summary>Initializes a new instance of the <see cref="T:System.Object"></see> class.</summary>
         </member>
-        <member name="P:SourceGenerator.Analyzers.MetaData.StructMetaData.Constructor">
+        <member name="P:SourceGenerator.Template.MetaData.StructMetaData.Constructor">
             <summary>
             构造函数
             </summary>
         </member>
-        <member name="M:SourceGenerator.Analyzers.MetaData.StructMetaData.MergePartial(SourceGenerator.Analyzers.MetaData.StructMetaData)">
+        <member name="M:SourceGenerator.Template.MetaData.StructMetaData.MergePartial(SourceGenerator.Template.MetaData.StructMetaData)">
             <summary>
             合并
             </summary>

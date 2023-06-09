@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SourceGenerator.Analyzers.MetaData
+namespace SourceGenerator.Template.MetaData
 {
     /// <summary>
     /// Attribute 元数据
@@ -13,13 +13,22 @@ namespace SourceGenerator.Analyzers.MetaData
         /// 唯一值
         /// </summary>
         public string Key => ClassMetaData?.Key ?? Name;
-
-        public string SafeName => Name.EndsWith("Attribute") ? Name : $"{Name}Attribute";
-
+        /// <summary>
+        /// 包含 Attribute
+        /// </summary>
+        public string FullName { get; set; }
         /// <summary>
         /// Attribute名称
         /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 原始字符串
+        /// </summary>
+        public string Source { get; private set; }
+        /// <summary>
+        /// Attribute名称
+        /// </summary>
+        public string ShortName { get; set; }
         /// <summary>
         /// 参数值
         /// </summary>
@@ -27,28 +36,26 @@ namespace SourceGenerator.Analyzers.MetaData
         /// <summary>
         /// 对应的 ClassMetaData
         /// </summary>
-        public ClassMetaData ClassMetaData { get; private set; }
+        public ClassMetaData ClassMetaData { get; set; }
 
-        public AttributeMetaData(string name)
+        public AttributeMetaData(string name, string source)
         {
             Name = name;
+            ShortName = name.IndexOf('.') > -1 ? name.Split('.').Last() : name;
+            FullName = ShortName.EndsWith("Attribute") ? ShortName : $"{ShortName}Attribute";
+            Source = source;
         }
 
-        public void SetClassMetaData(string @namespace, List<string> usingList, List<ClassMetaData> classMetaDataList)
+        public void SetClassMetaData(List<string> newUsing, List<ClassMetaData> classMetaDataList)
         {
             if (classMetaDataList == null)
                 return;
 
-            var newUsing = new string[usingList.Count];
-            Array.Copy(usingList.ToArray(), newUsing, usingList.Count);
-            newUsing = newUsing.Append(@namespace).ToArray();
-
             var classList = new List<ClassMetaData>();
-            var keys = newUsing.Select(u => $"{u}.{Name.Split('.').Last()}").ToList();
+            var keys = newUsing.Select(u => $"{u}.{ShortName}").ToList();
             foreach (var key in keys)
             {
-                var exists = classMetaDataList.Where(d => d.Exists(key) || d.Exists($"{key}Attribute")).ToList();
-
+                var exists = classMetaDataList.Where(d => d.Key == key || d.Key == $"{key}Attribute").ToList();
                 classList.AddRange(exists);
             }
 
@@ -118,7 +125,7 @@ namespace SourceGenerator.Analyzers.MetaData
             return IsEquals(name, Key);
         }
 
-        private bool IsEquals(string first,string second)
+        private bool IsEquals(string first, string second)
         {
             string fullname, shortname;
             var attrLen = "Attribute".Length;

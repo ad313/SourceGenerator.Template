@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 
-namespace SourceGenerator.Analyzers.Extend
+namespace SourceGenerator.Template.Generators.Extensions
 {
     /// <summary>
     /// 嵌入资源扩展

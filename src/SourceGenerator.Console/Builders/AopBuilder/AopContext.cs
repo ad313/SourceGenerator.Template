@@ -31,6 +31,10 @@ namespace SourceGenerator.Consoles.Builders.AopBuilder
         /// </summary>
         public dynamic ReturnValue { get; set; }
         /// <summary>
+        /// 返回值类型
+        /// </summary>
+        public Type ReturnType { get; set; }
+        /// <summary>
         /// 异常信息
         /// </summary>
         public Exception Exception { get; set; }
@@ -47,13 +51,14 @@ namespace SourceGenerator.Consoles.Builders.AopBuilder
         /// <param name="isTask"></param>
         /// <param name="hasReturnValue"></param>
         /// <param name="actualMethod"></param>
-        public AopContext(IServiceProvider serviceProvider, Dictionary<string, dynamic> methodInputParam, bool isTask, bool hasReturnValue, Func<dynamic> actualMethod) : this()
+        public AopContext(IServiceProvider serviceProvider, Dictionary<string, dynamic> methodInputParam, bool isTask, bool hasReturnValue, Func<dynamic> actualMethod, Type returnType) : this()
         {
             ServiceProvider = serviceProvider;
             MethodInputParam = methodInputParam;
             IsTask = isTask;
             HasReturnValue = hasReturnValue;
             ActualMethod = actualMethod;
+            ReturnType = returnType;
         }
 
         /// <summary>
@@ -85,7 +90,7 @@ namespace SourceGenerator.Consoles.Builders.AopBuilder
         /// <returns></returns>
         public void Invoke()
         {
-            if (ActualMethod == null) 
+            if (ActualMethod == null)
                 return;
 
             //特殊处理 同步且没有返回值，用 Task.Run 包装

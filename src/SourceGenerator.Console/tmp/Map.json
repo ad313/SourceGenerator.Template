@@ -1,0 +1,17 @@
+[
+  {
+    "Code": "AopBuilder",
+    "Name": "Aop",
+    "MainTemplate": "AopExtend_Main.txt",
+    "Templates": [ "AopExtend.txt" ],
+    "Enable": true,
+    "Order": 9999
+  },
+  {
+    "Code": "ToProtoBuilder",
+    "Name": "ToProto 扩展",
+    "MainTemplate": "ToProto_Main.txt",
+    "Templates": [ "ToProto.txt" ],
+    "Enable": true
+  }
+]

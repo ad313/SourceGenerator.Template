@@ -1,7 +1,8 @@
-﻿using System.Collections.Concurrent;
+﻿using Newtonsoft.Json;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace SourceGenerator.Analyzers.Renders
+namespace SourceGenerator.Template.Generators.Renders
 {
     /// <summary>
     /// 模板数据模型
@@ -17,6 +18,10 @@ namespace SourceGenerator.Analyzers.Renders
         /// </summary>
         public string Code { get; set; }
         /// <summary>
+        /// 是否有效
+        /// </summary>
+        public bool Enable { get; set; } = true;
+        /// <summary>
         /// 主模板
         /// </summary>
         public string MainTemplate { get; set; }
@@ -27,19 +32,22 @@ namespace SourceGenerator.Analyzers.Renders
         /// <summary>
         /// 模板内容
         /// </summary>
+        [JsonIgnore]
         public ConcurrentDictionary<string, string> TemplateDictionary { get; set; } = new ConcurrentDictionary<string, string>();
-        /// <summary>
-        /// 模板渲染结果
-        /// </summary>
-        public ConcurrentDictionary<string, string> TemplateResult { get; set; } = new ConcurrentDictionary<string, string>();
         /// <summary>
         /// 主模板内容
         /// </summary>
+        [JsonIgnore]
         public string MainTemplateString { get; set; }
         /// <summary>
         /// 模板文件路径
         /// </summary>
         public string Path { get; set; }
+
+        /// <summary>
+        /// 排序
+        /// </summary>
+        public int Order { get; set; }
 
         /// <summary>
         /// 获取模板内容

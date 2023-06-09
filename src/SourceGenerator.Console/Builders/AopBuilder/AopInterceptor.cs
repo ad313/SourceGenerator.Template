@@ -37,6 +37,11 @@ namespace SourceGenerator.Consoles.Builders.AopBuilder
         /// </summary>
         public bool HasActualNext { get; set; }
 
+        /// <summary>
+        /// 启用
+        /// </summary>
+        public bool AopTag { get; set; }
+
         public AopInterceptor()
         {
             HasBefore = true;

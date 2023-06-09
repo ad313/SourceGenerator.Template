@@ -1,10 +1,10 @@
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using SourceGenerator.Analyzers.MetaData;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using SourceGenerator.Template.MetaData;
 
-namespace SourceGenerator.Analyzers.Extend
+namespace SourceGenerator.Template.Generators.Extensions
 {
     public static class Extensions
     {
@@ -45,7 +45,7 @@ namespace SourceGenerator.Analyzers.Extend
                     continue;
                 
                 var attributeName = attribute.Name.ToString();
-                var attributeMetaData = new AttributeMetaData(attributeName);
+                var attributeMetaData = new AttributeMetaData(attributeName, attribute.ToString());
                 list.Add(attributeMetaData);
                 
                 if (attribute.ArgumentList?.Arguments == null)
@@ -95,12 +95,12 @@ namespace SourceGenerator.Analyzers.Extend
 
         public static bool HasIgnore(this ClassMetaData classMetaData, string ignoreAttribute)
         {
-            return classMetaData.AttributeMetaData.HasIgnore(ignoreAttribute);
+            return classMetaData.AttributeMetaDataList.HasIgnore(ignoreAttribute);
         }
 
         public static bool HasIgnore(this InterfaceMetaData interfaceMetaData, string ignoreAttribute)
         {
-            return interfaceMetaData.AttributeMetaData.HasIgnore(ignoreAttribute);
+            return interfaceMetaData.AttributeMetaDataList.HasIgnore(ignoreAttribute);
         }
 
         public static AttributeMetaData GetAopAttribute(this List<AttributeMetaData> attributeMetaDatas, List<string> aopAttributeList)

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace SourceGenerator.Analyzers.MetaData
+namespace SourceGenerator.Template.MetaData
 {
     /// <summary>
     /// 枚举元数据
@@ -13,15 +14,21 @@ namespace SourceGenerator.Analyzers.MetaData
         public EnumMetaData(string @namespace,
             string name,
             List<AttributeMetaData> attributeMetaData,
-            List<EnumMemberMetaData> memberMeta,
+            List<EnumMemberMetaData> memberMetaList,
             List<string> usingList,
             string accessModifier,
-            string extModifier)
-            : base(name, accessModifier, extModifier, attributeMetaData)
+            string extModifier,
+            string source)
+            : base(name, accessModifier, extModifier, attributeMetaData, source)
         {
             Namespace = @namespace;
-            MemberMeta = memberMeta;
+            MemberMetaList = memberMetaList;
             UsingList = usingList;
+
+            var newUsing = new string[UsingList.Count];
+            Array.Copy(UsingList.ToArray(), newUsing, UsingList.Count);
+            newUsing = newUsing.Append(Namespace).ToArray();
+            NewUsingList = newUsing.ToList();
         }
         
         /// <summary>
@@ -32,12 +39,17 @@ namespace SourceGenerator.Analyzers.MetaData
         /// <summary>
         /// 成员集合
         /// </summary>
-        public List<EnumMemberMetaData> MemberMeta { get; set; }
+        public List<EnumMemberMetaData> MemberMetaList { get; set; }
         
         /// <summary>
         /// 引用
         /// </summary>
         public List<string> UsingList { get; set; }
+
+        /// <summary>
+        /// 引用
+        /// </summary>
+        public List<string> NewUsingList { get; set; }
 
         public bool Equals(EnumMetaData other)
         {
@@ -64,11 +76,12 @@ namespace SourceGenerator.Analyzers.MetaData
         public EnumMemberMetaData(string enumName,
             string name,
             int? value,
-            List<AttributeMetaData> attributeMetaData)
-            : base(name, null, null, attributeMetaData)
+            List<AttributeMetaData> attributeMetaData,
+            string source)
+            : base(name, null, null, attributeMetaData, source)
         {
             EnumName = enumName;
-            Value= value;
+            Value = value;
         }
 
         /// <summary>

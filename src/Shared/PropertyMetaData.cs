@@ -2,29 +2,28 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace SourceGenerator.Analyzers.MetaData
+namespace SourceGenerator.Template.MetaData
 {
     /// <summary>
     /// 属性元数据
     /// </summary>
     public sealed class PropertyMetaData: MetaDataBase
     {
-        public PropertyMetaData(string name, List<AttributeMetaData> attributeMetaData, List<string> originalDescription, string accessModifier, string extModifier) : base(name, accessModifier, extModifier, attributeMetaData)
+        public PropertyMetaData(string name, List<AttributeMetaData> attributeMetaData, List<string> originalDescriptionList, string accessModifier, string extModifier, string source) : base(name, accessModifier, extModifier, attributeMetaData, source)
         {
-            OriginalDescription = originalDescription;
-
-            Description = GetStringParam(AttributeMetaData, "Display", "Name")?.Trim('"');
+            OriginalDescriptionList = originalDescriptionList;
+            Description = GetStringParam(AttributeMetaDataList, "Display", "Name")?.Trim('"');
 
             if (string.IsNullOrWhiteSpace(Description))
             {
-                Description = AttributeMetaData
+                Description = AttributeMetaDataList
                     .FirstOrDefault(d => d.Name == "DisplayName" || d.Name == "DisplayNameAttribute")?.ParamDictionary
                     .FirstOrDefault().Value;
             }
 
-            if (string.IsNullOrWhiteSpace(Description) && OriginalDescription != null && OriginalDescription.Any())
+            if (string.IsNullOrWhiteSpace(Description) && OriginalDescriptionList != null && OriginalDescriptionList.Any())
             {
-                var str = string.Join("", OriginalDescription).Replace("\r\n", "");
+                var str = string.Join("", OriginalDescriptionList).Replace("\r\n", "");
                 var regex = new Regex($"{"<summary>"}(.*?){"</summary>"}");
                 var match = regex.Match(str.Replace("\r\n", ""));
                 if (match.Success)
@@ -32,6 +31,7 @@ namespace SourceGenerator.Analyzers.MetaData
                     Description = match.Groups[match.Groups.Count - 1].Value.Trim().TrimStart('/').TrimEnd('/').Trim();
                 }
             }
+            
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace SourceGenerator.Analyzers.MetaData
         /// <summary>
         /// 原始注释
         /// </summary>
-        public List<string> OriginalDescription { get; private set; }
+        public List<string> OriginalDescriptionList { get; private set; }
 
         public static string GetStringParam(List<AttributeMetaData> attributeMetaData, string attributeName, string key)
         {

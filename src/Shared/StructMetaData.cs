@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SourceGenerator.Analyzers.MetaData
+namespace SourceGenerator.Template.MetaData
 {
     /// <summary>
     /// 结构体元数据
@@ -13,17 +13,18 @@ namespace SourceGenerator.Analyzers.MetaData
             string name,
             List<AttributeMetaData> attributeMetaData,
             List<PropertyMetaData> propertyMeta,
-            List<MethodMetaData> methodMetaData,
+            List<MethodMetaData> methodMetaDataList,
             List<string> baseInterfaces,
             List<KeyValueModel> constructor,
             List<string> usingList,
             string accessModifier,
-            string extModifier = null)
-            : base(@namespace, name, attributeMetaData, propertyMeta, methodMetaData, baseInterfaces, usingList, accessModifier, extModifier)
+            string extModifier = null,
+            string source = null)
+            : base(@namespace, name, attributeMetaData, propertyMeta, methodMetaDataList, baseInterfaces, usingList, accessModifier, extModifier, source)
         {
             Constructor = constructor;
         }
-        
+
         /// <summary>
         /// 构造函数
         /// </summary>

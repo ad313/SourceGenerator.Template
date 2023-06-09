@@ -5,6 +5,7 @@
 using {{ using }};
 {{- end }}
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 
 namespace {{ namespace }}
 {
@@ -35,13 +36,13 @@ namespace {{ namespace }}
         }
         
         {{- # 生成拦截方法，只有有aop标记的才会生成 }}
-        {{- for method in method_meta_data }}  
-        {{- if (method.attribute_meta_data!=null && method.attribute_meta_data.size>0) }}
+        {{- for method in method_meta_data_list }}  
+        {{- if (method.attribute_meta_data_list!=null && method.attribute_meta_data_list.size>0) }}
         
         {{- # 处理方法输入参数 }}
         {{- methodParamArray = [] }}
         {{- methodDicParamArray = [] }}       
-        {{- for cur in method.param }}
+        {{- for cur in method.param_list }}
         {{- methodParamArray = (methodParamArray | array.add (cur.key + " " + cur.value)) }}
         {{- methodDicParamArray = (methodDicParamArray | array.add ('{ "' + cur.value + '", ' + cur.value + ' }')) }}
         {{- end }}   
@@ -53,10 +54,21 @@ namespace {{ namespace }}
         {{- if method.is_task }}
         {{- methodName = methodName + 'async ' }}
         {{- end }}    
-        {{- methodName = methodName + method.return_value + ' ' + method.name + '(' + methodParam + ')' }}
-         
+        {{- methodName = methodName + method.return_value + ' ' + method.name + '(' + methodParam + ')' }}        
+        {{- returnType = ''  }}
+        {{- returnTypeValue = 'null'}}
+        {{- if method.has_return_value && !method.is_task }}
+        {{- returnType = method.return_value }}
+        {{- returnTypeValue = 'typeof('+returnType+')'}}
+        {{- end }}
+        {{- if method.has_return_value && method.is_task }}
+        {{- arr = ((method.return_value | string.replace 'Task<' '#') | string.replace 'ValueTask<' '#') | string.split '#' }}
+        {{- returnType = (arr[0] | string.remove_last '>') }}
+        {{- returnTypeValue = 'typeof('+returnType+')'}}
+        {{- end }}
+
         {{- # 处理调用方法参数 }}
-        {{- methodCallParam = (method.param | array.map 'value') | array.join ', '}}
+        {{- methodCallParam = (method.param_list | array.map 'value') | array.join ', '}}
              
         public override {{ methodName }}
         {
@@ -65,12 +77,13 @@ namespace {{ namespace }}
                 new Dictionary<string, dynamic>() { {{methodDicParam}} },
                 {{ method.is_task }},
                 {{ method.has_return_value }},
-                null);
+                null,
+                {{ returnTypeValue }});
 
             {{- # 处理拦截器参数，拿到当前拦截器，并赋值（打标记时的输入参数）。可能有多个拦截器 }}
             {{ index = 0 }}
-            {{- for attr in method.attribute_meta_data }}                
-            var aopInterceptor{{ index }} = _serviceProvider0.GetRequiredService<{{attr.safe_name}}>();
+            {{- for attr in method.attribute_meta_data_list }}                
+            var aopInterceptor{{ index }} = _serviceProvider0.GetRequiredService<{{attr.full_name}}>();
             {{- for pams in attr.param_dictionary }}
             aopInterceptor{{ index }}.{{ pams.key }} = {{ pams.value }};
             {{- end }}  
@@ -79,15 +92,15 @@ namespace {{ namespace }}
         
             {{- # 多个拦截器，按照管道堆栈模式，先进后出。这里是 Before 方法 }}
             {{- index = 0 }}
-            {{- for attr in method.attribute_meta_data }}                
+            {{- for attr in method.attribute_meta_data_list }}                
             if (aopInterceptor{{ index }}.HasBefore) aopContext = {{- if method.is_task }} await aopInterceptor{{ index }}.BeforeAsync(aopContext); {{- else }} aopInterceptor{{ index }}.Before(aopContext); {{- end }}  
             {{- index = index + 1 }}
             {{- end }}  
         
             {{- # 只有最后一个拦截器才有 Next 方法 }}
-            {{- index = method.attribute_meta_data.size - 1 }}
-            {{- for attr in method.attribute_meta_data  }}                
-            {{- if index == method.attribute_meta_data.size - 1 }}            
+            {{- index = method.attribute_meta_data_list.size - 1 }}
+            {{- for attr in method.attribute_meta_data_list  }}                
+            {{- if index == method.attribute_meta_data_list.size - 1 }}            
             if (aopInterceptor{{ index }}.HasAopNext)
             {
                 if (aopInterceptor{{ index }}.HasActualNext)

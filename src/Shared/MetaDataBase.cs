@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace SourceGenerator.Analyzers.MetaData
+namespace SourceGenerator.Template.MetaData
 {
     public class MetaDataBase
     {
@@ -18,16 +18,21 @@ namespace SourceGenerator.Analyzers.MetaData
         /// </summary>
         public string ExtModifier { get; set; }
         /// <summary>
+        /// 原始字符串
+        /// </summary>
+        public string Source { get; private set; }
+        /// <summary>
         /// Attribute 参数
         /// </summary>
-        public List<AttributeMetaData> AttributeMetaData { get; private set; }
+        public List<AttributeMetaData> AttributeMetaDataList { get; private set; }
 
-        public MetaDataBase(string name, string accessModifier, string extModifier, List<AttributeMetaData> attributeMetaData)
+        public MetaDataBase(string name, string accessModifier, string extModifier, List<AttributeMetaData> attributeMetaDataList, string source)
         {
             Name = name;
             AccessModifier = accessModifier;
             ExtModifier = extModifier;
-            AttributeMetaData = attributeMetaData;
+            AttributeMetaDataList = attributeMetaDataList;
+            Source = source;
         }
 
         /// <summary>
@@ -47,8 +52,8 @@ namespace SourceGenerator.Analyzers.MetaData
             if (other == null)
                 return;
 
-            if (AttributeMetaData != null && other.AttributeMetaData != null)
-                AttributeMetaData.AddRange(other.AttributeMetaData);
+            if (AttributeMetaDataList != null && other.AttributeMetaDataList != null)
+                AttributeMetaDataList.AddRange(other.AttributeMetaDataList);
         }
     }
 }

@@ -1,14 +1,14 @@
 ﻿using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using SourceGenerator.Analyzers.MetaData;
-using SourceGenerator.Analyzers.Renders;
+using SourceGenerator.Template.Generators.Renders;
+using SourceGenerator.Template.MetaData;
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Text;
 
-namespace SourceGenerator.Analyzers
+namespace SourceGenerator.Template.Generators
 {
     /// <summary>
     /// 代码生成器
@@ -24,6 +24,14 @@ namespace SourceGenerator.Analyzers
         /// Map 文件名称
         /// </summary>
         public const string MapName = "Map.json";
+        /// <summary>
+        /// 额外提供的程序集的资源目录
+        /// </summary>
+        public const string AssemblySourceBase = "Templates";
+        /// <summary>
+        /// 额外提供的程序集的名称 包含关系
+        /// </summary>
+        public const string TemplateAssemblyName = "Sg.Templates.dll";
 
         /// <summary>
         /// 初始化
@@ -57,7 +65,7 @@ namespace SourceGenerator.Analyzers
                 finally
                 {
                     context.AddSource("Error", _errorBuilder.ToString());
-                    context.AddSource("Times", _timeBuilder.ToString());
+                    context.AddSource("Time", _timeBuilder.ToString());
                 }
             });
         }
@@ -79,10 +87,13 @@ namespace SourceGenerator.Analyzers
 
             try
             {
-                meta = new SyntaxReceiver(compilation, context.CancellationToken).GetMetaData();
+                meta = new SyntaxReceiver(compilation, context.CancellationToken).GetMetaData(out StringBuilder sb);
                 meta.AssemblyName = compilation.AssemblyName;
 
                 TemplateRender.ToTimeStringBuilder("1、获取元数据", _timeBuilder, watch.ElapsedMilliseconds);
+
+               _timeBuilder.AppendLine(TemplateRender.ToMetaStringBuilder(meta).ToString());
+               _timeBuilder.AppendLine(sb.ToString());
             }
             catch (Exception e)
             {
@@ -107,8 +118,8 @@ namespace SourceGenerator.Analyzers
             {
                 if (context.CancellationToken.IsCancellationRequested)
                     return;
-
-                TemplateRender.Build(context, additionalTexts, meta);
+                
+                TemplateRender.Build(context, additionalTexts, meta, compilation);
                 TemplateRender.ToTimeStringBuilder("2、渲染模板", _timeBuilder, watch.ElapsedMilliseconds);
             }
             catch (Exception e)
