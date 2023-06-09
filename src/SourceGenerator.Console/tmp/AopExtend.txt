@@ -6,7 +6,6 @@ using {{ using }};
 {{- end }}
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
-using SaiLing.Aop;
 
 namespace {{ namespace }}
 {

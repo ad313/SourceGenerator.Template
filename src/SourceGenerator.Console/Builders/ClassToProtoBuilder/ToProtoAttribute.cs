@@ -9,7 +9,7 @@ namespace SourceGenerator.Consoles.Builders.ClassToProtoBuilder
     /// <summary>
     /// ClassToProto 标记
     /// </summary>
-    public class ClassToProtoAttribute : Attribute
+    public class ToProtoAttribute : Attribute
     {
 
     }

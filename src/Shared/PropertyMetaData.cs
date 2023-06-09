@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace SourceGenerator.Analyzers.MetaData
+namespace SourceGenerator.Template.MetaData
 {
     /// <summary>
     /// 属性元数据

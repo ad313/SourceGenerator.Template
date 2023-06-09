@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SourceGenerator.Analyzers.MetaData
+namespace SourceGenerator.Template.MetaData
 {
     /// <summary>
     /// 结构体元数据

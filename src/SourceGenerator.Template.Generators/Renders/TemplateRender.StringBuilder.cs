@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace SourceGenerator.Analyzers.Renders
+namespace SourceGenerator.Template.Generators.Renders
 {
     internal sealed partial class TemplateRender
     {

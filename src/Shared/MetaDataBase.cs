@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace SourceGenerator.Analyzers.MetaData
+namespace SourceGenerator.Template.MetaData
 {
     public class MetaDataBase
     {

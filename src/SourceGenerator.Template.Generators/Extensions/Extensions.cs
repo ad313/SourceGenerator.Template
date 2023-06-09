@@ -1,10 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceGenerator.Template.MetaData;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace SourceGenerator.Analyzers.Extend
+namespace SourceGenerator.Template.Generators.Extensions
 {
     public static class Extensions
     {

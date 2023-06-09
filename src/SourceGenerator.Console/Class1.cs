@@ -13,8 +13,8 @@ namespace SourceGenerator.Consoles
         }
         
     }
-    
-    [ClassToProto]
+
+    [ToProto]
     public partial class Class2
     {
         /// <summary>
@@ -40,6 +40,7 @@ namespace SourceGenerator.Consoles
         public string c { get; set; }
     }
 
+    [ToProto]
     public class Class4
     {
         public string F { get; set; }

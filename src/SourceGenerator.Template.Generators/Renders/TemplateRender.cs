@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Scriban;
 using Scriban.Runtime;
-using SourceGenerator.Analyzers.Extend;
+using SourceGenerator.Template.Generators.Extensions;
 using SourceGenerator.Template.MetaData;
 using System;
 using System.Collections.Concurrent;
@@ -12,7 +12,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace SourceGenerator.Analyzers.Renders
+namespace SourceGenerator.Template.Generators.Renders
 {
     internal sealed partial class TemplateRender
     {
@@ -32,7 +32,7 @@ namespace SourceGenerator.Analyzers.Renders
             //获取模板
             var maps = GetMaps(additionalTexts, templateAssemblyList);
 
-            context.AddSource("TemplateInfo", ToTemplateAssemblyStringBuilder(maps, templateAssemblyList).ToString());
+            context.AddSource("TemplateInfo", TemplateRender.ToTemplateAssemblyStringBuilder(maps, templateAssemblyList).ToString());
 
             RenderTemplate(context, meta, maps);
         }
@@ -142,7 +142,7 @@ namespace SourceGenerator.Analyzers.Renders
 
         private static void RenderTemplate(SourceProductionContext context, AssemblyMetaData meta, List<MapModel> mapModels)
         {
-            foreach (var mapModel in mapModels)
+            foreach (var mapModel in mapModels.OrderBy(d => d.Order))
             {
                 if (string.IsNullOrWhiteSpace(mapModel.MainTemplateString))
                     continue;

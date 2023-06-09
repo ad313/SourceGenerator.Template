@@ -1,7 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using SourceGenerator.Analyzers.Extend;
 using SourceGenerator.Template.MetaData;
 using System;
 using System.Collections.Generic;
@@ -9,8 +8,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using SourceGenerator.Template.Generators.Extensions;
 
-namespace SourceGenerator.Analyzers
+namespace SourceGenerator.Template.Generators
 {
     /// <summary>
     /// 语法接收器

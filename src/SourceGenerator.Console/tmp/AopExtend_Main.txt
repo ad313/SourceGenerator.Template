@@ -24,6 +24,8 @@
 {{~ ret ~}}
 {{ end }}
 
+//这里会改变元数据，所以先保存旧数据，最后再改回去
+
 //开始处理数据
 {{ for class in meta_data.class_meta_data_list }}  
 {{ hasAop = false }}

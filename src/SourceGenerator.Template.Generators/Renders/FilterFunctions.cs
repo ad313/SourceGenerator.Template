@@ -1,14 +1,14 @@
 ﻿using Newtonsoft.Json;
 using Scriban;
 using Scriban.Runtime;
-using SourceGenerator.Analyzers.Extend;
 using SourceGenerator.Template.MetaData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using SourceGenerator.Template.Generators.Extensions;
 
-namespace SourceGenerator.Analyzers.Renders
+namespace SourceGenerator.Template.Generators.Renders
 {
     /// <summary>
     /// Scriban 自定义函数
@@ -42,6 +42,10 @@ namespace SourceGenerator.Analyzers.Renders
         {
             if (obj is MetaDataBase data)
             {
+                if (data.Name == "Class4")
+                {
+
+                }
                 return data.AttributeMetaDataList.HasAttribute(attributeName);
             }
 
@@ -475,7 +479,7 @@ namespace SourceGenerator.Analyzers.Renders
             var scContext = new TemplateContext();
             scContext.PushGlobal(scriptObject1);
 
-            var template = Template.Parse(templateString);
+            var template = Scriban.Template.Parse(templateString);
             var result = template.Render(scContext);
 
             if (string.IsNullOrWhiteSpace(fileName))

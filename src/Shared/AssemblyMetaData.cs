@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace SourceGenerator.Analyzers.MetaData
+namespace SourceGenerator.Template.MetaData
 {
     /// <summary>
     /// 元数据
@@ -27,7 +27,7 @@ namespace SourceGenerator.Analyzers.MetaData
         /// Struct 元数据
         /// </summary>
         public List<StructMetaData> StructMetaDataList { get; private set; }
-        
+
         /// <summary>
         /// enum 元数据
         /// </summary>
@@ -84,11 +84,11 @@ namespace SourceGenerator.Analyzers.MetaData
             var attrClassMetaDataList = ClassMetaDataList?.Where(d => d.IsAttribute).ToList() ?? new List<ClassMetaData>();
 
             ClassMetaDataList?.ForEach(item =>
-                {
-                    item.AttributeMetaDataList?.ForEach(att => att.SetClassMetaData(item.NewUsingList, attrClassMetaDataList));
-                    item.PropertyMetaDataList?.ForEach(prop => prop.AttributeMetaDataList?.ForEach(att => att.SetClassMetaData(item.NewUsingList, attrClassMetaDataList)));
-                    item.MethodMetaDataList?.ForEach(method => method.AttributeMetaDataList?.ForEach(att => att.SetClassMetaData(item.NewUsingList, attrClassMetaDataList)));
-                });
+            {
+                item.AttributeMetaDataList?.ForEach(att => att.SetClassMetaData(item.NewUsingList, attrClassMetaDataList));
+                item.PropertyMetaDataList?.ForEach(prop => prop.AttributeMetaDataList?.ForEach(att => att.SetClassMetaData(item.NewUsingList, attrClassMetaDataList)));
+                item.MethodMetaDataList?.ForEach(method => method.AttributeMetaDataList?.ForEach(att => att.SetClassMetaData(item.NewUsingList, attrClassMetaDataList)));
+            });
 
             InterfaceMetaDataList?.ForEach(item =>
             {

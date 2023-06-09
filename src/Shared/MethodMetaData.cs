@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SourceGenerator.Analyzers.MetaData
+namespace SourceGenerator.Template.MetaData
 {
     /// <summary>
     /// 方法元数据

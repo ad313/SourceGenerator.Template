@@ -1,14 +1,14 @@
 ﻿using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using SourceGenerator.Analyzers.Renders;
+using SourceGenerator.Template.Generators.Renders;
 using SourceGenerator.Template.MetaData;
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Text;
 
-namespace SourceGenerator.Analyzers
+namespace SourceGenerator.Template.Generators
 {
     /// <summary>
     /// 代码生成器

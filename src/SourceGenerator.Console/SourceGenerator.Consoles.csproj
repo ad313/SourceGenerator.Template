@@ -1,13 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <!--<ImplicitUsings>enable</ImplicitUsings>-->
-    <!--<Nullable>enable</Nullable>-->
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Mic" Version="0.0.0.13" />
@@ -17,24 +15,17 @@
 		<!--<PackageReference Include="SaiLing.Biz.Dictionary.Extensions" Version="2.1.1.16" />-->
 	</ItemGroup>
 
+	<ItemGroup>
+		<AdditionalFiles Include="tmp\AopExtend.txt" />
+		<AdditionalFiles Include="tmp\AopExtend_Main.txt" />
+		<AdditionalFiles Include="tmp\Map.json" />
+		<AdditionalFiles Include="tmp\ToProto.txt" />
+		<AdditionalFiles Include="tmp\ToProto_Main.txt" />
+	</ItemGroup>
 
-
-  <ItemGroup>
-    <AdditionalFiles Include="tmp\AopExtend.txt" />
-    <AdditionalFiles Include="tmp\AopExtend_Main.txt" />
-    <AdditionalFiles Include="tmp\Map.json" />
-  </ItemGroup>
-
-
-
-  <!--<ItemGroup>
-    <PackageReference Include="SourceGenerator.Template" Version="0.0.3" />
-  </ItemGroup>-->
-
-  <ItemGroup>
-    <ProjectReference Include="..\SourceGenerator.Analyzers\SourceGenerator.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="..\SourceGenerator.Template\SourceGenerator.Template.csproj" />
-  </ItemGroup>
-
+	<ItemGroup>
+		<ProjectReference Include="..\SourceGenerator.Template.Generators\SourceGenerator.Template.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\SourceGenerator.Template\SourceGenerator.Template.csproj" />
+	</ItemGroup>
 
 </Project>

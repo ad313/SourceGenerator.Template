@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Version>1.0.6</Version>
+		<Version>1.0.8</Version>
 		<LangVersion>9.0</LangVersion>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<DocumentationFile>SourceGenerator.Template.xml</DocumentationFile>
@@ -41,6 +41,6 @@
 		<Folder Include="NugetPackage\analyzers\dotnet\cs\" />
 	</ItemGroup>
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="dotnet publish ../SourceGenerator.Analyzers/SourceGenerator.Analyzers.csproj -c Release -o NugetPackage/analyzers/dotnet/cs" />
+		<Exec Command="dotnet publish ../SourceGenerator.Template.Generators/SourceGenerator.Template.Generators.csproj -c Release -o NugetPackage/analyzers/dotnet/cs" />
 	</Target>
 </Project>
