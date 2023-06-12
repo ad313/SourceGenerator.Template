@@ -13,7 +13,7 @@ attribute
 ##  怎么使用？
 ### 1、引入包
     //搜索 SourceGenerator.Template 包，安装最新版
-    <PackageReference Include="SourceGenerator.Template" Version="1.0.8" />
+    <PackageReference Include="SourceGenerator.Template" Version="1.0.9" />
     
     此时在项目的 依赖项-分析器 - [SourceGenerator.Template.Generators] 下面可以看到扫描出来的元数据信息
     Error：报错信息
