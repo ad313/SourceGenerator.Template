@@ -1,0 +1,60 @@
+﻿/*
+  此代码通过 SourceGenerator，使用模板 Scriban 自动生成：{{ now() }} 
+*/
+
+ /*
+
+ class：{{ class_meta_data_list.size }} 个
+ {{ for class in class_meta_data_list }}
+ 名称：{{ class.name }}
+	property个数：{{ class.property_meta_data_list.size }}
+	{{ for prop in class.property_meta_data_list }}
+	property名称：{{ prop.name }}
+	{{- end }}
+
+	method个数：{{ class.method_meta_data_list.size }}
+	{{ for method in class.method_meta_data_list }}
+	method名称：{{ method.name }}
+	method参数个数：{{ method.param_list.size }}
+	{{ for par in method.param_list }}
+	{{- par.key }} {{ par.value }}
+	{{ end  }}
+	{{- end }}
+
+	{{ for method in class.method_meta_data_list }}
+	method attribute 个数：{{ method.attribute_meta_data_list.size }}
+	{{- end }}	
+ ------------------------------
+ {{ end }}
+
+
+
+
+
+
+  interface：{{ interface_meta_data_list.size }} 个
+ {{ for interface in interface_meta_data_list }}
+ 名称：{{ interface.name }}
+	property个数：{{ interface.property_meta_data_list.size }}
+	{{ for prop in interface.property_meta_data_list }}
+	property名称：{{ prop.name }}
+	{{- end }}
+
+	method个数：{{ interface.method_meta_data_list.size }}
+	{{ for method in interface.method_meta_data_list }}
+	method名称：{{ method.name }}
+	method参数个数：{{ method.param_list.size }}
+	{{ for par in method.param_list }}
+	{{- par.key }} {{ par.value }}
+	{{ end  }}
+	{{- end }}
+
+	{{ for method in interface.method_meta_data_list }}
+	method attribute 个数：{{ method.attribute_meta_data_list.size }}
+	{{- end }}	
+ ------------------------------
+ {{ end }}
+
+
+   
+ */

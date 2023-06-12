@@ -8,6 +8,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="tmp\BizEnumExtend.txt" />
+	  <None Remove="tmp\BizEnumExtend_Main.txt" />
+	  <None Remove="tmp\ShowMetaData.txt" />
+	  <None Remove="tmp\ShowMetaData_Main.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Mic" Version="0.0.0.13" />
 		<PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
@@ -18,8 +25,12 @@
 	<ItemGroup>
 		<AdditionalFiles Include="tmp\AopExtend.txt" />
 		<AdditionalFiles Include="tmp\AopExtend_Main.txt" />
+		<AdditionalFiles Include="tmp\BizEnumExtend.txt" />
+		<AdditionalFiles Include="tmp\BizEnumExtend_Main.txt" />
 		<AdditionalFiles Include="tmp\Map.json" />
+		<AdditionalFiles Include="tmp\ShowMetaData.txt" />
 		<AdditionalFiles Include="tmp\ToProto.txt" />
+		<AdditionalFiles Include="tmp\ShowMetaData_Main.txt" />
 		<AdditionalFiles Include="tmp\ToProto_Main.txt" />
 	</ItemGroup>
 

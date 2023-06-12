@@ -1,17 +1,31 @@
 [
   {
+    "Code": "ToProtoBuilder",
+    "Name": "ToProto 扩展",
+    "MainTemplate": "ToProto_Main.txt",
+    "Templates": [ "ToProto.txt" ],
+    "Enable": true
+  },
+  {
+    "Code": "ShowMetaDataBuilder",
+    "Name": "查看有哪些元数据",
+    "MainTemplate": "ShowMetaData_Main.txt",
+    "Templates": [ "ShowMetaData.txt" ],
+    "Enable": true
+  },
+  {
+    "Code": "BizEnumBuilder",
+    "Name": "枚举业务扩展",
+    "MainTemplate": "BizEnumExtend_Main.txt",
+    "Templates": [ "BizEnumExtend.txt" ],
+    "Enable": true
+  },
+  {
     "Code": "AopBuilder",
     "Name": "Aop",
     "MainTemplate": "AopExtend_Main.txt",
     "Templates": [ "AopExtend.txt" ],
     "Enable": true,
     "Order": 9999
-  },
-  {
-    "Code": "ToProtoBuilder",
-    "Name": "ToProto 扩展",
-    "MainTemplate": "ToProto_Main.txt",
-    "Templates": [ "ToProto.txt" ],
-    "Enable": true
   }
 ]

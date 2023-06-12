@@ -8,6 +8,8 @@ namespace SourceGenerator.Template.MetaData
     /// </summary>
     public sealed class AssemblyMetaData
     {
+        public string Name { get; set; } = "Assembly";
+
         /// <summary>
         /// 宿主程序集名称
         /// </summary>

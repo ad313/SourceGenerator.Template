@@ -1,9 +1,4 @@
 ﻿
-//Main 入口
-//这里是入口，传入固定的数据：meta_data、template_data
-//meta_data：扫描到的当前程序集的所有元数据，包含接口、类、方法、属性、特性等，是总的数据
-//template_data：json中定义的模板数据
-
 //在 AopExtend 这个扩展中，需要所有的 interface、class 元数据，需要两个特性
 //循环所有的 特性 元数据，找出所有的 Aop 特性
 
@@ -23,8 +18,6 @@
 {{ if aopAttArray.size == 0}}
 {{~ ret ~}}
 {{ end }}
-
-//这里会改变元数据，所以先保存旧数据，最后再改回去
 
 //开始处理数据
 {{ for class in meta_data.class_meta_data_list }}  
