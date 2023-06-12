@@ -22,8 +22,5 @@
 //       参数1：对象
 //       参数2：输出文件名称，不传就默认guid
 
-{{ for class in meta_data.class_meta_data_list }}  
-{{ if has_attribute class 'ToProtoAttribute'}}
-{{render (merge class) template_data 'ToProto.txt' ''}}
-{{ end }}
-{{ end }}
+//正式开始
+{{ render meta_data template_data 'ShowMetaData.txt' ''}}
