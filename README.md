@@ -1,9 +1,18 @@
 # SourceGenerator.Template
-C# Source Generator，easy to generate code using templates
-
+通过扫描当前项目的元数据，定义 Map.Json 和 *.txt 模板文件，使用 scriban 模板引擎，实时生成内容。局限性：只能扫描当前程序集的内容。
+## 扫描元数据类型
+```
+class
+interface
+struct
+enum
+method
+property
+attribute
+```
 ##  怎么使用？
 ### 1、引入包
-    //引入 SourceGenerator.Template 包，安装最新版
+    //搜索 SourceGenerator.Template 包，安装最新版
     <PackageReference Include="SourceGenerator.Template" Version="1.0.8" />
     
     此时在项目的 依赖项-分析器 - [SourceGenerator.Template.Generators] 下面可以看到扫描出来的元数据信息
@@ -40,5 +49,6 @@ scriban 模板语法参考：https://github.com/scriban/scriban/blob/master/doc/
       
       1、打包后的dll以 Sg.Templates.dll 结尾
       2、项目根目录新建一个文件夹，名称为 Templates
-      3、把模板放入 Templates，并且设置所有的模板为 "嵌入的资源"
-#### 5、模板覆盖原则：当引入了外部 Sg.Templates.dll 模板，同时本地也定义了 Map.Json 及模板，此时会合并两部分模板。当模板Code重复，以本地的为准，本地的覆盖外部的。
+      3、把模板放入Templates，并且设置所有的模板为 "嵌入的资源"
+#### 5、模板覆盖原则：当引入了外部 *Sg.Templates.dll 模板，同时本地也定义了 Map.Json 及模板，此时会合并两部分模板。当模板Code重复，以本地的为准，本地的覆盖外部的。
+##### 局限性：SourceGenerator 只能扫描每个程序集的内容，因此你本地每个程序集可能都需要定义 Map.Json 和 相关模板， 当然你可以把模板封装成包，并以 Sg.Templates 结尾，这样引用这个包就可以了，达到共享的目的。
