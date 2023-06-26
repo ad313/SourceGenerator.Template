@@ -90,7 +90,7 @@ namespace SourceGenerator.Template.Generators
             //Debugger.Launch();
             foreach (var declaration in _interfaceSyntaxList)
             {
-                _token.ThrowIfCancellationRequested();
+                //_token.ThrowIfCancellationRequested();
                 
                 var metaData = GetMetaData<InterfaceDeclarationSyntax, InterfaceMetaData>(declaration);
                 var exists = result.InterfaceMetaDataList.FirstOrDefault(d => d.Equals(metaData));
@@ -118,7 +118,7 @@ namespace SourceGenerator.Template.Generators
             
             foreach (var declaration in _classSyntaxList)
             {
-                _token.ThrowIfCancellationRequested();
+                //_token.ThrowIfCancellationRequested();
                 
                 var metaData = GetMetaData<ClassDeclarationSyntax, ClassMetaData>(declaration);
                 if (metaData == null)
@@ -150,7 +150,7 @@ namespace SourceGenerator.Template.Generators
 
             foreach (var declaration in _structSyntaxList)
             {
-                _token.ThrowIfCancellationRequested();
+                //_token.ThrowIfCancellationRequested();
 
                 var metaData = GetMetaData<StructDeclarationSyntax, StructMetaData>(declaration);
                 if (metaData == null)
@@ -181,7 +181,7 @@ namespace SourceGenerator.Template.Generators
 
             foreach (var declaration in _enumSyntaxList)
             {
-                _token.ThrowIfCancellationRequested();
+                //_token.ThrowIfCancellationRequested();
 
                 var metaData = GetMetaData<EnumDeclarationSyntax, EnumMetaData>(declaration);
                 if (metaData == null)

@@ -52,8 +52,8 @@ namespace SourceGenerator.Template.Generators
             {
                 try
                 {
-                    if (context.CancellationToken.IsCancellationRequested)
-                        return;
+                    //if (context.CancellationToken.IsCancellationRequested)
+                    //    return;
 
                     Context = context;
                     Execute(context, compilation.Left, compilation.Right);
@@ -116,8 +116,8 @@ namespace SourceGenerator.Template.Generators
             #region 2、渲染模板
             try
             {
-                if (context.CancellationToken.IsCancellationRequested)
-                    return;
+                //if (context.CancellationToken.IsCancellationRequested)
+                //    return;
                 
                 TemplateRender.Build(context, additionalTexts, meta, compilation);
                 TemplateRender.ToTimeStringBuilder("2、渲染模板", _timeBuilder, watch.ElapsedMilliseconds);
