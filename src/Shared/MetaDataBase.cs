@@ -23,8 +23,10 @@ namespace SourceGenerator.Template.MetaData
         public string Source { get; private set; }
         /// <summary>
         /// Attribute 参数
+        /// 注：setter 需为 public —— Scriban 7 起模板只能给有公有 setter 的成员赋值，
+        /// 而模板 DSL 设计上需要替换特性集合（如 AopExtend 按特性过滤后回写）。
         /// </summary>
-        public List<AttributeMetaData> AttributeMetaDataList { get; private set; }
+        public List<AttributeMetaData> AttributeMetaDataList { get; set; }
 
         public MetaDataBase(string name, string accessModifier, string extModifier, List<AttributeMetaData> attributeMetaDataList, string source)
         {

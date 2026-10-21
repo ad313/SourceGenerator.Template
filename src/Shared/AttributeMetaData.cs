@@ -46,6 +46,11 @@ namespace SourceGenerator.Template.MetaData
             Source = source;
         }
 
+        /// <summary>
+        /// 是否匹配到多个候选类（歧义匹配）
+        /// </summary>
+        public bool IsAmbiguousMatch { get; private set; }
+
         public void SetClassMetaData(List<string> newUsing, List<ClassMetaData> classMetaDataList)
         {
             if (classMetaDataList == null)
@@ -60,11 +65,9 @@ namespace SourceGenerator.Template.MetaData
             }
 
             classList = classList.Distinct().ToList();
-            if (classList.Count > 1)
-            {
-                throw new Exception("特性关联的类，元数据匹配到个数大于 1 ");
-            }
-
+            // BUG-02：多候选时不再抛异常（旧实现会让 FormatData 整体失败、全量不生成），
+            // 改为取第一个并标记歧义，由生成器侧统一报告诊断
+            IsAmbiguousMatch = classList.Count > 1;
             ClassMetaData = classList.FirstOrDefault();
         }
 
@@ -104,6 +107,16 @@ namespace SourceGenerator.Template.MetaData
         public bool Equals(AttributeMetaData other)
         {
             return Key == other?.Key;
+        }
+
+        /// <summary>
+        /// QLT-02：补齐 Equals(object)，与 GetHashCode 的按 Key 语义保持一致
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as AttributeMetaData);
         }
 
         /// <summary>

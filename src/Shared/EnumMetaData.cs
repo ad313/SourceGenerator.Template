@@ -57,6 +57,16 @@ namespace SourceGenerator.Template.MetaData
         }
 
         /// <summary>
+        /// QLT-02：补齐 Equals(object)，与 GetHashCode 的按 Key 语义保持一致
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as EnumMetaData);
+        }
+
+        /// <summary>
         /// 获取哈希
         /// </summary>
         /// <returns></returns>
@@ -97,6 +107,16 @@ namespace SourceGenerator.Template.MetaData
         public bool Equals(EnumMemberMetaData other)
         {
             return Key == other?.Key;
+        }
+
+        /// <summary>
+        /// QLT-02：补齐 Equals(object)，与 GetHashCode 的按 Key 语义保持一致
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as EnumMemberMetaData);
         }
 
         /// <summary>

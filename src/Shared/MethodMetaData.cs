@@ -32,12 +32,13 @@ namespace SourceGenerator.Template.MetaData
             {
                 if (IsTask)
                 {
-                    var arr = returnValue?.Replace("Task<", "#").Replace("ValueTask<", "#").Replace("ITask<", "#")
-                        .Split('#').ToList() ?? new List<string>();
-
-                    if (arr.Count == 2)
+                    // BUG-12：按首个 '<' 与末尾 '>' 截取泛型实参，
+                    // Task<Dictionary<string, int>> 不再被 Split('>') 截断成 "Dictionary<string"
+                    var start = returnValue.IndexOf('<');
+                    var end = returnValue.LastIndexOf('>');
+                    if (start >= 0 && end > start)
                     {
-                        ReturnType = arr[1].Split('>')[0];
+                        ReturnType = returnValue.Substring(start + 1, end - start - 1);
                     }
                 }
                 else
@@ -46,9 +47,10 @@ namespace SourceGenerator.Template.MetaData
                 }
             }
 
-            CanOverride = !string.IsNullOrWhiteSpace(perfix) && perfix.Contains(" ") && new List<string>() { "virtual", "override" }.Contains(perfix
-                .Replace("public", "").Trim()
-                .Split(' ').First());
+            // BUG-12：修饰符逐词判断，protected virtual 等组合不再误判为不可重写
+            CanOverride = !string.IsNullOrWhiteSpace(perfix) && perfix
+                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                .Any(t => t == "virtual" || t == "override");
 
             Key = GetKey(name, paramList);
         }

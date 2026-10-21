@@ -204,6 +204,16 @@ namespace SourceGenerator.Template.MetaData
         }
 
         /// <summary>
+        /// QLT-02：补齐 Equals(object)，与 GetHashCode 的按 Key 语义保持一致
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as InterfaceMetaData);
+        }
+
+        /// <summary>
         /// 获取哈希
         /// </summary>
         /// <returns></returns>

@@ -1,5 +1,5 @@
 ﻿/*
-  此代码通过 SourceGenerator，使用模板 Scriban 自动生成：{{ date.now | date.to_string '%F %r' }} 
+  此代码通过 SourceGenerator，使用模板 Scriban 自动生成。
 */
 {{ for using in using_list }}
 using {{ using }};

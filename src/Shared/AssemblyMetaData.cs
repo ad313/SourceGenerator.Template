@@ -40,6 +40,11 @@ namespace SourceGenerator.Template.MetaData
         /// </summary>
         public List<AttributeMetaData> AllAttributeMetaDataList { get; private set; }
 
+        /// <summary>
+        /// 匹配到多个候选类的特性名称（BUG-02 歧义项），由生成器侧转成诊断上报
+        /// </summary>
+        public List<string> AmbiguousAttributeMatches { get; private set; } = new List<string>();
+
         public AssemblyMetaData(List<InterfaceMetaData> interfaceMetaDataList, List<ClassMetaData> classMetaDataList, List<StructMetaData> structMetaDataList, List<EnumMetaData> enumMetaDataList)
         {
             InterfaceMetaDataList = interfaceMetaDataList;
@@ -129,6 +134,9 @@ namespace SourceGenerator.Template.MetaData
 
             AllAttributeMetaDataList.AddRange(EnumMetaDataList?.SelectMany(d => d.AttributeMetaDataList).ToList() ?? new List<AttributeMetaData>());
             AllAttributeMetaDataList.AddRange(EnumMetaDataList?.SelectMany(d => d.MemberMetaList.SelectMany(m => m.AttributeMetaDataList)).ToList() ?? new List<AttributeMetaData>());
+
+            // BUG-02：汇总歧义匹配的特性名（此时列表里是全部原始特性实例，分组前收集）
+            AmbiguousAttributeMatches = AllAttributeMetaDataList.Where(d => d.IsAmbiguousMatch).Select(d => d.Name).Distinct().ToList();
 
             AllAttributeMetaDataList = AllAttributeMetaDataList.GroupBy(d => d.Key).Select(d =>
             {
