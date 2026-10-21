@@ -5,21 +5,19 @@ using SourceGenerator.Template.Generators.Renders;
 using SourceGenerator.Template.MetaData;
 using System;
 using System.Collections.Immutable;
-using System.Diagnostics;
-using System.Text;
 
 namespace SourceGenerator.Template.Generators
 {
     /// <summary>
     /// 代码生成器
+    /// GEN-01：生成器本身保持无状态——旧实现把错误/耗时 StringBuilder 放在实例字段（永不清空）、
+    /// 把 SourceProductionContext 放在静态全局字段，Roslyn 复用/并发执行时会跨编译累积与串扰；
+    /// 现在全部状态收敛到单次执行的 <see cref="RenderSession"/>。
+    /// DET-01：不再输出 Time 耗时文件，Error 内容去掉时间戳，保证相同输入产物逐字节一致。
     /// </summary>
     [Generator]
     public class IncrementalGenerator : IIncrementalGenerator
     {
-        private readonly StringBuilder _errorBuilder = new StringBuilder();
-        private readonly StringBuilder _timeBuilder = new StringBuilder();
-
-        public static SourceProductionContext Context;
         /// <summary>
         /// Map 文件名称
         /// </summary>
@@ -50,23 +48,7 @@ namespace SourceGenerator.Template.Generators
 
             initializationContextContext.RegisterSourceOutput(compilations.Combine(textFiles), (context, compilation) =>
             {
-                try
-                {
-                    if (context.CancellationToken.IsCancellationRequested)
-                        return;
-
-                    Context = context;
-                    Execute(context, compilation.Left, compilation.Right);
-                }
-                catch (Exception e)
-                {
-                    TemplateRender.ToErrorStringBuilder("全局异常", _errorBuilder, e);
-                }
-                finally
-                {
-                    context.AddSource("Error", _errorBuilder.ToString());
-                    context.AddSource("Time", _timeBuilder.ToString());
-                }
+                Execute(context, compilation.Left, compilation.Right);
             });
         }
 
@@ -78,8 +60,7 @@ namespace SourceGenerator.Template.Generators
         /// <param name="additionalTexts">附加文本文件</param>
         public void Execute(SourceProductionContext context, Compilation compilation, ImmutableArray<AdditionalText> additionalTexts)
         {
-            var watch = Stopwatch.StartNew();
-            watch.Start();
+            var session = new RenderSession(context);
 
             AssemblyMetaData meta = null;
 
@@ -87,50 +68,53 @@ namespace SourceGenerator.Template.Generators
 
             try
             {
-                meta = new SyntaxReceiver(compilation, context.CancellationToken).GetMetaData(out StringBuilder sb);
+                if (context.CancellationToken.IsCancellationRequested)
+                    return;
+
+                var receiver = new SyntaxReceiver(compilation, context.CancellationToken);
+                meta = receiver.GetMetaData();
                 meta.AssemblyName = compilation.AssemblyName;
 
-                TemplateRender.ToTimeStringBuilder("1、获取元数据", _timeBuilder, watch.ElapsedMilliseconds);
-
-               _timeBuilder.AppendLine(TemplateRender.ToMetaStringBuilder(meta).ToString());
-               _timeBuilder.AppendLine(sb.ToString());
+                // GEN-02：元数据阶段收集的诊断统一上报，失败不再静默
+                foreach (var diagnostic in receiver.Diagnostics)
+                {
+                    context.ReportDiagnostic(diagnostic);
+                }
             }
             catch (Exception e)
             {
-                TemplateRender.ToErrorStringBuilder("1、获取元数据", _errorBuilder, e);
-                return;
+                context.ReportDiagnostic(Diagnostic.Create(GeneratorDiagnostics.MetadataError, Location.None, "(Assembly)", e.Message));
+                session.AddError("1、获取元数据", e);
             }
             finally
             {
                 //输出元数据json
-                context.AddSource("MetaJson", "//" + JsonConvert.SerializeObject(meta, new JsonSerializerSettings()
+                context.AddSource("MetaJson.g.cs", "//" + JsonConvert.SerializeObject(meta, new JsonSerializerSettings()
                 {
                     ContractResolver = new DefaultContractResolver() { NamingStrategy = new SnakeCaseNamingStrategy() }
                 }));
-
-                watch.Restart();
             }
 
             #endregion
 
             #region 2、渲染模板
+
             try
             {
-                if (context.CancellationToken.IsCancellationRequested)
-                    return;
-                
-                TemplateRender.Build(context, additionalTexts, meta, compilation);
-                TemplateRender.ToTimeStringBuilder("2、渲染模板", _timeBuilder, watch.ElapsedMilliseconds);
+                if (meta != null && !context.CancellationToken.IsCancellationRequested)
+                {
+                    TemplateRender.Build(session, additionalTexts, meta, compilation);
+                }
             }
             catch (Exception e)
             {
-                TemplateRender.ToErrorStringBuilder("2、渲染模板", _errorBuilder, e);
+                context.ReportDiagnostic(Diagnostic.Create(GeneratorDiagnostics.TemplateRenderError, Location.None, "(global)", e.Message));
+                session.AddError("2、渲染模板", e);
             }
-            finally
-            {
-                watch.Stop();
-            }
+
             #endregion
+
+            context.AddSource("Error.g.cs", session.ErrorContent);
         }
     }
 }

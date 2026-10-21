@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.CodeAnalysis;
+using Newtonsoft.Json;
 using Scriban;
 using Scriban.Runtime;
 using SourceGenerator.Template.MetaData;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using SourceGenerator.Template.Generators.Extensions;
 
 namespace SourceGenerator.Template.Generators.Renders
@@ -15,6 +17,38 @@ namespace SourceGenerator.Template.Generators.Renders
     /// </summary>
     public class FilterFunctions : ScriptObject
     {
+        /// <summary>
+        /// 当前执行会话（GEN-01）：由 TemplateRender.Build 在渲染前挂上、渲染后恢复，
+        /// AsyncLocal 按执行流隔离，并行编译互不串扰、执行结束不残留；
+        /// 取代旧的静态全局 IncrementalGenerator.Context
+        /// </summary>
+        private static readonly AsyncLocal<RenderSession> CurrentSessionLocal = new AsyncLocal<RenderSession>();
+
+        internal static RenderSession CurrentSession
+        {
+            get => CurrentSessionLocal.Value;
+            set => CurrentSessionLocal.Value = value;
+        }
+
+        internal static RenderSession RequireSession()
+        {
+            return CurrentSession ?? throw new InvalidOperationException("模板函数只能在生成器执行期间调用（当前没有活动会话）");
+        }
+
+        /// <summary>
+        /// 创建模板上下文：显式设置资源上限（SEC-01），避免失控/恶意模板耗尽构建进程资源
+        /// </summary>
+        internal static TemplateContext CreateTemplateContext()
+        {
+            return new TemplateContext
+            {
+                LoopLimit = 100000,
+                RecursiveLimit = 512
+            };
+        }
+
+        private static readonly Regex WhitespaceRegex = new Regex("\\s+", RegexOptions.Compiled);
+
         /// <summary>
         /// 通过空格分割字符串，返回特定 index 的数据
         /// split_string_by_whitespace
@@ -27,8 +61,9 @@ namespace SourceGenerator.Template.Generators.Renders
             if (string.IsNullOrWhiteSpace(text))
                 return null;
 
-            var arr = Regex.Split(text, "\\s+");
-            return arr.Length >= index ? arr[index] : null;
+            var arr = WhitespaceRegex.Split(text);
+            // BUG-11：旧实现是 arr.Length >= index，index == Length 时仍越界抛异常；改为 >
+            return index >= 0 && arr.Length > index ? arr[index] : null;
         }
 
         /// <summary>
@@ -42,10 +77,6 @@ namespace SourceGenerator.Template.Generators.Renders
         {
             if (obj is MetaDataBase data)
             {
-                if (data.Name == "Class4")
-                {
-
-                }
                 return data.AttributeMetaDataList.HasAttribute(attributeName);
             }
 
@@ -438,11 +469,13 @@ namespace SourceGenerator.Template.Generators.Renders
         /// <summary>
         /// 获取当前时间
         /// now
+        /// DET-01：已弃用。把时间戳写进生成代码会破坏确定性构建（相同输入两次构建产物不同），
+        /// 现在固定返回空字符串；函数保留是为了兼容已有模板（不至于因函数缺失而渲染失败）
         /// </summary>
         /// <returns></returns>
         public static string Now()
         {
-            return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            return string.Empty;
         }
 
         /// <summary>
@@ -467,25 +500,32 @@ namespace SourceGenerator.Template.Generators.Renders
         /// <param name="templateModel">模板定义数据，主要获取模板内容</param>
         /// <param name="templateName">模板名称</param>
         /// <param name="fileName">保存的文件名，为空则自动生成</param>
-        /// <exception cref="ArgumentNullException"></exception>
         public static void Render(dynamic data, MapModel templateModel, string templateName, string fileName)
         {
+            var session = RequireSession();
+
             var templateString = templateModel?.GetTemplate(templateName);
             if (string.IsNullOrWhiteSpace(templateString))
-                throw new ArgumentNullException($"未找到 {templateName} 对应的模板");
+            {
+                // GEN-02：模板缺失报 SGT002 并跳过，不再抛异常中断后续全部渲染
+                session.Report(Diagnostic.Create(GeneratorDiagnostics.TemplateNotFound, Location.None, templateName));
+                return;
+            }
 
             var scriptObject1 = new FilterFunctions();
             scriptObject1.Import((object)data);
-            var scContext = new TemplateContext();
+            var scContext = CreateTemplateContext();
             scContext.PushGlobal(scriptObject1);
 
-            var template = Scriban.Template.Parse(templateString);
+            // PERF-01：解析结果按文本缓存（旧实现每次 render 都重新 Parse 同一模板）
+            var template = session.GetOrParseTemplate(templateString);
             var result = template.Render(scContext);
 
             if (string.IsNullOrWhiteSpace(fileName))
                 fileName = $"{templateName.Replace(".txt", "")}_{data.Name}_g";
 
-            IncrementalGenerator.Context.AddSource(fileName, result);
+            // BUG-03：默认名只含类型简单名，同名类冲突时由会话按类型全限定 Key 消歧，不再抛异常
+            session.AddSource(fileName, result, GetDataQualifier((object)data));
         }
 
         /// <summary>
@@ -496,7 +536,34 @@ namespace SourceGenerator.Template.Generators.Renders
         /// <param name="name"></param>
         public static void Json(dynamic data, string name)
         {
-            IncrementalGenerator.Context.AddSource(string.IsNullOrWhiteSpace(name) ? Guid.NewGuid().ToString() : name, JsonConvert.SerializeObject(data));
+            var session = RequireSession();
+
+            // BUG-09：原始 JSON 不是合法 C#，直接 AddSource 会让使用者的构建多出语法错误，
+            // 改为包进块注释（与 MetaJson 输出一致）；默认文件名改为确定性名称，
+            // 旧实现是随机 Guid，每次构建产物集合都不同（DET-01）
+            var content = "/*\n" + JsonConvert.SerializeObject(data) + "\n*/";
+            var hintName = !string.IsNullOrWhiteSpace(name) ? name : GetDataQualifier((object)data) ?? "JsonData";
+            session.AddSource(hintName, content, GetDataQualifier((object)data));
+        }
+
+        /// <summary>
+        /// 取数据的限定名（类型全限定 Key / 方法 Key），用于生成文件名冲突时消歧
+        /// </summary>
+        private static string GetDataQualifier(object data)
+        {
+            switch (data)
+            {
+                case InterfaceMetaData interfaceMetaData:
+                    return interfaceMetaData.Key;
+                case EnumMetaData enumMetaData:
+                    return enumMetaData.Key;
+                case AttributeMetaData attributeMetaData:
+                    return attributeMetaData.Key;
+                case MethodMetaData methodMetaData:
+                    return methodMetaData.Key;
+                default:
+                    return null;
+            }
         }
     }
 }

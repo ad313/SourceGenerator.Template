@@ -27,8 +27,10 @@ namespace SourceGenerator.Template.Generators.Renders
         public string MainTemplate { get; set; }
         /// <summary>
         /// 其他模板
+        /// BUG-10：给默认值 —— 旧实现无默认值，Map 条目不写 Templates 字段时为 null，
+        /// 消费方 .Any() 直接空引用使整个渲染失败
         /// </summary>
-        public List<string> Templates { get; set; }
+        public List<string> Templates { get; set; } = new List<string>();
         /// <summary>
         /// 模板内容
         /// </summary>
