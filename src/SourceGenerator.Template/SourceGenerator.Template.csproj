@@ -2,7 +2,8 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Version>1.0.8</Version>
+		<Version>1.0.9</Version>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<LangVersion>9.0</LangVersion>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<DocumentationFile>SourceGenerator.Template.xml</DocumentationFile>
@@ -34,7 +35,7 @@
 
 	<!--nuget analyzers -->
 	<ItemGroup>
-		<None Include="NugetPackage\tools\*.*" PackagePath="tools" Pack="true" />
+		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
 		<None Include="NugetPackage\analyzers\dotnet\cs\**" PackagePath="analyzers\dotnet\cs" Pack="true" />
 	</ItemGroup>
 	<ItemGroup>

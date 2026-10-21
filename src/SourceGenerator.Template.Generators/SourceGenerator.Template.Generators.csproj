@@ -3,10 +3,19 @@
 	<PropertyGroup>
 		<LangVersion>9.0</LangVersion>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<EnforceExtendedAnalyzerRules>false</EnforceExtendedAnalyzerRules>
+		<!-- PKG-02：开启扩展分析器规则检查（如 RS1035），生成器规范问题在构建期暴露 -->
+		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 		<DefineConstants>$(DefineConstants);SCRIBAN_PUBLIC</DefineConstants>
 		<NoWarn>1701;1702;1591</NoWarn>
+		<!-- SEC-01：开启 NuGet 漏洞审计，并将 NU190x 已知漏洞警告视为错误，防止带洞依赖再次发版 -->
+		<NuGetAudit>true</NuGetAudit>
+		<WarningsAsErrors>$(WarningsAsErrors);NU1901;NU1902;NU1903;NU1904</WarningsAsErrors>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
+		<AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<Compile Include="..\Shared\AssemblyMetaData.cs" Link="MetaData\AssemblyMetaData.cs" />
@@ -21,20 +30,20 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.1" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 	</ItemGroup>
+	<!-- SEC-01：Scriban 5.7.0 含 14 个已知安全公告（1 Critical / 9 High / 4 Moderate），升级到 7.5.1。
+	     Release 不设 PrivateAssets：打包项目靠 dotnet publish 把依赖 DLL 一并输出到 analyzers 目录；
+	     Debug 设 PrivateAssets + GeneratePathProperty，供 GetDependencyTargetPaths 在开发期拼依赖路径。 -->
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Scriban" Version="5.7.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+		<PackageReference Include="Scriban" Version="7.5.1" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(Configuration)'=='Debug'">
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" GeneratePathProperty="true" PrivateAssets="all" />
-		<PackageReference Include="Scriban" Version="5.7.0" GeneratePathProperty="true" PrivateAssets="all" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" GeneratePathProperty="true" PrivateAssets="all" />
+		<PackageReference Include="Scriban" Version="7.5.1" GeneratePathProperty="true" PrivateAssets="all" />
 	</ItemGroup>
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
 		<GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
